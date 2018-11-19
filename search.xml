@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
+    <title><![CDATA[MyFirstBlog]]></title>
     <url>%2F2018%2F11%2F19%2FMyFirstBlog%2F</url>
-    <content type="text"><![CDATA[我的第一个博客---来自庆贺 虽然现在这里什么也没有但是希望有一天这里能变成记录我学习和生活的地方 Heading]]></content>
+    <content type="text"><![CDATA[我的第一个博客 来自庆贺 虽然现在这里什么都没有但是希望这里以后能变成记录我学习和生活的地方]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[hello world]]></title>
+    <url>%2F2018%2F11%2F19%2Fhello-world%2F</url>
+    <content type="text"></content>
   </entry>
 </search>
