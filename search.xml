@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[MyFirstBlog]]></title>
+    <title></title>
     <url>%2F2018%2F11%2F19%2FMyFirstBlog%2F</url>
-    <content type="text"></content>
-      <categories>
-        <category>分类1</category>
-        <category>分类1的子分类2</category>
-      </categories>
-      <tags>
-        <tag>标签1</tag>
-        <tag>标签2</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2F2018%2F11%2F19%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
+    <content type="text"><![CDATA[我的第一个博客---来自庆贺 虽然现在这里什么也没有但是希望有一天这里能变成记录我学习和生活的地方 Heading]]></content>
   </entry>
 </search>
