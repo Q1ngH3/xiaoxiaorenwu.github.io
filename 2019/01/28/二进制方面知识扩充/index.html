@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="pwn基础,">
 
 
 
@@ -79,13 +79,21 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="QingHe">
-<meta property="og:url" content="http://yoursite.com/tags/pwnable-kr/index.html">
+<meta name="description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
+<meta name="keywords" content="pwn基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二进制方面知识扩充">
+<meta property="og:url" content="http://yoursite.com/2019/01/28/二进制方面知识扩充/index.html">
 <meta property="og:site_name" content="QingHe">
+<meta property="og:description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif">
+<meta property="og:image" content="https://i.loli.net/2019/01/28/5c4e6c29d464e.gif">
+<meta property="og:updated_time" content="2019-01-28T02:57:14.193Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="QingHe">
+<meta name="twitter:title" content="二进制方面知识扩充">
+<meta name="twitter:description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
+<meta name="twitter:image" content="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif">
 
 
 
@@ -115,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/pwnable-kr/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/28/二进制方面知识扩充/">
 
 
 
 
 
-  <title>Tag: pwnable.kr | QingHe</title>
+  <title>二进制方面知识扩充 | QingHe</title>
   
 
 
@@ -140,7 +148,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -266,52 +274,219 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>pwnable.kr<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/28/二进制方面知识扩充/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingHe">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/12/26/pwnable-kr第一部分exp与思路/" itemprop="url">
-              
-                <span itemprop="name">pwnable.kr第一部分exp与思路</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">二进制方面知识扩充</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-26T15:12:01+08:00" content="2018-12-26">
-          12-26
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-28T10:30:41+08:00">
+                2019-01-28
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/知识积累/" itemprop="url" rel="index">
+                    <span itemprop="name">知识积累</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="PIE和ASLR："><a href="#PIE和ASLR：" class="headerlink" title="PIE和ASLR："></a>PIE和ASLR：</h2><p>参考链接：<a href="https://www.cnblogs.com/rec0rd/p/7646857.html" target="_blank" rel="noopener">对PIE和ASLR的理解</a></p>
+<p>首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，Position Independent Code），加了PIE选项编译出来的ELF用file命令查看会显示其为so，其随机化了ELF装载内存的基址（代码段、plt、got、data等共同的基址）。</p>
+<p>PIE只是在编译的过程中赋予了ELF加载到内存时其加载基址随机化的功能，也就是说PIE编译出来的ELF如果在ASLR=0的情况下，ELF的加载基址也是不会变的。</p>
+<p>所以这是ASLR 的三个级别变成了 ：0， 不开启任何随机化；1， 开启stack、libraries [、executable base（special libraries -^-） if PIE is enabled while compiling] 的随机化；2，开启heap随机化。</p>
+<p>因而，我们会发现PIE编译出来的executable如果ASLR=0的话，基址也是不会变的（有能力但没使用），如果ASLR=1的话，即使按照ASLR定义这个级别似乎不会对heap基址随机化，但是由于executable的基址已经随机化了，所以heap的基址自然也就被随机化了：）</p>
+<h2 id="ELF文件的结构："><a href="#ELF文件的结构：" class="headerlink" title="ELF文件的结构："></a>ELF文件的结构：</h2><p>参考链接：<a href="https://blog.csdn.net/steve_wchunxing/article/details/41291303" target="_blank" rel="noopener">参考</a></p>
+<p>elf文件分三种类型： 1、目标文件（通常是.o); 2、可执行文件(我们的运行文件)   3、动态库(.so)</p>
+<p>​     我们先讲一下可执行文件。</p>
+<p>​     可执行文件一般分成4个部分，能扩展，我们理解这4部分就够了。</p>
+<p>​     1. elf文件头 ，这个文件是对elf文件整体信息的描述，在32位系统下是56的字节，在64位系统下是64个字节。</p>
+<blockquote>
+<p>对于可执行文件来说，文件头包含的一下信息与进程启动相关</p>
+<p>e_entry      程序入口地址</p>
+<p>e_phoff      segment偏移</p>
+<p>e_phnum   segment数量</p>
+</blockquote>
+<p>​     2. segment表， 这个表是加载指示器，操作系统（确切的说是加载器，有些elf文件，比如<a href="https://www.baidu.com/s?wd=%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8&amp;tn=24004469_oem_dg&amp;rsv_dl=gh_pl_sl_csd" target="_blank" rel="noopener">操作系统内核</a>，是由其他程序加载的）,该表的结构非常重要。</p>
+<blockquote>
+<p>typedef struct</p>
+<p>{</p>
+<p>  Elf64_Word    p_type;            /<em> Segment type </em>/</p>
+<p>  Elf64_Word    p_flags;        /<em> Segment flags </em>/  /*segment权限，6表示可读写，5表示可读可执行</p>
+<p>  Elf64_Off    p_offset;        /<em> Segment file offset </em>/     /<em>段在文件中的偏移</em>/</p>
+<p>  Elf64_Addr    p_vaddr;        /<em> Segment virtual address </em>/   /*虚拟内存地址，这个表示内存中的</p>
+<p>  Elf64_Addr    p_paddr;        /<em> Segment physical address  /</em>物理内存地址，对应用程序来说，这个字段无用*/</p>
+<p>  Elf64_Xword    p_filesz;        /<em> Segment size in file </em>/        /<em>段在文件中的长度</em>/</p>
+<p>  Elf64_Xword    p_memsz;        /<em> Segment size in memory </em>/       /在内存中的长度，一般和p_filesz的值一样*/</p>
+<p>  Elf64_Xword    p_align;        /<em> Segment alignment </em>/                  /<em> 段对齐</em>/</p>
+<p>} Elf64_Phdr;   </p>
+</blockquote>
+<p>​     3. elf的主题，对于可执行文件来说，最主要的就是数据段和代码段</p>
+<p>​     4. section表，对可执行文件来说，没有用，在链接的时候有用，是对代码段数据段在链接是的一种描述。</p>
+<p>​     整个elf文件的组成可以使用下图来描述:</p>
+<p>   <img src="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif" alt=""></p>
+<h2 id="ELF文件的载入和运行及动态链接："><a href="#ELF文件的载入和运行及动态链接：" class="headerlink" title="ELF文件的载入和运行及动态链接："></a>ELF文件的载入和运行及动态链接：</h2><p>参考链接:<a href="https://luomuxiaoxiao.com/?p=125" target="_blank" rel="noopener">重读《深入理解计算机系统》</a></p>
+<blockquote>
+<p>运行地址也就是链接地址。实际上指的是，程序在运行过程中，该指令对应的内存地址。</p>
+<p>我们再回到本系列的主题：<strong>程序的加载和运行</strong>。可执行程序生成之后，是保存在硬盘中的，当用户执行该程序的时候，该程序会被加载器按照program header table的描述将程序的代码段和数据段从硬盘加载到内存中。在使用MMU的机器上，CPU处理的地址是虚拟地址。同样的，加载到内存中的地址指的也是虚拟地址。由于虚拟内存的抽象，每个进程都认为其独占内存，因此，每个可执行程序总是可以被加载到相同的内存地址（虚拟地址），其实，这些内存地址都是位于各个可执行程序独自的内存空间的地址。但是，对于MMU来讲，这些相同的虚拟地址其实对应了不同的物理地址。而对于CPU来讲，指令是按照其虚拟地址一条条的被加载到CPU中运行的。</p>
+</blockquote>
+<p>如上所述，加载器是按照program header table的描述来给程序代码段分配指令地址的。具体的过程如下：</p>
+<p> 还记得我们在<a href="https://luomuxiaoxiao.com/?p=343" target="_blank" rel="noopener">可执行文件详解</a>中segment和section的<a href="https://luomuxiaoxiao.com/?p=343#23_segment" target="_blank" rel="noopener">对应关系</a>吧？每个section按照这个mapping表顺序排列构成了不同的segment。其中第2个segment就是可执行文件的代码段。代码段中第一个section是<code>.interp</code>，其起始地址是<code>0x400238</code>，然后，加上<code>.interp</code> section的大小，就是下一个section <code>.note.ABI-tag</code>的起始地址。依次类推，对于<a href="https://luomuxiaoxiao.com/?p=343" target="_blank" rel="noopener">可执行文件详解</a>中的可执行文件add来讲，其.text的起始地址就是<code>0x400430</code>。</p>
+<blockquote>
+<p>为什么对于X86_64架构来讲，所有可执行文件的<code>text segment</code>的起始地址都是<code>0x400000</code>?</p>
+<p>实际上是链接脚本规定的，在链接过程中，链接器会根据链接脚本的描述来构建可执行文件。对于X86_64来讲，其默认的链接脚本位于<code>/usr/lib/ldscripts/elf_x86_64.x</code>。在其中我们发现这句话：<br><code>__executable_start = SEGMENT_START(&quot;text-segment&quot;, 0x400000))</code><br>它指定了可执行的text segment应起始于<code>0x400000</code>。</p>
+</blockquote>
+<p> 根据上述<code>objdump -d</code>的输出，<code>.text</code>的第一个函数是<code>_start</code>，因此，<code>_start</code>的第一条指令地址就是<code>0x400430</code>。后面每个函数的地址等于它的上一个函数的地址加上该函数自身的字节数。这样，完成了给每个函数重定位（分配运行地址）的过程。</p>
+<p> 函数中的每条指令的地址的重定位类似于函数重定位。函数的首地址即是第一条指令的首地址，后面每条指令的地址依次等于上一条指令的地址加上该指令的字节数。回忆<a href="https://luomuxiaoxiao.com/?p=235" target="_blank" rel="noopener">编译过程分析</a>中，在编译完成后，指令引用外部符号时，生成了对应的操作数和符号的占位符，此时，对于除动态链接库的符号外，其他的符号都已经有了确定的地址。因此，结合符号表我们就可以将类似的指令完成重定位。</p>
+<p> 比如在本例中，对于main函数来讲，调用了两个外部函数<code>add</code>和<code>printf</code>，根据上面信息，<code>add</code>函数相关的代码已经确定在<code>0x400526</code>处。因此，该地址就是call指令的调用<code>add</code>的操作数。而上述代码显示的<code>400400</code>处似乎并非是<code>printf</code>函数真正的实现。没错，这是因为<code>printf</code>函数是属于<code>libc</code>的库函数，但是，我们知道对于动态链接来讲，在生成可执行文件时，并未将它所依赖的动态库的代码复制过来，而只是复制了相关的重定位信息和符号表，所以，此时依然不能确定<code>printf</code>函数的地址。而<code>400400</code>处的内存值只是一个跳板，等程序运行时，动态链接器会将相关动态链接库的代码链接进来，修改这个跳板处对应的值，就可以让跳转指令正确的跳转到<code>printf</code>函数真正的内存地址处执行了。<strong>稍后我们将会对该过程做详细的分析</strong>。（涉及到PLT和GOT表的知识）<img src="https://i.loli.net/2019/01/28/5c4e6c29d464e.gif" alt=""></p>
+<p>上篇文章我们提到，为了保证代码复用和节省计算机资源，在链接时，动态链接库的代码段和数据段等是不会被复制到最终生成的可执行文件中的，这些部分会在程序加载的时候复制到内存，并做动态链接，使原来可执行文件能够对其中定义的符号正常引用。也就是说在这个时候，可执行文件代码段中对动态链接库包含的符号引用的地址才真正确定下来。但是我们查看各个segment的属性可以知道，<code>.text</code> segment是只读的，也就是说在编译成可以执行文件之后，就不能被修改了，那么如何确保它能够正确的引用在加载时才能确定下来的动态链接库里的符号呢？这就需要我们这篇文章里的GOT和PLT作为跳板来实现了。</p>
+<p>GOT全称<code>Global Offset Table</code>，即全局偏移量表。它在可执行文件中是一个单独的section，位于<code>.data</code> section的前面。每个被目标模块引用的全局符号（函数或者变量）都对应于GOT中一个8字节的条目。编译器还为GOT中每个条目生成一个重定位记录。在加载时，动态链接器会重定位GOT中的每个条目，使得它包含正确的目标地址。</p>
+<p> PLT全称<code>Procedure Linkage Table</code>，即过程链接表。它在可执行文件中也是一个单独的section，位于<code>.text</code><br>section的前面。每个被可执行程序调用的库函数都有它自己的PLT条目。每个条目实际上都是一小段可执行的代码。</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn基础/" rel="tag"># pwn基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/26/pwnable-kr第一部分exp与思路/" rel="next" title="pwnable.kr第一部分exp与思路">
+                <i class="fa fa-chevron-left"></i> pwnable.kr第一部分exp与思路
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -319,6 +494,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -339,8 +518,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -400,6 +588,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PIE和ASLR："><span class="nav-number">1.</span> <span class="nav-text">PIE和ASLR：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件的结构："><span class="nav-number">2.</span> <span class="nav-text">ELF文件的结构：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件的载入和运行及动态链接："><span class="nav-number">3.</span> <span class="nav-text">ELF文件的载入和运行及动态链接：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -547,6 +751,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
