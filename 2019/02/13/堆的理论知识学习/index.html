@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="QingHe">
 <meta property="og:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：  所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-13T08:05:31.002Z">
+<meta property="og:updated_time" content="2019-02-13T08:10:55.923Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="堆的理论知识学习">
 <meta name="twitter:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：  所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多">
@@ -402,7 +402,7 @@
 <li><p>二是arena的介绍，多线程堆是如何管理的，malloc中mmap和brk的区别，main_arena和thread_arena的区别。（这一点在第一篇文章有详细介绍）          </p>
 </li>
 <li><p>三是内存的分配与回收（最后一篇文章较详细），这一点最难也最重要，又全部围绕<strong>怎么让这个过程变得高效</strong>来设计（主要在于large chunk的分配需要进行碎片合并和整理的大循环）：</p>
-<p>当malloc(size)的时候，先进行一部分处理和加锁后，开始正式分配，先看size的大小，如果在fast_bins之内，就先遍历fast_bins中有没有正好适合的chunk有的话分配后返回，没有的话或者size的大小大于64bytes小于512sizes则进入small_bins寻找，找到合适的返回，没有的话或者size大小大于512bytes属于large chunk，<strong>大循环开始，开始对fast_bins里的碎片开始整理和合并，物理地址相连的chunk合并以后放进unsorted_bin里，不能合并的直接放进unsorted_bins里，然后对unsorted_bin中的chunk从其尾指针指向的chunk开始（FILO算法）进行遍历，if(大小刚好符合)  {取出分配返回}  else {将其放入对应的bin中，这个过程结束会将fast_bins和unsorted_bins清空}，遍历完成后再看last remainder chunk，其大小大于size时切割然后unsorted_bin的尾指针指向新的last remainder chunk，并更新储存其数据内容的结构。。。。</strong>   内容太多，直接看最后一篇文章吧QAQ。 orz</p>
+<p>当malloc(size)的时候，先进行一部分处理和加锁后，开始正式分配，先看size的大小，如果在fast_bins之内，就先遍历fast_bins中有没有正好适合的chunk有的话分配后返回，没有的话或者size的大小大于64bytes小于512sizes则进入small_bins寻找，找到合适的返回，没有的话或者size大小大于512bytes属于large chunk，<strong>大循环开始，开始对fast_bins里的碎片开始整理和合并，物理地址相连的chunk合并以后放进unsorted_bin里，不能合并的直接放进unsorted_bins里，然后对unsorted_bin中的chunk从其尾指针指向的chunk开始（FIFO算法）进行遍历，if(大小刚好符合)  {取出分配返回}  else {将其放入对应的bin中，这个过程结束会将fast_bins和unsorted_bins清空}，遍历完成后再看last remainder chunk，其大小大于size时切割然后unsorted_bin的尾指针指向新的last remainder chunk，并更新储存其数据内容的结构。。。。</strong>   内容太多，直接看最后一篇文章吧QAQ。 orz</p>
 </li>
 </ol>
 </li>
@@ -446,6 +446,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/19/知识点总结与学习资料整理/" rel="prev" title="知识点总结与学习资料整理">
+                知识点总结与学习资料整理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -515,7 +519,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -526,7 +530,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
