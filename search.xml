@@ -42,20 +42,12 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[week1]]></title>
+    <title><![CDATA[小心得1]]></title>
     <url>%2F2018%2F12%2F20%2Fweek1%2F</url>
     <content type="text"><![CDATA[解决的题目：kr.unlink 收获与问题： unlink收货： 对chunk结构有了初步了解 （具体） 对指针有了更加具体的概念，-&gt;代表的意义更加清晰，我个人比较喜欢用一层一层来理解指针，地址一层一层指向。以B-&gt;fd-&gt;bk=B-&gt;bk B-&gt;bk-&gt;fd=B-&gt;fd 也就是 (**B+4)= （B+4） （B+4）= B 工具更熟练，gdb了解了info frame()，bt(查看函数栈框信息)，b *addr（在汇编码地址下断点） ，list funcname(查看函数代码)，file docuname(查看文件信息（主要看elf文件有没有加壳和32还是64位)（说到这我elf文件还没开始看QAQ ),s(进入函数),n(不进入函数) gdb调试 一个比较弱智的东西：怎么用gcc把代码在64位系统上编译为32位elf文件。(这是做所有题目的基础，我竟然现在才发觉OTZ) 例：gcc -m32 -o -g unlink unlink.c (需要先安32位的库，网上都有) call(先将地址压栈，后eip进入子函数),leave(mov esp,ebp pop ebp),ret(pop eip) 抄了一遍exp，大致有个印象(暂时没有花时间学，下周任务) asm收货： 读flag方法：有shell以后，cat flag或者从flag读到缓冲区在write到标准输出。（一般在有沙箱时使用） print disasm(“机器码”)。 shellcraft.sh(),shellcraft.pushstr(),shellcraft.write(),shellcraft.read()出来的都是汇编代码，需要再asm一下。 rop收货 栈溢出基本思路：找带有输入漏洞函数（scnaf,gets）的函数(不要觉得main函数特殊),然后再利用偏移控制程序执行流。一找输入漏洞，二确定利用哪一个函数ret，三rop 稍稍复杂的exp怎么写 其他收货： 写blog时git config –global user.name/user.email时总是报错说找不到.gitconfig文件，但是实际上文件就在那里，上网找了好久，好像是.gitconfig目录少了一个.git文件夹 然后我用管理员身份运行它就可以hexo d了 我也不清楚为啥 反正现在主题也选好了，起码可以开始正常写blog了。：）此外，对blog的config文件也更加熟悉。 用ida可以直接看到栈中缓冲区和变量的地址（F5大法），peda的功能更加熟悉(可以直接查看寄存器的值，栈的值，将要执行的指令等)，收货一个pattern.py脚本，可用来算溢出点，但自己看最好。 0xfffffff8(%ebp)=%ebp-0x8 exp基本框架以及pwntools基本用法： pwntools使用简介 pwntools开始使用 一步一步学pwntools 123456789101112131415161718192021from pwn import *//s=ssh(host=&apos;&apos;,user=&apos;&apos;,password=&apos;&apos;,port=)p=s.connect_remote(&apos;服务器名称&apos;,port)/p=s.process(argv=[],executable=&apos;./文件名&apos;)context(arch=&apos;amd64&apos;,os=&apos;linux&apos;,log_level=&apos;debug&apos;)//log_level=&apos;debug&apos;的作用是将recv的内容全都显示在屏幕上。//定义变量p.recv(接收字节数)p.recvuntil(&apos;源代码中字符串&apos;)p.recvline()p.recvall()p.recvrepeat()p.send(发送字节数)p.senduntil(&apos;源代码中字符串&apos;)p.sendline()//shellcode生成：//payload生成:payload=&apos;n&apos;*mpayload+=p32(整数)/p64(整数)p.sendline(payload)p.interactive() send()和sendline()的区别:(已解决。。因为源代码有一个gets()函数,末尾必须加一个换行符已以告知程序输入完毕，所以写exp时用sendline(payload),或者用send(payload + ‘\n’)).. （还没细看）关于一些保护措施(ASRL/PIE, NX/DEP, RELRO, Canary(栈保护))，参考链接 linux程序的常用保护机制 先看寻址方式，再看gdb中偏移量 当看到很多大写字母变量换成数字时，常为宏定义 scanf()函数限制了输入的形式，不能随意控制，其应该是整数溢出的漏洞题型。现阶段能掌握的只有gets()函数。。。。。。（p32打包好像只能用于字符串中的整数，scanf(%d)中的必须自己输入send(‘整数’)，不加’‘代表为字节数。。） recv()的接收数据为字符串，且一位为一个字符。 p.recv(“)”,drop=True) == p.recv(“)”).replace(“)”,””) log为显示在屏幕上 有info warn 等几种标号 log 我觉得可能是网站的问题，前段时间做uaf的时候就觉得很怪，他题目的答案和在我电脑上跑出来的不一样，uaf的vtable地址都不一样，unlink的ABC地址都不一样。 工具还是用的不熟，以及汇编代码看的还是没感觉。还是练得太少 怎么创建一个新文件，以前还会，现在怎么不会了，服了，查了一会没查到，]]></content>
       <tags>
         <tag>pwn基础</tag>
-        <tag>flag回应</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Start]]></title>
-    <url>%2F2018%2F12%2F19%2FStart%2F</url>
-    <content type="text"><![CDATA[从这周开始这里将记录我，一个彻头彻尾的菜鸡pwn的学习历程，每周我会立一个flag并在周末记录下来一周的收货，希望我能坚持下来，也希望这里能记录我在大学的成长。（也能让我爱上写blog：））]]></content>
-      <tags>
-        <tag>pwn基础</tag>
+        <tag>小心得</tag>
       </tags>
   </entry>
 </search>
