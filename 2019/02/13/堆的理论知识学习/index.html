@@ -90,18 +90,18 @@
 
 
 
-<meta name="description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：  所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多">
+<meta name="description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找) 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己">
 <meta name="keywords" content="pwn基础">
 <meta property="og:type" content="article">
 <meta property="og:title" content="堆的理论知识学习">
 <meta property="og:url" content="http://yoursite.com/2019/02/13/堆的理论知识学习/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：  所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多">
+<meta property="og:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找) 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-13T08:10:55.923Z">
+<meta property="og:updated_time" content="2019-03-29T17:08:18.863Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="堆的理论知识学习">
-<meta name="twitter:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：  所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多">
+<meta name="twitter:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找) 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己">
 
 
 
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  619
+                  649
                 </span>
               
 
@@ -433,6 +433,7 @@
 <p><a href="https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/implementation/malloc/" target="_blank" rel="noopener">申请内存块</a></p>
 <p><a href="https://bbs.pediy.com/thread-218346.htm" target="_blank" rel="noopener">看雪的求助</a></p>
 <p><a href="https://www.anquanke.com/post/id/149782" target="_blank" rel="noopener">较详细的内存分配过程</a></p>
+<p>Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找)</p>
 <p>这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：</p>
 <ul>
 <li><p>所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多，让人一下子不能理解地那么深，或者说记忆不了那么多，耐心多看几遍就会好很多，需要一定的时间沉淀。</p>
