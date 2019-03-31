@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next gemini use-motion" lang="zh-CN">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,6 +13,13 @@
 <meta name="theme-color" content="#222">
 
 
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
 
 
 
@@ -65,10 +72,14 @@
   <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
 
 
+  <link rel="manifest" href="/images/manifest.json">
+
+
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="pwn基础,小心得,">
 
 
 
@@ -79,13 +90,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="QingHe">
-<meta property="og:url" content="http://yoursite.com/archives/2018/11/index.html">
+<meta name="description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。 写（">
+<meta name="keywords" content="pwn基础,小心得">
+<meta property="og:type" content="article">
+<meta property="og:title" content="格式化字符串小心得">
+<meta property="og:url" content="http://yoursite.com/2019/03/31/格式化字符串小心得/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。 写（">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-31T09:47:23.505Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="QingHe">
+<meta name="twitter:title" content="格式化字符串小心得">
+<meta name="twitter:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。 写（">
 
 
 
@@ -95,13 +111,13 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: 'Author'
+      author: '博主'
     },
     algolia: {
       applicationID: '',
@@ -115,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2018/11/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/31/格式化字符串小心得/">
 
 
 
 
 
-  <title>Archive | QingHe</title>
+  <title>格式化字符串小心得 | QingHe</title>
   
 
 
@@ -133,14 +149,14 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -181,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
-            Home
+            首页
           </a>
         </li>
       
@@ -191,7 +207,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
-            About
+            关于
           </a>
         </li>
       
@@ -201,7 +217,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
-            Tags
+            标签
           </a>
         </li>
       
@@ -211,7 +227,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
-            Categories
+            分类
           </a>
         </li>
       
@@ -219,9 +235,9 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archives"></i> <br>
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
-            Archives
+            归档
           </a>
         </li>
       
@@ -234,7 +250,7 @@
             
               <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
-            Search
+            搜索
           </a>
         </li>
       
@@ -253,7 +269,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -276,72 +292,262 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
-
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        Um..! 5 posts in total. Keep on posting.
-      </span>
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
-
-        
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/格式化字符串小心得/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XiaoXiaoRenWu's blog">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingHe">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/11/19/MyFirstBlog/" itemprop="url">
-              
-                <span itemprop="name">MyFirstBlog</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">格式化字符串小心得</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-11-19T23:00:19+08:00" content="2018-11-19">
-          11-19
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T17:45:46+08:00">
+                2019-03-31
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  586
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <h3 id="格式化字符串的一些总结和心得："><a href="#格式化字符串的一些总结和心得：" class="headerlink" title="格式化字符串的一些总结和心得："></a>格式化字符串的一些总结和心得：</h3><ul>
+<li>虽然做的题目不多，但是还是有一点感悟，小总结一下。</li>
+<li>格式化字符串漏洞可以实现的事情：</li>
+<li><ol>
+<li>读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。</li>
+<li>写（篡改）：<ol>
+<li>篡改某一个函数的got表内容，这个函数选择很重要，可能决定了exp的复杂程度：<ol>
+<li>当程序没有循环时，尽量选择printf()之后的函数，实在不行只能同时改两个地址，一个选择的函数的地址，一个fini_arry首元素的内容为start的地址，使程序重新运行。</li>
+<li>当程序有循环时就无需那么麻烦。</li>
+</ol>
+</li>
+<li>看程序中有无system(‘/bin/sh’):<ol>
+<li>有的话难度较低，将printf之后的一个函数的got表改成system(‘/bin/sh’)的地址即可，再想办使这个函数被调用。</li>
+<li>没有的话得先用读的功能泄露Libc版本，然后获取system函数的地址，这时候所选择函数必须是类似这种：puts(buf),printf(buf)这种，并且buf必须可输入，这样才可将buf改为‘/bin/sh’并调用system(‘/bin/sh’)。</li>
+</ol>
+</li>
+<li>特殊情况：<ol>
+<li>改写某一数据使其符合if语句条件从而调用if之后的system(‘/bin/sh’)。</li>
+<li>改写printf函数的调用函数（不是main函数）的返回地址，使其返回到system(‘/bin/sh’)上。这里比较特殊，需要调用函数不太复杂，其中没有很多变量，才能使得其bp能在偏移中找到，然后才能确定offset。进而用读的方式获取返回地址，然后篡改。</li>
+</ol>
+</li>
+<li>利用形式：<ol>
+<li>x86：单个改写可用fmtstr_payload=(k,{fun_got:sys_addr})，较简单。</li>
+<li>x64：因为地址中带有‘\x00’所以直接用%k$lln改写时不能将p64(fun_got)放到‘%k$lln’前面，否则会截断，只能将其放在后面。或者采用$hn的方法改写尾部。</li>
+<li>注意两个对齐：格式化字符串字节数与地址对齐，输出长度与改写数据对齐。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+
+      
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>赏点饭吃吧QAQ</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt="XiaoXiaoRenWu's blog 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="XiaoXiaoRenWu's blog 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn基础/" rel="tag"><i class="fa fa-tag"></i> pwn基础</a>
+          
+            <a href="/tags/小心得/" rel="tag"><i class="fa fa-tag"></i> 小心得</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/31/寒假小结/" rel="next" title="寒假小结">
+                <i class="fa fa-chevron-left"></i> 寒假小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -349,6 +555,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -369,12 +579,23 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">xiaoxiaorenwu</p>
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg" alt="XiaoXiaoRenWu's blog">
+            
+              <p class="site-author-name" itemprop="name">XiaoXiaoRenWu's blog</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -385,12 +606,21 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             
@@ -398,8 +628,8 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
                 </a>
               </div>
             
@@ -408,6 +638,16 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -422,6 +662,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化字符串的一些总结和心得："><span class="nav-number">1.</span> <span class="nav-text">格式化字符串的一些总结和心得：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -435,25 +691,19 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu</span>
+  <span class="author" itemprop="copyrightHolder">XiaoXiaoRenWu's blog</span>
 
   
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -473,6 +723,8 @@
     
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
         
       </div>
     
@@ -500,13 +752,20 @@
   
 
 
+
+
+  
   
 
 
 
+  
+  
 
 
 
+  
+  
 
 
 
@@ -544,7 +803,22 @@
 
   
   
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
   
 
 
@@ -568,6 +842,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

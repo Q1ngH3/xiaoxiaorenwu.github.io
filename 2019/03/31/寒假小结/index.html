@@ -79,7 +79,7 @@
 
 
 
-  <meta name="keywords" content="pwn基础,">
+  <meta name="keywords" content="pwn基础,小心得,">
 
 
 
@@ -90,21 +90,18 @@
 
 
 
-<meta name="description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
-<meta name="keywords" content="pwn基础">
+<meta name="description" content="寒假做的题目总结与反思：shellcode部分：BITSCTF 2017-Command_Line总结与不足： 题目较简单，接收缓冲区地址后算一下偏移量，直接将shellcode注入到返回地址之后，然后跳到那里即可。  BSides San Francisco CTF 2017-b_64_b_tuff总结与不足： 涉及到base64的问题，需要了解知识，只有字母和数字和+，/能参与base64编码">
+<meta name="keywords" content="pwn基础,小心得">
 <meta property="og:type" content="article">
-<meta property="og:title" content="二进制方面知识扩充">
-<meta property="og:url" content="http://yoursite.com/2019/01/28/二进制方面知识扩充/index.html">
+<meta property="og:title" content="寒假小结">
+<meta property="og:url" content="http://yoursite.com/2019/03/31/寒假小结/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
+<meta property="og:description" content="寒假做的题目总结与反思：shellcode部分：BITSCTF 2017-Command_Line总结与不足： 题目较简单，接收缓冲区地址后算一下偏移量，直接将shellcode注入到返回地址之后，然后跳到那里即可。  BSides San Francisco CTF 2017-b_64_b_tuff总结与不足： 涉及到base64的问题，需要了解知识，只有字母和数字和+，/能参与base64编码">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif">
-<meta property="og:image" content="https://i.loli.net/2019/01/28/5c4e6c29d464e.gif">
-<meta property="og:updated_time" content="2019-01-28T16:09:07.844Z">
+<meta property="og:updated_time" content="2019-03-31T09:49:10.418Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="二进制方面知识扩充">
-<meta name="twitter:description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
-<meta name="twitter:image" content="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif">
+<meta name="twitter:title" content="寒假小结">
+<meta name="twitter:description" content="寒假做的题目总结与反思：shellcode部分：BITSCTF 2017-Command_Line总结与不足： 题目较简单，接收缓冲区地址后算一下偏移量，直接将shellcode注入到返回地址之后，然后跳到那里即可。  BSides San Francisco CTF 2017-b_64_b_tuff总结与不足： 涉及到base64的问题，需要了解知识，只有字母和数字和+，/能参与base64编码">
 
 
 
@@ -134,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/28/二进制方面知识扩充/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/31/寒假小结/">
 
 
 
 
 
-  <title>二进制方面知识扩充 | QingHe</title>
+  <title>寒假小结 | QingHe</title>
   
 
 
@@ -309,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/28/二进制方面知识扩充/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/寒假小结/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XiaoXiaoRenWu's blog">
@@ -326,7 +323,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">二进制方面知识扩充</h1>
+          <h1 class="post-title" itemprop="name headline">寒假小结</h1>
         
 
         <div class="post-meta">
@@ -338,8 +335,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-28T10:30:41+08:00">
-                2019-01-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T17:45:21+08:00">
+                2019-03-31
               </time>
             
 
@@ -361,8 +358,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/知识积累/" itemprop="url" rel="index">
-                    <span itemprop="name">知识积累</span>
+                  <a href="/categories/ctf/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf</span>
                   </a>
                 </span>
 
@@ -392,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.3k
+                  2.8k
                 </span>
               
 
@@ -408,7 +405,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  8 min
+                  10 min
                 </span>
               
             </div>
@@ -429,57 +426,151 @@
       
 
       
-        <h2 id="PIE和ASLR："><a href="#PIE和ASLR：" class="headerlink" title="PIE和ASLR："></a>PIE和ASLR：</h2><p>参考链接：<a href="https://www.cnblogs.com/rec0rd/p/7646857.html" target="_blank" rel="noopener">对PIE和ASLR的理解</a></p>
-<p>首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，Position Independent Code），加了PIE选项编译出来的ELF用file命令查看会显示其为so，其随机化了ELF装载内存的基址（代码段、plt、got、data等共同的基址）。</p>
-<p>PIE只是在编译的过程中赋予了ELF加载到内存时其加载基址随机化的功能，也就是说PIE编译出来的ELF如果在ASLR=0的情况下，ELF的加载基址也是不会变的。</p>
-<p>所以这是ASLR 的三个级别变成了 ：0， 不开启任何随机化；1， 开启stack、libraries [、executable base（special libraries -^-） if PIE is enabled while compiling] 的随机化；2，开启heap随机化。</p>
-<p>因而，我们会发现PIE编译出来的executable如果ASLR=0的话，基址也是不会变的（有能力但没使用），如果ASLR=1的话，即使按照ASLR定义这个级别似乎不会对heap基址随机化，但是由于executable的基址已经随机化了，所以heap的基址自然也就被随机化了：）</p>
-<h2 id="ELF文件的结构："><a href="#ELF文件的结构：" class="headerlink" title="ELF文件的结构："></a>ELF文件的结构：</h2><p>参考链接：<a href="https://blog.csdn.net/steve_wchunxing/article/details/41291303" target="_blank" rel="noopener">参考</a></p>
-<p>elf文件分三种类型： 1、目标文件（通常是.o); 2、可执行文件(我们的运行文件)   3、动态库(.so)</p>
-<p>​     我们先讲一下可执行文件。</p>
-<p>​     可执行文件一般分成4个部分，能扩展，我们理解这4部分就够了。</p>
-<p>​     1. elf文件头 ，这个文件是对elf文件整体信息的描述，在32位系统下是56的字节，在64位系统下是64个字节。</p>
+        <h1 id="寒假做的题目总结与反思："><a href="#寒假做的题目总结与反思：" class="headerlink" title="寒假做的题目总结与反思："></a>寒假做的题目总结与反思：</h1><h2 id="shellcode部分："><a href="#shellcode部分：" class="headerlink" title="shellcode部分："></a>shellcode部分：</h2><h3 id="BITSCTF-2017-Command-Line总结与不足："><a href="#BITSCTF-2017-Command-Line总结与不足：" class="headerlink" title="BITSCTF 2017-Command_Line总结与不足："></a>BITSCTF 2017-Command_Line总结与不足：</h3><ol>
+<li>题目较简单，接收缓冲区地址后算一下偏移量，直接将shellcode注入到返回地址之后，然后跳到那里即可。</li>
+</ol>
+<h3 id="BSides-San-Francisco-CTF-2017-b-64-b-tuff总结与不足："><a href="#BSides-San-Francisco-CTF-2017-b-64-b-tuff总结与不足：" class="headerlink" title="BSides San Francisco CTF 2017-b_64_b_tuff总结与不足："></a>BSides San Francisco CTF 2017-b_64_b_tuff总结与不足：</h3><ol>
+<li>涉及到base64的问题，需要了解知识，只有字母和数字和+，/能参与base64编码，void(<em> )(void </em>)为函数强转，后直接调用。</li>
+<li>需要先将shellcode编码为合法字符，在将base64解码后传输给进程，这里需要用到msfvenmo中的编码器，因为不知道什么原因我的虚拟机下载不了。但是用法及参数需要了解。。</li>
+</ol>
+<h3 id="CSAW-Quals-CTF-2017-pilot总结与不足："><a href="#CSAW-Quals-CTF-2017-pilot总结与不足：" class="headerlink" title="CSAW Quals CTF 2017-pilot总结与不足："></a>CSAW Quals CTF 2017-pilot总结与不足：</h3><ol>
+<li>题型有新意，设坑巧妙（也有可能是因为做题少第一次见），因为x64下的shellcode最短只能找到27位，大于24位，在其运行时尾部会被覆盖从而无法正常运行，需要将shellcode剪裁修改，加一些字节码，使其前后能够连接上。</li>
+<li>jmp（短跳转）的字节码为EB,其偏移值是用其跳转的目的地址减去其下一条指令的起始地址。（还有其他的字节码，FF等）</li>
+</ol>
+<h3 id="Openctf-2016-apprentice-wwwzon总结与不足："><a href="#Openctf-2016-apprentice-wwwzon总结与不足：" class="headerlink" title="Openctf 2016-apprentice_wwwzon总结与不足："></a>Openctf 2016-apprentice_wwwzon总结与不足：</h3><ol>
+<li>知识储备不够，很多基础东西看不懂就很耽误时间和耐心，如：<ul>
+<li>int型强转：_int8:强转为一字节（相当于a=a&amp;0xff）    _int16强转为两字节</li>
+<li>test表示and功能 常与jnz或jz一起用，用来看一个寄存器是不是0.</li>
+<li>mprotect()函数为改变内存某一区域的权限</li>
+<li>str()函数和ord()函数的作用，需要自己试。。</li>
+</ul>
+</li>
+<li>源码看的不深刻，没有思路，还是只能干瞪眼，思路自己没有。</li>
+</ol>
+<p><strong>仍存在的问题</strong>：为什么sendline()中一定要用str强转，和scanf()有关么？把str(ord(shellcode[i]))直接变为shellcode[i]也不行。。</p>
+<h3 id="Openctf-2016-tyro-shellcode1总结与不足："><a href="#Openctf-2016-tyro-shellcode1总结与不足：" class="headerlink" title="Openctf 2016-tyro_shellcode1总结与不足："></a>Openctf 2016-tyro_shellcode1总结与不足：</h3><p>可能是我水平太低这题的意图看的不太懂，觉得有点水。。。。直接放上shellcode后直接调用。。。</p>
+<p>收获就是函数指针强转的形式：int（<strong> p）(void* </strong>)为定义一个函数指针p，函数参数为void<em> </em>型，返回值为int型，(int (<em> </em>)(void *)p)() 的意义为将p强转为函数指针后调用函数。</p>
+<h2 id="rop部分："><a href="#rop部分：" class="headerlink" title="rop部分："></a>rop部分：</h2><h3 id="基本rop"><a href="#基本rop" class="headerlink" title="基本rop:"></a>基本rop:</h3><h4 id="sniperoj-pwn100-shellcode-x86-64"><a href="#sniperoj-pwn100-shellcode-x86-64" class="headerlink" title="sniperoj-pwn100-shellcode-x86-64:"></a>sniperoj-pwn100-shellcode-x86-64:</h4><h4 id="train-cs-nctu-edu-tw-ret2libc"><a href="#train-cs-nctu-edu-tw-ret2libc" class="headerlink" title="train.cs.nctu.edu.tw: ret2libc"></a>train.cs.nctu.edu.tw: ret2libc</h4><h4 id="train-cs-nctu-edu-tw-rop"><a href="#train-cs-nctu-edu-tw-rop" class="headerlink" title="train.cs.nctu.edu.tw: rop"></a>train.cs.nctu.edu.tw: rop</h4><h4 id="2013-PlaidCTF-ropasaurusrex"><a href="#2013-PlaidCTF-ropasaurusrex" class="headerlink" title="2013-PlaidCTF-ropasaurusrex"></a>2013-PlaidCTF-ropasaurusrex</h4><h4 id="Defcon-2015-Qualifier-R0pbaby"><a href="#Defcon-2015-Qualifier-R0pbaby" class="headerlink" title="Defcon 2015 Qualifier: R0pbaby"></a>Defcon 2015 Qualifier: R0pbaby</h4><h3 id="中级rop"><a href="#中级rop" class="headerlink" title="中级rop:"></a>中级rop:</h3><h4 id="2016-XDCTF-pwn100"><a href="#2016-XDCTF-pwn100" class="headerlink" title="2016 XDCTF pwn100"></a>2016 XDCTF pwn100</h4><h4 id="2016-华山杯-SU-PWN"><a href="#2016-华山杯-SU-PWN" class="headerlink" title="2016 华山杯 SU_PWN"></a>2016 华山杯 SU_PWN</h4><h3 id="i春秋："><a href="#i春秋：" class="headerlink" title="i春秋："></a>i春秋：</h3><h4 id="RedHat-2017-pwn1："><a href="#RedHat-2017-pwn1：" class="headerlink" title="RedHat 2017-pwn1："></a>RedHat 2017-pwn1：</h4><ul>
+<li>巩固一下ret2libc3中的先向W区写入参数‘\bin\sh’然后再回到main调用system，但是到现在依然不明白为什么main函数返回以后padding要减8.</li>
+<li>学会了Ctrl+s找RWX区，W存在可写入的区域。</li>
+<li>养成context(os=’linux’,arch=‘’,timeout=1)的习惯。。。（没写timeout=1程序没反应，设置timeout=1就是为了防止程序假死，1秒之后将权限给下一行）</li>
+<li>scanf()要准备的参数顺序为横看顺序</li>
+</ul>
+<h4 id="bugs-bunny-ctf-2017-pwn150："><a href="#bugs-bunny-ctf-2017-pwn150：" class="headerlink" title="bugs bunny ctf 2017-pwn150："></a>bugs bunny ctf 2017-pwn150：</h4><ul>
+<li>题型基础，简单的找system函数和参数，简单的rop寻找</li>
+<li>学到的技巧：快捷键，D将指令解析为数据，C将数据解析为指令。（需先点击地址）</li>
+<li>问题：为啥call system可以 放入system.plt却不行。</li>
+<li>参数sh也可以开shell</li>
+</ul>
+<h4 id="Tamu-CTF-2018-pwn5："><a href="#Tamu-CTF-2018-pwn5：" class="headerlink" title="Tamu CTF 2018-pwn5："></a>Tamu CTF 2018-pwn5：</h4><ul>
+<li>题型基础，简单的系统调用</li>
+<li>学到坏字符：\x0a,\x00等影响程序，和利用程序中自带的缓冲区输入/bin/sh。</li>
+</ul>
+<h4 id="Security-Fest-CTF-2016-tvstation未成功："><a href="#Security-Fest-CTF-2016-tvstation未成功：" class="headerlink" title="Security Fest CTF 2016-tvstation未成功："></a>Security Fest CTF 2016-tvstation未成功：</h4><ul>
+<li>加深了对动态链接库的理解，其和elf文件一样也有代码段和数据段，可以适用于elf文件的一切命令。</li>
+<li>如果题目给了库文件，则确定偏移是最重要的事，再确定库再内存中的开头实际地址。</li>
+<li>有了库的开头之后就可以利用库中函数命令数据相对偏移不变的原理利用其中的命令（gadgets）和字符串等数据。</li>
+<li>但是不知道为啥getshell不成功，感觉思路没问题。</li>
+</ul>
+<h4 id="LCTF-2016-pwn100未成功："><a href="#LCTF-2016-pwn100未成功：" class="headerlink" title="LCTF 2016-pwn100未成功："></a>LCTF 2016-pwn100未成功：</h4><ul>
+<li>思路很清晰，是对特殊gadgets的考察，先用puts()函数泄露read函数的地址，用的是padding+p64(pop_rdi_addr)+p64(参数/是需要泄露的数值的地址)+p64(put_plt)+p64(start_addr/也就是返回地址)再确定Libc，确定system()的地址，然后用padding+p64(wanneng1)+[0，1，需要调用函数的got表地址，参数3，参数2，参数1]+p64(wanneng2)+’a’*56+p64(返回地址)   的布局来调用read()函数将/bin/sh读入，再调用system。</li>
+<li>需要注意的两个地方是：</li>
+<li><ol>
+<li>puts()打印的结果带有换行符，接收时必须u64(p.recv()[:-1].ljust(8,’\x00’)),[:-1]是为了舍去最后的换行符，ljust(8,’\x00’)是为了时字节数为8个才能unpack。</li>
+<li>/bin/sh字符串地址的选取，需要ctrl+s来选取w段，注意不能选取setbuf的段。（待进一步确定）</li>
+</ol>
+</li>
+<li>和上一题一样，不知道什么原因无法getshell。</li>
+</ul>
+<h4 id="TJCTF-2016-oneshot未成功："><a href="#TJCTF-2016-oneshot未成功：" class="headerlink" title="TJCTF 2016-oneshot未成功："></a>TJCTF 2016-oneshot未成功：</h4><ul>
+<li>学会使用工具one_gadget，其在libc.so文件中找execve(‘/bin/sh’)的跳板，但需要一定的条件。</li>
+<li>思路是先用程序的读任意地址的内容功能泄露一个函数的got表内容，然后泄露one_gadget的实际地址，利用程序的第二个功能来直接跳到其位置。</li>
+<li>不知道为什么exp运行不成功。</li>
+</ul>
+<h3 id="调整栈帧的技术："><a href="#调整栈帧的技术：" class="headerlink" title="调整栈帧的技术："></a>调整栈帧的技术：</h3><h4 id="Alctf-2016-vss"><a href="#Alctf-2016-vss" class="headerlink" title="Alctf-2016-vss:"></a>Alctf-2016-vss:</h4><ul>
+<li><p>思路：因子函数的溢出长度不够。但是rop链长度较长，所以将rsp抬高，使其与main函数的输入点对接使rop能够延续。</p>
+</li>
+<li><p>收货以及需要注意的地方：</p>
+<ol>
+<li><p>找栈溢出函数是最重要的事，一般来说一个变量位置为rbp-k，若k较大则溢出函数的可能性较小（根据可以输入的数据长度综合判断）。</p>
+</li>
+<li><p>syscall是在x86-64上进入内核模式的默认方式。该指令在Intel处理器上的32位操作模式下不可用。</p>
 <blockquote>
-<p>对于可执行文件来说，文件头包含的一下信息与进程启动相关</p>
-<p>e_entry      程序入口地址</p>
-<p>e_phoff      segment偏移</p>
-<p>e_phnum   segment数量</p>
+<p>sysenter是最常用于在32位操作模式下调用系统调用的指令。它类似于syscall，有点更难使用，但是这是内核的关注。<br>int 0x80是一种调用系统调用的传统方法，应该避免</p>
 </blockquote>
-<p>​     2. segment表， 这个表是加载指示器，操作系统（确切的说是加载器，有些elf文件，比如<a href="https://www.baidu.com/s?wd=%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8&amp;tn=24004469_oem_dg&amp;rsv_dl=gh_pl_sl_csd" target="_blank" rel="noopener">操作系统内核</a>，是由其他程序加载的）,该表的结构非常重要。</p>
-<blockquote>
-<p>typedef struct</p>
-<p>{</p>
-<p>  Elf64_Word    p_type;            /<em> Segment type </em>/</p>
-<p>  Elf64_Word    p_flags;        /<em> Segment flags </em>/  /*segment权限，6表示可读写，5表示可读可执行</p>
-<p>  Elf64_Off    p_offset;        /<em> Segment file offset </em>/     /<em>段在文件中的偏移</em>/</p>
-<p>  Elf64_Addr    p_vaddr;        /<em> Segment virtual address </em>/   /*虚拟内存地址，这个表示内存中的</p>
-<p>  Elf64_Addr    p_paddr;        /<em> Segment physical address  /</em>物理内存地址，对应用程序来说，这个字段无用*/</p>
-<p>  Elf64_Xword    p_filesz;        /<em> Segment size in file </em>/        /<em>段在文件中的长度</em>/</p>
-<p>  Elf64_Xword    p_memsz;        /<em> Segment size in memory </em>/       /在内存中的长度，一般和p_filesz的值一样*/</p>
-<p>  Elf64_Xword    p_align;        /<em> Segment alignment </em>/                  /<em> 段对齐</em>/</p>
-<p>} Elf64_Phdr;   </p>
-</blockquote>
-<p>​     3. elf的主题，对于可执行文件来说，最主要的就是数据段和代码段</p>
-<p>​     4. section表，对可执行文件来说，没有用，在链接的时候有用，是对代码段数据段在链接是的一种描述。</p>
-<p>​     整个elf文件的组成可以使用下图来描述:</p>
-<p>   <img src="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif" alt=""></p>
-<h2 id="ELF文件的载入和运行及动态链接："><a href="#ELF文件的载入和运行及动态链接：" class="headerlink" title="ELF文件的载入和运行及动态链接："></a>ELF文件的载入和运行及动态链接：</h2><p>参考链接:<a href="https://luomuxiaoxiao.com/?p=125" target="_blank" rel="noopener">重读《深入理解计算机系统》</a></p>
-<blockquote>
-<p>运行地址也就是链接地址。实际上指的是，程序在运行过程中，该指令对应的内存地址。</p>
-<p>我们再回到本系列的主题：<strong>程序的加载和运行</strong>。可执行程序生成之后，是保存在硬盘中的，当用户执行该程序的时候，该程序会被加载器按照program header table的描述将程序的代码段和数据段从硬盘加载到内存中。在使用MMU的机器上，CPU处理的地址是虚拟地址。同样的，加载到内存中的地址指的也是虚拟地址。由于虚拟内存的抽象，每个进程都认为其独占内存，因此，每个可执行程序总是可以被加载到相同的内存地址（虚拟地址），其实，这些内存地址都是位于各个可执行程序独自的内存空间的地址。但是，对于MMU来讲，这些相同的虚拟地址其实对应了不同的物理地址。而对于CPU来讲，指令是按照其虚拟地址一条条的被加载到CPU中运行的。</p>
-</blockquote>
-<p>如上所述，加载器是按照program header table的描述来给程序代码段分配指令地址的。具体的过程如下：</p>
-<p> 还记得我们在<a href="https://luomuxiaoxiao.com/?p=343" target="_blank" rel="noopener">可执行文件详解</a>中segment和section的<a href="https://luomuxiaoxiao.com/?p=343#23_segment" target="_blank" rel="noopener">对应关系</a>吧？每个section按照这个mapping表顺序排列构成了不同的segment。其中第2个segment就是可执行文件的代码段。代码段中第一个section是<code>.interp</code>，其起始地址是<code>0x400238</code>，然后，加上<code>.interp</code> section的大小，就是下一个section <code>.note.ABI-tag</code>的起始地址。依次类推，对于<a href="https://luomuxiaoxiao.com/?p=343" target="_blank" rel="noopener">可执行文件详解</a>中的可执行文件add来讲，其.text的起始地址就是<code>0x400430</code>。</p>
-<blockquote>
-<p>为什么对于X86_64架构来讲，所有可执行文件的<code>text segment</code>的起始地址都是<code>0x400000</code>?</p>
-<p>实际上是链接脚本规定的，在链接过程中，链接器会根据链接脚本的描述来构建可执行文件。对于X86_64来讲，其默认的链接脚本位于<code>/usr/lib/ldscripts/elf_x86_64.x</code>。在其中我们发现这句话：<br><code>__executable_start = SEGMENT_START(&quot;text-segment&quot;, 0x400000))</code><br>它指定了可执行的text segment应起始于<code>0x400000</code>。</p>
-</blockquote>
-<p> 根据上述<code>objdump -d</code>的输出，<code>.text</code>的第一个函数是<code>_start</code>，因此，<code>_start</code>的第一条指令地址就是<code>0x400430</code>。后面每个函数的地址等于它的上一个函数的地址加上该函数自身的字节数。这样，完成了给每个函数重定位（分配运行地址）的过程。</p>
-<p> 函数中的每条指令的地址的重定位类似于函数重定位。函数的首地址即是第一条指令的首地址，后面每条指令的地址依次等于上一条指令的地址加上该指令的字节数。回忆<a href="https://luomuxiaoxiao.com/?p=235" target="_blank" rel="noopener">编译过程分析</a>中，在编译完成后，指令引用外部符号时，生成了对应的操作数和符号的占位符，此时，对于除动态链接库的符号外，其他的符号都已经有了确定的地址。因此，结合符号表我们就可以将类似的指令完成重定位。</p>
-<p> 比如在本例中，对于main函数来讲，调用了两个外部函数<code>add</code>和<code>printf</code>，根据上面信息，<code>add</code>函数相关的代码已经确定在<code>0x400526</code>处。因此，该地址就是call指令的调用<code>add</code>的操作数。而上述代码显示的<code>400400</code>处似乎并非是<code>printf</code>函数真正的实现。没错，这是因为<code>printf</code>函数是属于<code>libc</code>的库函数，但是，我们知道对于动态链接来讲，在生成可执行文件时，并未将它所依赖的动态库的代码复制过来，而只是复制了相关的重定位信息和符号表，所以，此时依然不能确定<code>printf</code>函数的地址。而<code>400400</code>处的内存值只是一个跳板，等程序运行时，动态链接器会将相关动态链接库的代码链接进来，修改这个跳板处对应的值，就可以让跳转指令正确的跳转到<code>printf</code>函数真正的内存地址处执行了。<strong>稍后我们将会对该过程做详细的分析</strong>。（涉及到PLT和GOT表的知识）<img src="https://i.loli.net/2019/01/28/5c4e6c29d464e.gif" alt=""></p>
-<p>上篇文章我们提到，为了保证代码复用和节省计算机资源，在链接时，动态链接库的代码段和数据段等是不会被复制到最终生成的可执行文件中的，这些部分会在程序加载的时候复制到内存，并做动态链接，使原来可执行文件能够对其中定义的符号正常引用。也就是说在这个时候，可执行文件代码段中对动态链接库包含的符号引用的地址才真正确定下来。但是我们查看各个segment的属性可以知道，<code>.text</code> segment是只读的，也就是说在编译成可以执行文件之后，就不能被修改了，那么如何确保它能够正确的引用在加载时才能确定下来的动态链接库里的符号呢？这就需要我们这篇文章里的GOT和PLT作为跳板来实现了。</p>
-<p>GOT全称<code>Global Offset Table</code>，即全局偏移量表。它在可执行文件中是一个单独的section，位于<code>.data</code> section的前面。每个被目标模块引用的全局符号（函数或者变量）都对应于GOT中一个8字节的条目。编译器还为GOT中每个条目生成一个重定位记录。在加载时，动态链接器会重定位GOT中的每个条目，使得它包含正确的目标地址。</p>
-<p> PLT全称<code>Procedure Linkage Table</code>，即过程链接表。它在可执行文件中也是一个单独的section，位于<code>.text</code><br>section的前面。每个被可执行程序调用的库函数都有它自己的PLT条目。每个条目实际上都是一小段可执行的代码。</p>
+</li>
+<li><p>rsp抬升的高度一定要计算好（这一题还未算好，不知道为啥少了8字节）。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="pwnable-kr-simplelogin"><a href="#pwnable-kr-simplelogin" class="headerlink" title="pwnable.kr-simplelogin:"></a>pwnable.kr-simplelogin:</h4><ul>
+<li>更深的理解了stack pivot   在bss段构造了fake stack，有点绕的是虽然输入长度过段控制不了rip，但是漏洞函数返回地址正好是leave; retn;的地址！所以无需考虑这一点，直接用就行，还是需要先找清除漏洞函数和可以控制的数据长度，来判断使用什么方法来控制ip.</li>
+<li>base64编码以后数据长度会增加1/3。需引入base64模块，b64encode(payload)。</li>
+</ul>
+<h4 id="2018-安恒杯-over（未完成）："><a href="#2018-安恒杯-over（未完成）：" class="headerlink" title="2018 安恒杯 over（未完成）："></a>2018 安恒杯 over（未完成）：</h4><ul>
+<li>再fake rbp之前构造fake stack进而构造rop链 </li>
+<li>但是怎么泄露的栈地址没有看懂。。。</li>
+</ul>
+<h4 id="X-CTF-Quals-2016-b0verfl0w："><a href="#X-CTF-Quals-2016-b0verfl0w：" class="headerlink" title="X-CTF Quals 2016 - b0verfl0w："></a>X-CTF Quals 2016 - b0verfl0w：</h4><ul>
+<li>题目简单但思想很深邃，首先看NX没开，想到用shellcode，再看可以溢出的长度，发现fake ebp之前有0x20的空间，fake eip之后只有14字节的空间，无法构造好的rop链，再用ROPgadget一搜索发现有jmp esp(只能搜操作符)，则想到调整栈帧，在fake eip之后为需要构造的命令，使eip跳到shellcode上去。</li>
+<li>新姿势：可以自己编辑shellcode：sub_shellcode=asm(‘sub esp,0x28;jmp esp’)</li>
+</ul>
+<h2 id="格式化字符串："><a href="#格式化字符串：" class="headerlink" title="格式化字符串："></a>格式化字符串：</h2><h3 id="wiki"><a href="#wiki" class="headerlink" title="wiki:"></a>wiki:</h3><h4 id="64-位程序格式化字符串漏洞："><a href="#64-位程序格式化字符串漏洞：" class="headerlink" title="64 位程序格式化字符串漏洞："></a>64 位程序格式化字符串漏洞：</h4><ul>
+<li>明了自己要做的事是读还是写，读的话用$s，并且要找字符串地址的偏移，写的话要找字符串的偏移，不要弄混了。</li>
+</ul>
+<h4 id="hijack-GOT："><a href="#hijack-GOT：" class="headerlink" title="hijack GOT："></a>hijack GOT：</h4><ul>
+<li>大致思路就是利用格式化字符串来篡改某个函数的got表的内容为system的地址。（能否为plt表有待验证）</li>
+<li>题目质量较高，首先要求必须要读懂程序什么意思（分析程序是费时间的事情），分析每一个函数每一个功能，可参考文章：<a href="https://bbs.pediy.com/thread-59928.htm" target="_blank" rel="noopener">c语言阅读问题</a></li>
+<li>其次要看程序是否有返回，是否能自己返回运行，这点很重要。</li>
+<li>寻找的目标函数要有直接放入字符串的特点。例如：puts(s)，printf(s)，篡改后将s（s也要有可输入的提特点）改为/bin/sh就可以直接调用了。</li>
+<li>先考读，再考写，再考如何利用。</li>
+<li>目前大致思路已经明了，但是细节还是不行，有‘/bin/sh;’中的‘；’</li>
+</ul>
+<h4 id="hijack-retaddr"><a href="#hijack-retaddr" class="headerlink" title="hijack retaddr:"></a>hijack retaddr:</h4><ul>
+<li><p>int变（_BYTE）强制类型转换就是把前24位全部抹去。</p>
+<p>int a = 3； 00000000 00000000 00000000 00000011 （强转byte时前面24个0被截断）<br>byte b = 3； 00000011<br>int a = -3； 11111111 11111111 11111111 11111101 （强转byte时前面24个1被截断）<br>byte b = -3 11111101</p>
+</li>
+<li><p>用read读取时每一个输入都是字符，比如输入1000，储存到缓冲区为\x30\x30\x30\x31。</p>
+</li>
+<li><p>常见程序类型：一个函数输入用户名和密码（这里需要读懂其匹配方式），然后又一个函数让你选功能，每一个功能又一个函数。函数之间传参基本是用地址传递，需熟练。</p>
+</li>
+<li><p>分块思想：先想好分几步再想每一步应该做什么，一步一步完成。</p>
+</li>
+<li><p>还是p.recv()+p.sendline()好用，不要用p.sendlineafter()。</p>
+</li>
+<li><p>接受的时候要注意字符串的末尾是否有‘\n’，若有的话可以用p.recvuntil(‘\n’)或者p.recvline().strip()。</p>
+</li>
+<li><p>熟悉调用函数和被调用函数的关系，他们之间rbp的偏移不变。</p>
+</li>
+<li><p>代码有不懂的地方。</p>
+</li>
+<li><p>一些摸索，关于接收问题：若返回值是以字符串的形式（puts，%k$s）打印出来的，则需要u32(p.recv()[:])或者u64(p.recv()[:])来解包，若以整数形式则直接int(p.recvuntil(‘\n’),16)。</p>
+</li>
+<li><p>[:]的用法参考;<a href="https://segmentfault.com/q/1010000000122020" target="_blank" rel="noopener">[:]</a>，前留后不留。</p>
+</li>
+</ul>
+<h3 id="i春秋：-1"><a href="#i春秋：-1" class="headerlink" title="i春秋："></a>i春秋：</h3><h4 id="MMA-CTF-2nd-2016-greeting："><a href="#MMA-CTF-2nd-2016-greeting：" class="headerlink" title="MMA CTF 2nd 2016-greeting："></a>MMA CTF 2nd 2016-greeting：</h4><ul>
+<li><p>改写fini_arry使程序返回，需同时改写两个数值，exp看不懂。（总结时回头看终于理解！！）</p>
+<p><strong>他的坑在于printf()并不是直接的printf(s)，而是printf(‘Nice to meet you, %s’,s)，在输入s时必须要去掉len(‘Nice to meet you, ‘)个字符。其实就是截断问题，根据hn,hhn,n的不同类型截断。</strong></p>
+</li>
+</ul>
+<h4 id="22angstromctf-2016-format1："><a href="#22angstromctf-2016-format1：" class="headerlink" title="22angstromctf 2016-format1："></a>22angstromctf 2016-format1：</h4><ul>
+<li>开始时思路为想用格式化字符串篡改main函数返回地址为call system的地址，后来经过调试发现和之前做例题差别较大。</li>
+<li>实际上思路很简单，用写的功能篡改secret的数据。</li>
+<li>但是不知道为什么我自己的成功不了。（<strong>写总结时突然想到，原因是如果将p64(fun_got)放在‘%K$hn’前面字符串会截断！！！</strong>）</li>
+<li>要注意两个对齐，一个是地址对齐，一个数据长度对齐。</li>
+</ul>
+<h4 id="Nullcon-Hackim-2017-question1："><a href="#Nullcon-Hackim-2017-question1：" class="headerlink" title="Nullcon Hackim 2017-question1："></a>Nullcon Hackim 2017-question1：</h4><ul>
+<li>这一题先用checksec查看时发现NX没开（当时没注意）和relro没开，所以我第一反应想到的是got表泄露，成功了。</li>
+<li><strong>给的exp是用shellcode放进堆里，也很巧妙，因为没有注意nx所以没有想到。</strong></li>
+</ul>
+<h4 id="ReaHat-2017-pwn2："><a href="#ReaHat-2017-pwn2：" class="headerlink" title="ReaHat 2017-pwn2："></a>ReaHat 2017-pwn2：</h4><ul>
+<li>简单的泄露libc然后利用即可。</li>
+</ul>
+<h4 id="volga-ctf-2013-Exploitation-200："><a href="#volga-ctf-2013-Exploitation-200：" class="headerlink" title="volga ctf 2013-Exploitation 200："></a>volga ctf 2013-Exploitation 200：</h4><ul>
+<li>这题有坑，下次见到过于复杂的if条件时可以想着跳过，控制程序执行流。</li>
+</ul>
 
       
     </div>
@@ -528,6 +619,8 @@
           
             <a href="/tags/pwn基础/" rel="tag"><i class="fa fa-tag"></i> pwn基础</a>
           
+            <a href="/tags/小心得/" rel="tag"><i class="fa fa-tag"></i> 小心得</a>
+          
         </div>
       
 
@@ -539,8 +632,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/26/pwnable-kr第一部分exp与思路/" rel="next" title="pwnable.kr第一部分exp与思路">
-                <i class="fa fa-chevron-left"></i> pwnable.kr第一部分exp与思路
+              <a href="/2019/02/19/知识点总结与学习资料整理/" rel="next" title="知识点总结与学习资料整理">
+                <i class="fa fa-chevron-left"></i> 知识点总结与学习资料整理
               </a>
             
           </div>
@@ -549,8 +642,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/02/13/堆的理论知识学习/" rel="prev" title="堆的理论知识学习">
-                堆的理论知识学习 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/03/31/格式化字符串小心得/" rel="prev" title="格式化字符串小心得">
+                格式化字符串小心得 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -695,7 +788,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PIE和ASLR："><span class="nav-number">1.</span> <span class="nav-text">PIE和ASLR：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件的结构："><span class="nav-number">2.</span> <span class="nav-text">ELF文件的结构：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件的载入和运行及动态链接："><span class="nav-number">3.</span> <span class="nav-text">ELF文件的载入和运行及动态链接：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#寒假做的题目总结与反思："><span class="nav-number">1.</span> <span class="nav-text">寒假做的题目总结与反思：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shellcode部分："><span class="nav-number">1.1.</span> <span class="nav-text">shellcode部分：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BITSCTF-2017-Command-Line总结与不足："><span class="nav-number">1.1.1.</span> <span class="nav-text">BITSCTF 2017-Command_Line总结与不足：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BSides-San-Francisco-CTF-2017-b-64-b-tuff总结与不足："><span class="nav-number">1.1.2.</span> <span class="nav-text">BSides San Francisco CTF 2017-b_64_b_tuff总结与不足：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSAW-Quals-CTF-2017-pilot总结与不足："><span class="nav-number">1.1.3.</span> <span class="nav-text">CSAW Quals CTF 2017-pilot总结与不足：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Openctf-2016-apprentice-wwwzon总结与不足："><span class="nav-number">1.1.4.</span> <span class="nav-text">Openctf 2016-apprentice_wwwzon总结与不足：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Openctf-2016-tyro-shellcode1总结与不足："><span class="nav-number">1.1.5.</span> <span class="nav-text">Openctf 2016-tyro_shellcode1总结与不足：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rop部分："><span class="nav-number">1.2.</span> <span class="nav-text">rop部分：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本rop"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本rop:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sniperoj-pwn100-shellcode-x86-64"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">sniperoj-pwn100-shellcode-x86-64:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#train-cs-nctu-edu-tw-ret2libc"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">train.cs.nctu.edu.tw: ret2libc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#train-cs-nctu-edu-tw-rop"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">train.cs.nctu.edu.tw: rop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2013-PlaidCTF-ropasaurusrex"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">2013-PlaidCTF-ropasaurusrex</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Defcon-2015-Qualifier-R0pbaby"><span class="nav-number">1.2.1.5.</span> <span class="nav-text">Defcon 2015 Qualifier: R0pbaby</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中级rop"><span class="nav-number">1.2.2.</span> <span class="nav-text">中级rop:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2016-XDCTF-pwn100"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">2016 XDCTF pwn100</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2016-华山杯-SU-PWN"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2016 华山杯 SU_PWN</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#i春秋："><span class="nav-number">1.2.3.</span> <span class="nav-text">i春秋：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RedHat-2017-pwn1："><span class="nav-number">1.2.3.1.</span> <span class="nav-text">RedHat 2017-pwn1：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bugs-bunny-ctf-2017-pwn150："><span class="nav-number">1.2.3.2.</span> <span class="nav-text">bugs bunny ctf 2017-pwn150：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tamu-CTF-2018-pwn5："><span class="nav-number">1.2.3.3.</span> <span class="nav-text">Tamu CTF 2018-pwn5：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Security-Fest-CTF-2016-tvstation未成功："><span class="nav-number">1.2.3.4.</span> <span class="nav-text">Security Fest CTF 2016-tvstation未成功：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LCTF-2016-pwn100未成功："><span class="nav-number">1.2.3.5.</span> <span class="nav-text">LCTF 2016-pwn100未成功：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TJCTF-2016-oneshot未成功："><span class="nav-number">1.2.3.6.</span> <span class="nav-text">TJCTF 2016-oneshot未成功：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调整栈帧的技术："><span class="nav-number">1.2.4.</span> <span class="nav-text">调整栈帧的技术：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Alctf-2016-vss"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">Alctf-2016-vss:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pwnable-kr-simplelogin"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">pwnable.kr-simplelogin:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2018-安恒杯-over（未完成）："><span class="nav-number">1.2.4.3.</span> <span class="nav-text">2018 安恒杯 over（未完成）：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#X-CTF-Quals-2016-b0verfl0w："><span class="nav-number">1.2.4.4.</span> <span class="nav-text">X-CTF Quals 2016 - b0verfl0w：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#格式化字符串："><span class="nav-number">1.3.</span> <span class="nav-text">格式化字符串：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wiki"><span class="nav-number">1.3.1.</span> <span class="nav-text">wiki:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#64-位程序格式化字符串漏洞："><span class="nav-number">1.3.1.1.</span> <span class="nav-text">64 位程序格式化字符串漏洞：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hijack-GOT："><span class="nav-number">1.3.1.2.</span> <span class="nav-text">hijack GOT：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hijack-retaddr"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">hijack retaddr:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#i春秋：-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">i春秋：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MMA-CTF-2nd-2016-greeting："><span class="nav-number">1.3.2.1.</span> <span class="nav-text">MMA CTF 2nd 2016-greeting：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#22angstromctf-2016-format1："><span class="nav-number">1.3.2.2.</span> <span class="nav-text">22angstromctf 2016-format1：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Nullcon-Hackim-2017-question1："><span class="nav-number">1.3.2.3.</span> <span class="nav-text">Nullcon Hackim 2017-question1：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReaHat-2017-pwn2："><span class="nav-number">1.3.2.4.</span> <span class="nav-text">ReaHat 2017-pwn2：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#volga-ctf-2013-Exploitation-200："><span class="nav-number">1.3.2.5.</span> <span class="nav-text">volga ctf 2013-Exploitation 200：</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
