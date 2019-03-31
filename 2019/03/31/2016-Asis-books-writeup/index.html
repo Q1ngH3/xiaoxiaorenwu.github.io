@@ -103,7 +103,7 @@
 <meta property="og:image" content="https://i.loli.net/2019/03/31/5ca0c2c34ae38.png">
 <meta property="og:image" content="https://i.loli.net/2019/03/31/5ca0c2c35ae45.png">
 <meta property="og:image" content="https://i.loli.net/2019/03/31/5ca0ca888e29a.jpg">
-<meta property="og:updated_time" content="2019-03-31T15:21:04.163Z">
+<meta property="og:updated_time" content="2019-03-31T15:26:59.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2016-Asis-books_writeup">
 <meta name="twitter:description" content="wiki上的一道经典例题，写wp的目的一方面是wiki上一些细节讲的有点不太清楚，一方面是自己巩固一下做过的题目，看是否是真的掌握。 首先提供题目二级制文件链接：books 预览：拿到题目先看基本信息：  可以看到题目是64位文件，所有保护全开，一般这种题目是堆题，且看到full relro则大概率是篡改malloc_hook。 然后运行一下，找到程序运行入口，然后放入ida里看反汇编码：  准备">
@@ -449,8 +449,7 @@
 <p>可以看到题目是64位文件，所有保护全开，一般这种题目是堆题，且看到full relro则大概率是篡改malloc_hook。</p>
 <p>然后运行一下，找到程序运行入口，然后放入ida里看反汇编码：</p>
 <p><img src="https://i.loli.net/2019/03/31/5ca0c01f16340.png" alt=""></p>
-<p>准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）</p>
-<p>这里因为我已经做过了，所以函数名和一些变量名已经被我改成了对应的功能，可以看到程序开头先打印欢迎语，然后让我们输入作者（字符串储存在bss段，是可控的），这里的输入函数存在off-by-null漏洞，当输入32个字符时，既可以用来change，又可以用来leak(因为字符串后面没有‘\x00’，所以可以泄露authername这个字符串之后的内容直到’\x00’，这也是常见的套路。。。)</p>
+<h2 id="准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）"><a href="#准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）" class="headerlink" title="准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）"></a>准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）</h2><p>这里因为我已经做过了，所以函数名和一些变量名已经被我改成了对应的功能，可以看到程序开头先打印欢迎语，然后让我们输入作者（字符串储存在bss段，是可控的），这里的输入函数存在off-by-null漏洞，当输入32个字符时，既可以用来change，又可以用来leak(因为字符串后面没有‘\x00’，所以可以泄露authername这个字符串之后的内容直到’\x00’，这也是常见的套路。。。)</p>
 <p><img src="https://i.loli.net/2019/03/31/5ca0c2c34ae38.png" alt="input_authorname函数"></p>
 <p><img src="https://i.loli.net/2019/03/31/5ca0c2c35ae45.png" alt="my_input_leak函数"></p>
 <h2 id="程序主功能分析："><a href="#程序主功能分析：" class="headerlink" title="程序主功能分析："></a>程序主功能分析：</h2><p>程序有五个功能：1.create  2.delete  3.edit  4.print  5.change_authorname，大致的整体功能实现就是用户申请书本，然后书的名字和内容大小都由我们自己来定，并将它们的内容存放在堆上，然后创建一个大小固定的Book结构体来储存被创建的book的信息，其也放在堆上，创建一个book以后堆上的结构和bss段的联系大概如下图所示：</p>
@@ -690,7 +689,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预览："><span class="nav-number">1.</span> <span class="nav-text">预览：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序主功能分析："><span class="nav-number">2.</span> <span class="nav-text">程序主功能分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用思路："><span class="nav-number">3.</span> <span class="nav-text">漏洞利用思路：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#leak"><span class="nav-number">3.1.</span> <span class="nav-text">leak:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#change"><span class="nav-number">3.2.</span> <span class="nav-text">change:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp如下（我当时做的时候是改free-hook，具体的一些偏移量需要自己调试来确定，exp只提供思路！！！）："><span class="nav-number">4.</span> <span class="nav-text">exp如下（我当时做的时候是改free_hook，具体的一些偏移量需要自己调试来确定，exp只提供思路！！！）：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一次做的时候的一些心得"><span class="nav-number">5.</span> <span class="nav-text">第一次做的时候的一些心得:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2016-Asis-b00ks"><span class="nav-number">5.1.</span> <span class="nav-text">2016-Asis-b00ks:</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预览："><span class="nav-number">1.</span> <span class="nav-text">预览：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）"><span class="nav-number">2.</span> <span class="nav-text">准备功能分析：（不要忽视，做的题多了会发现有时候这里可能存在关键漏洞）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序主功能分析："><span class="nav-number">3.</span> <span class="nav-text">程序主功能分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用思路："><span class="nav-number">4.</span> <span class="nav-text">漏洞利用思路：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#leak"><span class="nav-number">4.1.</span> <span class="nav-text">leak:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#change"><span class="nav-number">4.2.</span> <span class="nav-text">change:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp如下（我当时做的时候是改free-hook，具体的一些偏移量需要自己调试来确定，exp只提供思路！！！）："><span class="nav-number">5.</span> <span class="nav-text">exp如下（我当时做的时候是改free_hook，具体的一些偏移量需要自己调试来确定，exp只提供思路！！！）：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一次做的时候的一些心得"><span class="nav-number">6.</span> <span class="nav-text">第一次做的时候的一些心得:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2016-Asis-b00ks"><span class="nav-number">6.1.</span> <span class="nav-text">2016-Asis-b00ks:</span></a></li></ol></li></ol></div>
             
 
           </div>
