@@ -90,13 +90,13 @@
 
 
 
-<meta name="description" content="预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符">
+<meta name="description" content="首先提供题目的二进制文件：2015_hacklu 预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。">
 <meta name="keywords" content="堆的利用（chunk_overlapping）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2015-hacklu-bookstore">
 <meta property="og:url" content="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:description" content="预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符">
+<meta property="og:description" content="首先提供题目的二进制文件：2015_hacklu 预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1f93c31b73.png">
 <meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c98983d.png">
@@ -104,10 +104,10 @@
 <meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c978e15.png">
 <meta property="og:image" content="https://i.loli.net/2019/04/01/5ca22b487c554.jpg">
 <meta property="og:image" content="https://i.loli.net/2019/04/01/5ca22f5ebf0bd.png">
-<meta property="og:updated_time" content="2019-04-01T15:40:49.531Z">
+<meta property="og:updated_time" content="2019-04-01T15:46:43.331Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2015-hacklu-bookstore">
-<meta name="twitter:description" content="预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符">
+<meta name="twitter:description" content="首先提供题目的二进制文件：2015_hacklu 预览： 程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。">
 <meta name="twitter:image" content="https://i.loli.net/2019/04/01/5ca1f93c31b73.png">
 
 
@@ -443,7 +443,8 @@
       
 
       
-        <h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p><img src="https://i.loli.net/2019/04/01/5ca1f93c31b73.png" alt=""></p>
+        <p>首先提供题目的二进制文件：<a href="https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/heap/chunk-extend-shrink/2015_hacklu_bookstore" target="_blank" rel="noopener">2015_hacklu</a></p>
+<h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p><img src="https://i.loli.net/2019/04/01/5ca1f93c31b73.png" alt=""></p>
 <p>程序为64位，然后没有relro，没有pie，给pie带来很大方便。放进ida看看基本功能：</p>
 <p><img src="https://i.loli.net/2019/04/01/5ca225c98983d.png" alt=""></p>
 <p>可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。</p>
