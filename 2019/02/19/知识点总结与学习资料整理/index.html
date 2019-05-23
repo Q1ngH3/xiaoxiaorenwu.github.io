@@ -90,17 +90,17 @@
 
 
 
-<meta name="description" content="知识点总结：在学长的帮助和自己对安全知识的好奇之下入坑ctf，转眼间到现在已经有四个月了（一月因为要复习期末几乎荒废了），仔细想想这一路来除了某些时候P1umer学长和bgjj的激励和鞭策让我知道自己很菜之外，大部分时间还是靠自己的兴趣去学习的，这一点让我觉得还行，起码没有违背我在大学之前定的人生目标！！菜鸡有菜鸡的活法！！！QAQ       到现在为止，除了python沙箱逃逸，linux内核">
+<meta name="description" content="知识点总结：前提准备：工具准备： ubuntu虚拟机（建议装两个版本16.04和18.04，因为到后期堆的时候不同版本的ubuntu对应不同的glibc版本(我现在有5个版本)，而不同的glibc版本有不同的防御机制，思路会完全不一样。），当然有原装的更好了orz。 IDA pro。 gdb用于动态调试以及pwndbg插件，pwntools库。 vscode(虚拟机用的话会很卡，除非你分配8g内存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="知识点总结与学习资料整理">
 <meta property="og:url" content="http://yoursite.com/2019/02/19/知识点总结与学习资料整理/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:description" content="知识点总结：在学长的帮助和自己对安全知识的好奇之下入坑ctf，转眼间到现在已经有四个月了（一月因为要复习期末几乎荒废了），仔细想想这一路来除了某些时候P1umer学长和bgjj的激励和鞭策让我知道自己很菜之外，大部分时间还是靠自己的兴趣去学习的，这一点让我觉得还行，起码没有违背我在大学之前定的人生目标！！菜鸡有菜鸡的活法！！！QAQ       到现在为止，除了python沙箱逃逸，linux内核">
+<meta property="og:description" content="知识点总结：前提准备：工具准备： ubuntu虚拟机（建议装两个版本16.04和18.04，因为到后期堆的时候不同版本的ubuntu对应不同的glibc版本(我现在有5个版本)，而不同的glibc版本有不同的防御机制，思路会完全不一样。），当然有原装的更好了orz。 IDA pro。 gdb用于动态调试以及pwndbg插件，pwntools库。 vscode(虚拟机用的话会很卡，除非你分配8g内存">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-29T17:09:34.870Z">
+<meta property="og:updated_time" content="2019-05-23T11:46:38.551Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="知识点总结与学习资料整理">
-<meta name="twitter:description" content="知识点总结：在学长的帮助和自己对安全知识的好奇之下入坑ctf，转眼间到现在已经有四个月了（一月因为要复习期末几乎荒废了），仔细想想这一路来除了某些时候P1umer学长和bgjj的激励和鞭策让我知道自己很菜之外，大部分时间还是靠自己的兴趣去学习的，这一点让我觉得还行，起码没有违背我在大学之前定的人生目标！！菜鸡有菜鸡的活法！！！QAQ       到现在为止，除了python沙箱逃逸，linux内核">
+<meta name="twitter:description" content="知识点总结：前提准备：工具准备： ubuntu虚拟机（建议装两个版本16.04和18.04，因为到后期堆的时候不同版本的ubuntu对应不同的glibc版本(我现在有5个版本)，而不同的glibc版本有不同的防御机制，思路会完全不一样。），当然有原装的更好了orz。 IDA pro。 gdb用于动态调试以及pwndbg插件，pwntools库。 vscode(虚拟机用的话会很卡，除非你分配8g内存">
 
 
 
@@ -435,15 +435,14 @@
       
 
       
-        <h1 id="知识点总结："><a href="#知识点总结：" class="headerlink" title="知识点总结："></a>知识点总结：</h1><p>在学长的帮助和自己对安全知识的好奇之下入坑ctf，转眼间到现在已经有四个月了（一月因为要复习期末几乎荒废了），仔细想想这一路来除了某些时候P1umer学长和bgjj的激励和鞭策让我知道自己很菜之外，大部分时间还是靠自己的兴趣去学习的，这一点让我觉得还行，起码没有违背我在大学之前定的人生目标！！菜鸡有菜鸡的活法！！！QAQ      </p>
-<p>到现在为止，除了python沙箱逃逸，linux内核和虚拟机逃逸这几块比较复杂的地方之外，已经知识点大部分学完了，题目有的地方刷了一点，有的地方没刷，但原理已经都能明白并且例题都跟着做了一遍。寒假也快结束了，想在这里记录一下自己学习的历程以及一些知识点的整理，后面的部分还会有资料整理。</p>
-<h2 id="前提准备："><a href="#前提准备：" class="headerlink" title="前提准备："></a>前提准备：</h2><h3 id="工具："><a href="#工具：" class="headerlink" title="工具："></a>工具：</h3><ul>
-<li>ubuntu虚拟机</li>
-<li>IDA pro用于静态调试</li>
-<li>gdb用于动态调试以及peda插件，pwntools模块</li>
+        <h1 id="知识点总结："><a href="#知识点总结：" class="headerlink" title="知识点总结："></a>知识点总结：</h1><h2 id="前提准备："><a href="#前提准备：" class="headerlink" title="前提准备："></a>前提准备：</h2><h3 id="工具准备："><a href="#工具准备：" class="headerlink" title="工具准备："></a>工具准备：</h3><ul>
+<li>ubuntu虚拟机（建议装两个版本16.04和18.04，因为到后期堆的时候不同版本的ubuntu对应不同的glibc版本(我现在有5个版本)，而不同的glibc版本有不同的防御机制，思路会完全不一样。），当然有原装的更好了orz。</li>
+<li>IDA pro。</li>
+<li>gdb用于动态调试以及pwndbg插件，pwntools库。</li>
+<li>vscode(虚拟机用的话会很卡，除非你分配8g内存给虚拟机。。。)。</li>
 </ul>
-<h3 id="知识："><a href="#知识：" class="headerlink" title="知识："></a>知识：</h3><ul>
-<li>汇编基础语法</li>
+<h3 id="知识准备："><a href="#知识准备：" class="headerlink" title="知识准备："></a>知识准备：</h3><ul>
+<li>汇编基础语法（对重点语句call，leave，retn等要有较深的理解）</li>
 <li>python基础语法</li>
 <li>c语言较扎实（特别是指针和链表这一块）</li>
 <li>linux基本命令</li>
@@ -458,29 +457,33 @@
 <li>brop</li>
 <li>stack pivot</li>
 <li>srop</li>
-<li>ret2_di_runtime_reslove</li>
+<li>ret2_dl_runtime_reslove(32位和64位)</li>
 <li>ret2vsdo</li>
 </ul>
 </li>
-<li>在i春秋上有栈这一部分较完整的教程，且配有课后习题，比较好，配合wiki学习效果更佳，因为后来我发现看一篇文章很难理解一个技术，一般需要参考好几个。</li>
+<li>在i春秋上有栈这一部分较完整的教程，且配有课后习题，比较好，配合wiki学习效果更佳，<strong>因为后来我发现看一篇文章很难理解一个技术，一般需要参考好几个orz（甚至上两位数），所以需要充足的耐心。</strong></li>
 </ul>
 <h3 id="格式化字符串部分："><a href="#格式化字符串部分：" class="headerlink" title="格式化字符串部分："></a>格式化字符串部分：</h3><ul>
-<li>i春秋的第六篇文章说的很清楚，题目质量也不错，配合wiki学习三天就可以结束。</li>
+<li>i春秋的第六篇文章说的很清楚，题目质量也不错，配合wiki学习三天就可以结束（当然难度大的还是不行）。</li>
 </ul>
 <h3 id="堆部分："><a href="#堆部分：" class="headerlink" title="堆部分："></a>堆部分：</h3><ul>
-<li>学习堆的内存管理机制（较重要！！！不理解后面都是扯淡）</li>
+<li><strong>学习堆的内存管理机制（较重要！！！不理解后面都是扯淡）</strong>，当初我只是大致看了一下，感觉自己懂了，做题才发现自己太幼稚orz，堆是pwn中的重点内容，很多压轴都是建立在堆之上的。。所以这一块是重中之重！！</li>
 <li>堆漏洞：<ul>
-<li>uaf，unlink，off-one-by</li>
+<li>uaf，unlink，off-one-by（off-one-null)，double free，chunk overlapping。</li>
 </ul>
 </li>
 <li>堆溢出：<ul>
-<li>fastbin-attack: double free，house of sprit</li>
-<li>unsorted-attack</li>
+<li>fastbin-attack</li>
+<li>unsortedbin-attack</li>
+<li>largebin-attack</li>
+<li>house of orange</li>
+<li>house of spirit</li>
 <li>house of lore</li>
 <li>house of force</li>
-<li>还有几种house of XXX系列是比较新的技术，暂未学习，也很少出现。</li>
+<li>house of roman</li>
 </ul>
 </li>
+<li>其他：堆fengshui，堆喷（被鸡哥的薛定谔的堆虐惨了）等。。。。</li>
 </ul>
 <h2 id="第三阶段：专题刷题："><a href="#第三阶段：专题刷题：" class="headerlink" title="第三阶段：专题刷题："></a>第三阶段：专题刷题：</h2><ul>
 <li>各个板块学习完以后的刷题，巩固知识点的理解。</li>
@@ -488,50 +491,45 @@
 <h2 id="第四阶段：综合刷题："><a href="#第四阶段：综合刷题：" class="headerlink" title="第四阶段：综合刷题："></a>第四阶段：综合刷题：</h2><ul>
 <li>综合刷题，在不告诉你漏洞方向与漏洞点，没有提示的情况下独立做出来题目才是真本事。</li>
 </ul>
-<h1 id="资料整理："><a href="#资料整理：" class="headerlink" title="资料整理："></a>资料整理：</h1><p>自己学了几个月了也收集了不少好的资料，在这里整理一下，一方面便于我自己使用，一方面整理一下我乱的书签。</p>
-<h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><ul>
-<li><p><a href="https://ctf-wiki.github.io/ctf-wiki/pwn/" target="_blank" rel="noopener">ctf-wiki在阶段比较全的成体系的资料之一</a></p>
-</li>
-<li><p><a href="https://bbs.ichunqiu.com/search.php?mod=forum&amp;searchid=71&amp;orderby=lastpost&amp;ascdesc=desc&amp;searchsubmit=yes&amp;kw=pwn%E5%85%A5%E9%97%A8" target="_blank" rel="noopener">i春秋论坛上比较好的栈和格式化字符串的学习资料，配有课后习题，个人感觉质量比较好</a>       （在左上角的搜索框里输入pwn入门就会出现10篇教程，一篇一篇看即可）</p>
-</li>
-<li><p><a href="file:///D:/WeiChat/WeChat%20Files/wxid_l1faokznqk8b22/Files/%E7%91%B6%E5%85%89%E6%88%98%E9%98%9F%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%20-%20HackMD.pdf" target="_blank" rel="noopener">北京邮电大学瑶光战队学习资料</a>       (比较全面，可以用来复习用)</p>
-</li>
-<li><p><a href="https://www.kanxue.com/chm-search-pwn.htm" target="_blank" rel="noopener">看雪知识库</a></p>
-</li>
-<li><p><a href="https://bbs.ichunqiu.com/thread-33850-1-1.html" target="_blank" rel="noopener">CTF-All-IN-ONE</a>         (一本即将出版的书，里面大部分都是pwn的内容，题目质量也比较高)</p>
-</li>
-<li><p><a href="https://github.com/topics/pwn" target="_blank" rel="noopener">一个pwn的项目收集</a></p>
-</li>
-<li><p>在i春秋上搜pwn的网课，有一个Atum师傅的课，里面有不少资料和学习方法，推荐去看。</p>
-</li>
+<h1 id="资料整理："><a href="#资料整理：" class="headerlink" title="资料整理："></a>资料整理：</h1><h2 id="学习："><a href="#学习：" class="headerlink" title="学习："></a>学习：</h2><ul>
+<li><a href="https://ctf-wiki.github.io/ctf-wiki/pwn/" target="_blank" rel="noopener">ctf-wiki在阶段比较全的成体系的资料之一</a></li>
+<li><a href="https://bbs.ichunqiu.com/search.php?mod=forum&amp;searchid=71&amp;orderby=lastpost&amp;ascdesc=desc&amp;searchsubmit=yes&amp;kw=pwn%E5%85%A5%E9%97%A8" target="_blank" rel="noopener">i春秋论坛上比较好的栈和格式化字符串的学习资料，配有课后习题，个人感觉质量比较好</a>       （在左上角的搜索框里输入pwn入门就会出现10篇教程，一篇一篇看即可）</li>
+<li><a href="https://www.kanxue.com/chm-search-pwn.htm" target="_blank" rel="noopener">看雪知识库</a></li>
+<li><a href="https://bbs.ichunqiu.com/thread-33850-1-1.html" target="_blank" rel="noopener">CTF-All-IN-ONE</a>   (一本即将出版的西电师傅写的ctf书，（我不知道为什么里面大部分都是pwn的内容），题目都是大型比赛的题，质量比较高)</li>
+<li><a href="https://github.com/topics/pwn" target="_blank" rel="noopener">一个pwn的项目收集，里面有很多工具和题目以及wp收集</a></li>
+<li><a href="https://github.com/ctfs/" target="_blank" rel="noopener">一个ctf项目</a></li>
+<li>在i春秋上搜pwn的网课，有一个Atum师傅的课，里面有不少资料和学习方法，推荐去看。</li>
+<li>其实最好的学习方式就是自己耐下心来谷歌。。。</li>
 </ul>
 <h2 id="一些博客："><a href="#一些博客：" class="headerlink" title="一些博客："></a>一些博客：</h2><ul>
-<li><a href="http://blog.angelboy.tw/" target="_blank" rel="noopener">台湾的angleboy</a></li>
+<li><a href="http://blog.angelboy.tw/" target="_blank" rel="noopener">台湾的angleboy，里面很多技术的原理讲的很详细，强烈安利</a></li>
 <li><a href="https://introspelliam.github.io/" target="_blank" rel="noopener">不认识这位师傅，但是他很多文章写得很好</a></li>
 <li><a href="https://luomuxiaoxiao.com/?p=125" target="_blank" rel="noopener">深入理解计算机系统浓缩总结</a></li>
+<li><a href="https://xiaoxiaorenwu.top" target="_blank" rel="noopener">xiaoxiaorenwu</a></li>
+<li><a href="https://bestwing.me/" target="_blank" rel="noopener">Swing师傅</a></li>
 <li><a href="http://p1umer.club" target="_blank" rel="noopener">P1umer</a></li>
 <li><a href="https://www.redog.me" target="_blank" rel="noopener">wjllz</a></li>
 <li><a href="http://p4nda.top" target="_blank" rel="noopener">p4nda</a></li>
-<li><a href="http://misty.moe/" target="_blank" rel="noopener">misty</a></li>
+<li><a href="https://sunichi.github.io/" target="_blank" rel="noopener">sunichi</a></li>
+<li><a href="https://e3pem.github.io/" target="_blank" rel="noopener">e3pem</a></li>
+<li><a href="https://ama2in9.top/" target="_blank" rel="noopener">ama2in9</a></li>
 </ul>
 <h2 id="刷题："><a href="#刷题：" class="headerlink" title="刷题："></a>刷题：</h2><ul>
-<li><p><a href="https://github.com/hongriSec/CTF-Training" target="_blank" rel="noopener">2018比赛题目收集</a></p>
-</li>
-<li><p><a href="https://github.com/ctf-wiki/ctf-challenges" target="_blank" rel="noopener">ctf-wiki里的题目</a></p>
-</li>
-<li><p><a href="pwnable.kr">pwnable.kr</a></p>
-</li>
-<li><p><a href="pwnable.tw">pwnable.tw</a></p>
-</li>
-<li><p><a href="https://www.jarvisoj.com/" target="_blank" rel="noopener">Jarvis oj</a></p>
-</li>
-<li>ctf-all-in-one里的题目</li>
+<li><a href="https://github.com/hongriSec/CTF-Training" target="_blank" rel="noopener">2018比赛题目收集</a></li>
+<li><a href="https://github.com/ctf-wiki/ctf-challenges" target="_blank" rel="noopener">ctf-wiki里的题目</a></li>
+<li><a href="pwnable.kr">pwnable.kr</a></li>
+<li><a href="pwnable.tw">pwnable.tw</a></li>
+<li><a href="https://www.jarvisoj.com/" target="_blank" rel="noopener">Jarvis oj</a></li>
+<li><a href="https://adworld.xctf.org.cn/" target="_blank" rel="noopener">xctf社区_攻防世界</a></li>
+<li>ctf-all-in-one里收集的各大比赛的题目。</li>
 </ul>
-<h2 id="shellcode收集站："><a href="#shellcode收集站：" class="headerlink" title="shellcode收集站："></a>shellcode收集站：</h2><ul>
-<li><a href="http://shell-storm.org/shellcode/" target="_blank" rel="noopener">shell-storm.org</a></li>
+<h2 id="其他网站："><a href="#其他网站：" class="headerlink" title="其他网站："></a>其他网站：</h2><ul>
+<li><a href="http://shell-storm.org/shellcode/" target="_blank" rel="noopener">shellcode收集站1</a></li>
+<li><a href="https://www.exploit-db.com/shellcodes" target="_blank" rel="noopener">shellcode收集站2</a></li>
+<li><a href="https://libc.blukat.me/?tdsourcetag=s_pcqq_aiomsg" target="_blank" rel="noopener">libc数据库搜索</a></li>
+<li><a href="https://windforce17.github.io/blog/" target="_blank" rel="noopener">一个类似ctf-wiki的项目</a> （里面有很多我没提到的比较偏门的刷题网站）</li>
 </ul>
 <p>还有很多小的资料都是在以上列举的这些大资料里的，就不一一列举。</p>
-<p>继续学习去了，今天任务还没完成！！</p>
 <p>（希望再过多年以后还能凭着自己内心的热爱为安全事业贡献一份力。。</p>
 
       
@@ -745,7 +743,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#知识点总结："><span class="nav-number">1.</span> <span class="nav-text">知识点总结：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提准备："><span class="nav-number">1.1.</span> <span class="nav-text">前提准备：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工具："><span class="nav-number">1.1.1.</span> <span class="nav-text">工具：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#知识："><span class="nav-number">1.1.2.</span> <span class="nav-text">知识：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一阶段：pwnable-kr的第一部分："><span class="nav-number">1.2.</span> <span class="nav-text">第一阶段：pwnable.kr的第一部分：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二阶段：ctf-wiki与i春秋的体系学习："><span class="nav-number">1.3.</span> <span class="nav-text">第二阶段：ctf-wiki与i春秋的体系学习：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈部分：分为以下几大块："><span class="nav-number">1.3.1.</span> <span class="nav-text">栈部分：分为以下几大块：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化字符串部分："><span class="nav-number">1.3.2.</span> <span class="nav-text">格式化字符串部分：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆部分："><span class="nav-number">1.3.3.</span> <span class="nav-text">堆部分：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三阶段：专题刷题："><span class="nav-number">1.4.</span> <span class="nav-text">第三阶段：专题刷题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四阶段：综合刷题："><span class="nav-number">1.5.</span> <span class="nav-text">第四阶段：综合刷题：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资料整理："><span class="nav-number">2.</span> <span class="nav-text">资料整理：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习："><span class="nav-number">2.1.</span> <span class="nav-text">学习：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些博客："><span class="nav-number">2.2.</span> <span class="nav-text">一些博客：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷题："><span class="nav-number">2.3.</span> <span class="nav-text">刷题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shellcode收集站："><span class="nav-number">2.4.</span> <span class="nav-text">shellcode收集站：</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#知识点总结："><span class="nav-number">1.</span> <span class="nav-text">知识点总结：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提准备："><span class="nav-number">1.1.</span> <span class="nav-text">前提准备：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工具准备："><span class="nav-number">1.1.1.</span> <span class="nav-text">工具准备：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#知识准备："><span class="nav-number">1.1.2.</span> <span class="nav-text">知识准备：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一阶段：pwnable-kr的第一部分："><span class="nav-number">1.2.</span> <span class="nav-text">第一阶段：pwnable.kr的第一部分：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二阶段：ctf-wiki与i春秋的体系学习："><span class="nav-number">1.3.</span> <span class="nav-text">第二阶段：ctf-wiki与i春秋的体系学习：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈部分：分为以下几大块："><span class="nav-number">1.3.1.</span> <span class="nav-text">栈部分：分为以下几大块：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化字符串部分："><span class="nav-number">1.3.2.</span> <span class="nav-text">格式化字符串部分：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆部分："><span class="nav-number">1.3.3.</span> <span class="nav-text">堆部分：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三阶段：专题刷题："><span class="nav-number">1.4.</span> <span class="nav-text">第三阶段：专题刷题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四阶段：综合刷题："><span class="nav-number">1.5.</span> <span class="nav-text">第四阶段：综合刷题：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资料整理："><span class="nav-number">2.</span> <span class="nav-text">资料整理：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习："><span class="nav-number">2.1.</span> <span class="nav-text">学习：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些博客："><span class="nav-number">2.2.</span> <span class="nav-text">一些博客：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷题："><span class="nav-number">2.3.</span> <span class="nav-text">刷题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他网站："><span class="nav-number">2.4.</span> <span class="nav-text">其他网站：</span></a></li></ol></li></ol></div>
             
 
           </div>
