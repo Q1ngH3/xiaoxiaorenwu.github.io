@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+  <link rel="manifest" href="/images/manifest.json">
+
+
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+
+
+  <meta name="keywords" content="ctf_writeups,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
+<meta name="keywords" content="ctf_writeups">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程专题学习与总结">
+<meta property="og:url" content="http://yoursite.com/2019/02/19/多线程专题学习与总结/index.html">
+<meta property="og:site_name" content="QingHe">
+<meta property="og:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadandmain.png">
+<meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadarena.png">
+<meta property="og:updated_time" content="2019-06-22T03:22:35.842Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多线程专题学习与总结">
+<meta name="twitter:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
+<meta name="twitter:image" content="http://pwn4.fun/images/glibcmalloc/threadandmain.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/19/多线程专题学习与总结/">
+
+
+
+
+
+  <title>多线程专题学习与总结 | QingHe</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">QingHe</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">梦想做个平凡人</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/19/多线程专题学习与总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XiaoXiaoRenWu's blog">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingHe">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">多线程专题学习与总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-19T22:16:15+08:00">
+                2019-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/知识积累/" itemprop="url" rel="index">
+                    <span itemprop="name">知识积累</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/19/多线程专题学习与总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/19/多线程专题学习与总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  16 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。</p>
+<p>（我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写得已经很详尽了，也没必要在写拙文。。但是总有一天我也会成为大师傅的么orz，所以现在开始逐渐记录自己学习新技术的过程，之前的就懒得写了，也没学到啥反正。。）</p>
+<h1 id="对于ptmalloc2中多线程方面的知识："><a href="#对于ptmalloc2中多线程方面的知识：" class="headerlink" title="对于ptmalloc2中多线程方面的知识："></a>对于ptmalloc2中多线程方面的知识：</h1><p>在早期的 Linux 里，dlmalloc 被用做默认的内存分配器。但之后因为 ptmalloc2 添加了线程支持，ptmalloc2 成为了 Linux 默认内存分配器。线程支持可帮助提升内存分配器以及应用程序的性能。在 dlmalloc 里，当两个线程同时调用 malloc 时，只有一个线程能进入到临界段，因为这里的<code>free list</code>是所有可用线程共用的。因此内存分配器要在多线程应用里耗费时间，从而导致性能降低。</p>
+<p>ptmalloc2中，当多个线程同时调用malloc，内存会立即得到分配，因为每个线程有一个单独的<code>arena</code>，因此<code>free list</code>数据结构中（在ptmalloc2中是bins）保存的这些堆也是分开的。<strong>这种为每个线程分配一个单独的<code>arena</code>和<code>free list</code>数据结构（bins）的行为称为<code>per thread arena</code>。</strong></p>
+<h2 id="两个基本函数："><a href="#两个基本函数：" class="headerlink" title="两个基本函数："></a>两个基本函数：</h2><h3 id="int-pthread-create-pthread-t-restrict-thread，const-pthread-attr-t-restrict-attr，void-start-routine-void-，void-restrict-arg"><a href="#int-pthread-create-pthread-t-restrict-thread，const-pthread-attr-t-restrict-attr，void-start-routine-void-，void-restrict-arg" class="headerlink" title="int pthread_create(pthread_t restrict thread，const pthread_attr_t restrict attr，void (start_routine)(void)，void restrict arg)"></a>int pthread_create(pthread_t <em>restrict thread，const pthread_attr_t </em>restrict attr，void <em>(</em>start_routine)(void<em>)，void </em>restrict arg)</h3><p>所有线程都有一个线程号，也就是Thread ID。其类型为<code>pthread_t</code>。</p>
+<p>通过创建线程，线程将会执行一个线程函数，该线程格式必须按照下面来声明：</p>
+<p>​        <code>void * Thread_Function(void *)</code></p>
+<p>创建线程的函数如下：</p>
+<p>​        <code>int pthread_create(pthread_t *restrict thread，const pthread_attr_t *restrict attr，void *(*start_routine)(void*)，void *restrict arg)；</code></p>
+<p>下面说明一下各个参数的含义：</p>
+<p><code>thread</code>：所创建的线程号。（返回的进程号将储存在thread变量里。）</p>
+<p><code>attr</code>：所创建的线程属性，这个之后会提一下。</p>
+<p><code>start_routine</code>：即将运行的线程函数。</p>
+<p><code>arg</code>：传递给线程函数的参数。</p>
+<p>在编译的时候需要注意，由于线程创建函数不是linux默认的库，而在<code>libpthread.so</code>库中，所以在编译命令中需要将该库导入（-lpthread）。命令如下：</p>
+<p><code>gcc –o createthread –lpthread createthread.c</code></p>
+<p>如果想传递参数给线程函数，可以通过其参数<code>arg</code>，其类型是void <em>。如果你需要传递多个参数的话，可以考虑将这些参数组成一个结构体来传递。另外，由于类型是void </em>，所以你的参数不可以被提前释放掉。</p>
+<h3 id="int-pthread-join-pthread-t-thread-void-value-ptr"><a href="#int-pthread-join-pthread-t-thread-void-value-ptr" class="headerlink" title="int pthread_join(pthread_t thread, void **value_ptr)"></a>int pthread_join(pthread_t thread, void **value_ptr)</h3><p>如果你的主线程，也就是main函数执行的那个线程，在你其他县城推出之前就已经退出，那么带来的bug则不可估量。通过<code>pthread_join</code>函数会让主线程阻塞，直到所有线程都已经退出。</p>
+<p><code>int pthread_join(pthread_t thread, void **value_ptr);</code></p>
+<p><code>thread</code>：等待退出线程的线程号。</p>
+<p><code>value_ptr</code>：退出线程的返回值。</p>
+<p>看一个demo:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">pthread_t</span> thread1_id;</span><br><span class="line">	<span class="keyword">pthread_t</span> thread2_id;</span><br><span class="line">    </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">char_print_parms</span> <span class="title">thread1_args</span>;</span>  <span class="comment">//多个变量用结构体传参</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">char_print_parms</span> <span class="title">thread2_args</span>;</span>  <span class="comment">//同上</span></span><br><span class="line">    </span><br><span class="line">	<span class="comment">/* Create a new thread to print 30,000 x’s. */</span></span><br><span class="line">	thread1_args.character = ’x’;</span><br><span class="line">	thread1_args.count = <span class="number">30000</span>;</span><br><span class="line">	pthread_create (&amp;thread1_id, <span class="literal">NULL</span>, &amp;char_print, &amp;thread1_args);</span><br><span class="line">    </span><br><span class="line">	<span class="comment">/* Create a new thread to print 20,000 o’s. */</span></span><br><span class="line">	thread2_args.character = ’o’;</span><br><span class="line">	thread2_args.count = <span class="number">20000</span>;</span><br><span class="line">	pthread_create (&amp;thread2_id, <span class="literal">NULL</span>, &amp;char_print, &amp;thread2_args);</span><br><span class="line">    </span><br><span class="line">	<span class="comment">/* Make sure the first thread has finished. */</span></span><br><span class="line">	pthread_join (thread1_id, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="comment">/* Make sure the second thread has finished. */</span></span><br><span class="line">	pthread_join (thread2_id, <span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">	<span class="comment">/* Now we can safely return. */</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面说一下前面提到的线程属性。</p>
+<p>在我们前面提到，可以通过pthread_join()函数来使主线程阻塞等待其他线程退出，这样主线程可以清理其他线程的环境。但是还有一些线程，更喜欢自己来清理退出的状态，他们也不愿意主线程调用pthread_join来等待他们。我们将这一类线程的属性称为detached。如果我们在调用pthread_create()函数的时候将属性设置为NULL，则表明我们希望所创建的线程采用默认的属性，也就是jionable。如果需要将属性设置为detached。</p>
+<p>最后说一下线程的本质。其实在Linux中，新建的线程并不是在原先的进程中，而是系统通过一个系统调用<code>clone()</code>。该系统copy了一个和原先进程完全一样的进程，并在这个进程中执行线程函数。不过这个copy过程和fork不一样。<strong>copy后的进程和原先的进程共享了所有的变量，运行环境。这样，原先进程中的变量变动在copy后的进程中便能体现出来。这意味着线程可以改动全局变量而使主进程中某个条件成立。</strong></p>
+<h2 id="一个线程创建前后的内存环境分析："><a href="#一个线程创建前后的内存环境分析：" class="headerlink" title="一个线程创建前后的内存环境分析："></a>一个线程创建前后的内存环境分析：</h2><h3 id="一个demo"><a href="#一个demo" class="headerlink" title="一个demo:"></a>一个demo:</h3><p>（来自于<a href="http://pwn4.fun/2016/04/11/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3glibc-malloc/" target="_blank" rel="noopener">深入理解glibc-malloc</a>）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Per thread arena example. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">threadFunc</span><span class="params">(<span class="keyword">void</span>* arg)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Before malloc in thread 1\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">char</span>* addr = (<span class="keyword">char</span>*) <span class="built_in">malloc</span>(<span class="number">1000</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After malloc and before free in thread 1\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="built_in">free</span>(addr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After free in thread 1\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> t1;</span><br><span class="line">    <span class="keyword">void</span>* s;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">    <span class="keyword">char</span>* addr;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Welcome to per thread arena example::%d\n"</span>,getpid());</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Before malloc in main thread\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    addr = (<span class="keyword">char</span>*) <span class="built_in">malloc</span>(<span class="number">1000</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After malloc and before free in main thread\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="built_in">free</span>(addr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After free in main thread\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    ret = pthread_create(&amp;t1, <span class="literal">NULL</span>, threadFunc, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (ret) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Thread creation error\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ret = pthread_join(t1, &amp;s);</span><br><span class="line">    <span class="keyword">if</span> (ret) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Thread join error\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我们一步一步调试会发现：</p>
+<ol>
+<li>当主线程用malloc(1000)向ptmalloc2申请内存时会系统调用<code>brk</code>，操作系统会给主线程分配132k/0x21000大小的<code>heap</code>区域，这块区域叫<code>main arena</code>。</li>
+<li>主线程free()以后，这一块内存会放进<code>main arena</code>的<code>bin</code>中。</li>
+<li>当创建线程之后，线程调用malloc(1000)时，malloc()会系统调用mmap()给线程分配132k/0x21000的<code>heap</code>区域，这块区域叫<code>thread arena</code>。（当申请的内存大小大于128k/0x20000时，无论是主线程还是线程都会系统调用mmap()分配内存。）</li>
+<li>线程free()以后这一块内存会放进<code>thread arena</code>的<code>bin</code>中。</li>
+<li>印证了上面所说：为每个线程分配一个单独的<code>arena</code>和<code>free list</code>数据结构（bins）。</li>
+</ol>
+<h3 id="Arena的数量限制"><a href="#Arena的数量限制" class="headerlink" title="Arena的数量限制"></a>Arena的数量限制</h3><p>arena的数量由系统的核数量决定。</p>
+<blockquote>
+<p>32位系统：<br>arena的数量 = 2 <em> 核的数量<br>64位系统：<br>arena的数量 = 8 </em> 核的数量</p>
+</blockquote>
+<h3 id="Multiple-Arena-arena的空间复用"><a href="#Multiple-Arena-arena的空间复用" class="headerlink" title="Multiple Arena(arena的空间复用)"></a>Multiple Arena(arena的空间复用)</h3><p>例如：一个多线程（主线程+7个用户线程）应用在一个单核的64位系统上运行，线程数&gt;8*核数，因此glibc malloc需要确保multiple arena能被线程共享。</p>
+<ul>
+<li>主线程第一次调用malloc会创建main arena。</li>
+<li>thread1和thread2第一次调用malloc，会分别为它们创建thread arena</li>
+<li>thread3第一次调用malloc不会创建arena，会尝试reuse已存在的arena（main arena或arena1或arena2）</li>
+<li>reuse：<br>当循环可用的arena时，尝试lock arena<br>如果lock成功，返回那个arena给用户<br>如果没有空闲的arena，阻塞排队等待arena</li>
+</ul>
+<h3 id="Multiple-Heaps"><a href="#Multiple-Heaps" class="headerlink" title="Multiple Heaps"></a>Multiple Heaps</h3><p>glibc malloc中有三种数据结构：<br><code>heap_info</code>   Heap Header - 一个thread arena可以有multiple heaps，每个heap有自己的header。（每个thread arena一开始只有一个heap，当堆段空间用尽时，会有新的heap被mmap到这个arena中）<br><code>malloc_state</code>   Arena Header - 一个thread arena的multiple heaps只有一个arena header。Arena header包含着bins，top chunk，last remainder chunk等信息。<br><code>malloc_chunk</code>  Chunk Header - 一个heap根据用户请求被分成多个chunk，每个chunk有自己的header。</p>
+<blockquote>
+<p>Main arena没有multiple heaps，因此没有heap_info结构。当main arena空间用尽时，sbrk创建的堆段会被增长（连续空间），直到它撞到内存映射段。<br>和thread arena不同，main arena的arena header不是sbrk创建的堆段的一部分，它是一个全局变量，因此它在libc.so的数据段。</p>
+</blockquote>
+<p>main arena和thread arena（单个堆段）<br><img src="http://pwn4.fun/images/glibcmalloc/threadandmain.png" alt=""><br>thread arena（多个堆段）<br><img src="http://pwn4.fun/images/glibcmalloc/threadarena.png" alt=""></p>
+<h2 id="TLS："><a href="#TLS：" class="headerlink" title="TLS："></a>TLS：</h2><p><strong>线程本地存储又叫线程局部存储，其英文为Thread Local Storage，简称TLS</strong>，看似一个很高大上的东西，其实就是线程私有的全局变量而已。</p>
+<p>普通的全局变量在多线程中是共享的，一个线程对其进行了修改，所有线程都可以看到这个修改，而线程私有的全局变量与普通全局变量不同，线程私有全局变量是线程的私有财产，每个线程都有自己的一份副本，某个线程对其所做的修改只会修改到自己的副本，并不会修改到其它线程的副本。</p>
+<p>下面用例子来说明一下多线程共享全局变量以及线程私有全局变量之间的差异，并对gcc的线程本地存储做一个简单的分析。</p>
+<p>首先来看普通的全局变量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> g = <span class="number">0</span>;                                    <span class="comment">// 1，定义全局变量g并赋初值0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">start</span><span class="params">(<span class="keyword">void</span>* arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"start, g[%p] : %d\n"</span>, &amp;g, g);     <span class="comment">// 4，子线程中打印全局变量g的地址和值</span></span><br><span class="line"></span><br><span class="line">　　g++;                                      <span class="comment">// 5，修改全局变量</span></span><br><span class="line"></span><br><span class="line">　　<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　　<span class="keyword">pthread_t</span> tid;</span><br><span class="line"></span><br><span class="line">　　g = <span class="number">100</span>;                                    <span class="comment">// 2，主线程给全局变量g赋值为100</span></span><br><span class="line"></span><br><span class="line">　　pthread_create(&amp;tid, <span class="literal">NULL</span>, start, <span class="literal">NULL</span>);    <span class="comment">// 3， 创建子线程执行start()函数</span></span><br><span class="line">　　pthread_join(tid, <span class="literal">NULL</span>);                    <span class="comment">// 6，等待子线程运行结束</span></span><br><span class="line"></span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"main, g[%p] : %d\n"</span>, &amp;g, g);        <span class="comment">// 7，打印全局变量g的地址和值</span></span><br><span class="line"></span><br><span class="line">　　<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注释已经写的很清晰明了，我们的目的是看线程中的<code>g++</code>会不会影响我们最开始定义的全局变量g，输出结果为：</p>
+<blockquote>
+<p>xiaoxiaorenwu@ubuntu:~/study/c$ gcc thread.c -o thread -lpthread<br>xiaoxiaorenwu@ubuntu:~/study/c$ ./thread<br>start, g[0x601064] : 100<br>main, g[0x601064] : 101</p>
+</blockquote>
+<p>从输出结果我们可以看到，普通全局变量g在主线程和其他线程中储存地址都是一样的，任何一个线程都可以对这个全局变量进行读取和修改，实现了变量的共享。</p>
+<p>了解了普通的全局变量之后我们再来看通过线程本地存储(TLS)实现的线程私有全局变量。这个程序与上面的程序几乎完全一样，唯一的差别就是在定义全局变量 g 时增加了 <code>__thread</code>关键字，这样g就变成了线程私有全局变量了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">__thread <span class="keyword">int</span> g = <span class="number">0</span>;  <span class="comment">// 1，这里增加了__thread关键字，把g定义成私有的全局变量，每个线程都有一个g变量</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">start</span><span class="params">(<span class="keyword">void</span>* arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"start, g[%p] : %d\n"</span>, &amp;g, g);   <span class="comment">// 4，打印本线程私有全局变量g的地址和值</span></span><br><span class="line"></span><br><span class="line">　　g++;                                    <span class="comment">// 5，修改本线程私有全局变量g的值</span></span><br><span class="line"></span><br><span class="line">　　<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　　<span class="keyword">pthread_t</span> tid;</span><br><span class="line"></span><br><span class="line">　　g = <span class="number">100</span>;                                 <span class="comment">// 2，主线程给私有全局变量赋值为100</span></span><br><span class="line"></span><br><span class="line">　　pthread_create(&amp;tid, <span class="literal">NULL</span>, start, <span class="literal">NULL</span>); <span class="comment">// 3，创建子线程执行start()函数</span></span><br><span class="line">　　pthread_join(tid, <span class="literal">NULL</span>);                 <span class="comment">// 6，等待子线程运行结束</span></span><br><span class="line"></span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"main, g[%p] : %d\n"</span>, &amp;g, g);     <span class="comment">// 7，打印主线程的私有全局变量g的地址和值</span></span><br><span class="line"></span><br><span class="line">　　<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<blockquote>
+<p>xiaoxiaorenwu@ubuntu:~/study/c$ gcc -g thread.c -o thread -lpthread<br>xiaoxiaorenwu@ubuntu:~/study/c$ ./thread<br>start, g[0x7f0181b046fc] : 0<br>main, g[0x7f01823076fc] : 100</p>
+</blockquote>
+<p>我们可以发现两个问题，一个是g这个全局变量在主线程和其他线程中的地址不一样了，还有就是线程中对g进行修改并不能影响主线程中的g（这不是废话么。。。地址都不一样。。），说明每个线程都有一个自己私有的全局变量g。</p>
+<p>我们来用gdb分析一下：</p>
+<p>首先在源代码的第20行（对应到源代码中的 g = 100）处下一个断点，然后运行程序，程序停在了断点处，反汇编一下main函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b thread.c:<span class="number">20</span></span><br><span class="line">Breakpoint1at0x400793:filethread.c, line <span class="number">20.</span></span><br><span class="line">(gdb) r</span><br><span class="line">Startingprogram:/home/bobo/study/c/thread</span><br><span class="line"></span><br><span class="line">Breakpoint1, at thread.c:<span class="number">20</span></span><br><span class="line"><span class="number">20</span> g=<span class="number">100</span>;</span><br><span class="line">(gdb) disass</span><br><span class="line">Dumpofassemblercodeforfunctionmain:</span><br><span class="line">  <span class="number">0x0000000000400775</span>&lt;+<span class="number">0</span>&gt;:push   %rbp</span><br><span class="line">  <span class="number">0x0000000000400776</span>&lt;+<span class="number">1</span>&gt;:mov   %rsp,%rbp</span><br><span class="line">  <span class="number">0x0000000000400779</span>&lt;+<span class="number">4</span>&gt;:sub   $<span class="number">0x20</span>,%rsp</span><br><span class="line">  <span class="number">0x000000000040077d</span>&lt;+<span class="number">8</span>&gt;:mov   %edi,<span class="number">-0x14</span>(%rbp)</span><br><span class="line">  <span class="number">0x0000000000400780</span>&lt;+<span class="number">11</span>&gt;:mov   %rsi,<span class="number">-0x20</span>(%rbp)</span><br><span class="line">  <span class="number">0x0000000000400784</span>&lt;+<span class="number">15</span>&gt;:mov   %fs:<span class="number">0x28</span>,%rax</span><br><span class="line">  <span class="number">0x000000000040078d</span>&lt;+<span class="number">24</span>&gt;:mov   %rax,<span class="number">-0x8</span>(%rbp)</span><br><span class="line">  <span class="number">0x0000000000400791</span>&lt;+<span class="number">28</span>&gt;:xor   %eax,%eax</span><br><span class="line">=&gt; <span class="number">0x0000000000400793</span> &lt;+<span class="number">30</span>&gt;:movl   $<span class="number">0x64</span>,%fs:<span class="number">0xfffffffffffffffc</span></span><br><span class="line">  <span class="number">0x000000000040079f</span>&lt;+<span class="number">42</span>&gt;:lea   <span class="number">-0x10</span>(%rbp),%rax</span><br><span class="line">  <span class="number">0x00000000004007a3</span>&lt;+<span class="number">46</span>&gt;:mov   $<span class="number">0x0</span>,%ecx</span><br><span class="line">  <span class="number">0x00000000004007a8</span>&lt;+<span class="number">51</span>&gt;:mov   $<span class="number">0x400736</span>,%edx</span><br><span class="line">  <span class="number">0x00000000004007ad</span>&lt;+<span class="number">56</span>&gt;:mov   $<span class="number">0x0</span>,%esi</span><br><span class="line">  <span class="number">0x00000000004007b2</span>&lt;+<span class="number">61</span>&gt;:mov   %rax,%rdi</span><br><span class="line">  <span class="number">0x00000000004007b5</span>&lt;+<span class="number">64</span>&gt;:callq <span class="number">0x4005e0</span> &lt;pthread_create@plt&gt;</span><br><span class="line">  <span class="number">0x00000000004007ba</span>&lt;+<span class="number">69</span>&gt;:mov   <span class="number">-0x10</span>(%rbp),%rax</span><br><span class="line">  <span class="number">0x00000000004007be</span>&lt;+<span class="number">73</span>&gt;:mov   $<span class="number">0x0</span>,%esi</span><br><span class="line">  <span class="number">0x00000000004007c3</span>&lt;+<span class="number">78</span>&gt;:mov   %rax,%rdi</span><br><span class="line">  <span class="number">0x00000000004007c6</span>&lt;+<span class="number">81</span>&gt;:callq <span class="number">0x400620</span> &lt;pthread_join@plt&gt;</span><br><span class="line">  <span class="number">0x00000000004007cb</span>&lt;+<span class="number">86</span>&gt;:mov   %fs:<span class="number">0xfffffffffffffffc</span>,%eax</span><br><span class="line">  <span class="number">0x00000000004007d3</span>&lt;+<span class="number">94</span>&gt;:mov   %eax,%esi</span><br><span class="line">  <span class="number">0x00000000004007d5</span>&lt;+<span class="number">96</span>&gt;:mov   $<span class="number">0x4008df</span>,%edi</span><br><span class="line">  <span class="number">0x00000000004007da</span>&lt;+<span class="number">101</span>&gt;:mov   $<span class="number">0x0</span>,%eax</span><br><span class="line">  <span class="number">0x00000000004007df</span>&lt;+<span class="number">106</span>&gt;:callq <span class="number">0x400600</span> &lt;<span class="built_in">printf</span>@plt&gt;</span><br><span class="line">  ......</span><br></pre></td></tr></table></figure>
+<p>程序停在了g = 100这一行，看一下汇编指令，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">=&gt; <span class="number">0x0000000000400793</span> &lt;+<span class="number">30</span>&gt;:movl   $<span class="number">0x64</span>,%fs:<span class="number">0xfffffffffffffffc</span></span><br></pre></td></tr></table></figure>
+<p>这句汇编指令的意思是把常量100(0x64)复制到地址为%fs:0xfffffffffffffffc的内存中，可以看出全局变量g的地址为%fs:0xfffffffffffffffc，fs是段寄存器，0xfffffffffffffffc是有符号数-4，所以全局变量g的地址为：</p>
+<blockquote>
+<p>fs段基址 - 4</p>
+</blockquote>
+<p>前面我们在讲段寄存器时说过段基址就是段的起始地址，为了验证g的地址确实是fs段基址 - 4，我们需要知道fs段基址是多少，虽然我们可以用gdb命令查看fs寄存器的值，但fs寄存器里面存放的是段选择子（segment selector）而不是该段的起始地址，为了拿到这个基地址，我们需要加一点代码来获取它，修改后的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/prctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/prctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">__thread <span class="keyword">int</span> g = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print_fs_base</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">unsigned</span> <span class="keyword">long</span> addr;</span><br><span class="line">   <span class="keyword">int</span> ret = arch_prctl(ARCH_GET_FS, &amp;addr);  <span class="comment">//获取fs段基地址</span></span><br><span class="line">   <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">       perror(<span class="string">"error"</span>);</span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"fs base addr: %p\n"</span>, (<span class="keyword">void</span>*)addr); <span class="comment">//打印fs段基址</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">start</span><span class="params">(<span class="keyword">void</span>* arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    print_fs_base(); <span class="comment">//子线程打印fs段基地址</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"start, g[%p] : %d\n"</span>, &amp;g, g);</span><br><span class="line"></span><br><span class="line">    g++;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line"></span><br><span class="line">    g = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, start, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_join(tid, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    print_fs_base(); <span class="comment">//main线程打印fs段基址</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"main, g[%p] : %d\n"</span>, &amp;g, g);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 代码中主线程和子线程都分别调用了print_fs_base()函数用于打印fs段基地址，运行程序看一下：</p>
+<blockquote>
+<p>fs base addr: 0x7f36757c8700<br>start, g[0x7f36757c86fc] : 0<br>fs base addr: 0x7f3675fcb700<br>main, g[0x7f3675fcb6fc] : 100</p>
+</blockquote>
+<p>可以看到：</p>
+<ul>
+<li>子线程fs段基地址为0x7f36757c8700，g的地址为0x7f36757c86fc，它正好是基地址 - 4</li>
+<li>主线程fs段基地址为0x7f3675fcb700，g的地址为0x7f3675fcb6fc，它也是基地址 - 4</li>
+</ul>
+<p>由此可以得出，<strong>gcc编译器（其实还有线程库以及内核的支持）使用了CPU的fs段寄存器来实现线程本地存储</strong>，不同的线程中fs段基地址是不一样的，这样看似同一个全局变量但在不同线程中却拥有不同的内存地址，实现了线程私有的全局变量。</p>
+<p>了解了这么多，我们可以开始着手开始解决girlfriend了   ps：出了girlfriend，还是没有girlfriend（&gt; _&lt;）。。。。</p>
+<h1 id="girlfriend"><a href="#girlfriend" class="headerlink" title="girlfriend:"></a>girlfriend:</h1><p>参考链接：<a href="https://songlee24.github.io/2015/04/08/free-list/" target="_blank" rel="noopener">free_list的简介</a>                                  </p>
+<p>​                  <a href="https://blog.csdn.net/chary8088/article/details/2417982" target="_blank" rel="noopener">pthread_join及linux线程</a></p>
+<p>​                  <a href="https://sploitfun.wordpress.com/2015/02/10/understanding-glibc-malloc/comment-page-1/" target="_blank" rel="noopener"><a href="https://sploitfun.wordpress.com/2015/02/10/understanding-glibc-malloc/comment-page-1/" target="_blank" rel="noopener">https://sploitfun.wordpress.com/2015/02/10/understanding-glibc-malloc/comment-page-1/</a></a></p>
+<p>​                  <a href="https://www.cnblogs.com/abozhang/p/10800332.html" target="_blank" rel="noopener">关于TLS</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt="XiaoXiaoRenWu's blog 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="XiaoXiaoRenWu's blog 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ctf-writeups/" rel="tag"><i class="fa fa-tag"></i> ctf_writeups</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/13/堆的理论知识学习/" rel="next" title="堆的理论知识学习">
+                <i class="fa fa-chevron-left"></i> 堆的理论知识学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/19/知识点总结与学习资料整理/" rel="prev" title="知识点总结与学习资料整理">
+                知识点总结与学习资料整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg" alt="XiaoXiaoRenWu's blog">
+            
+              <p class="site-author-name" itemprop="name">XiaoXiaoRenWu's blog</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#对于ptmalloc2中多线程方面的知识："><span class="nav-number">1.</span> <span class="nav-text">对于ptmalloc2中多线程方面的知识：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#两个基本函数："><span class="nav-number">1.1.</span> <span class="nav-text">两个基本函数：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#int-pthread-create-pthread-t-restrict-thread，const-pthread-attr-t-restrict-attr，void-start-routine-void-，void-restrict-arg"><span class="nav-number">1.1.1.</span> <span class="nav-text">int pthread_create(pthread_t restrict thread，const pthread_attr_t restrict attr，void (start_routine)(void)，void restrict arg)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-pthread-join-pthread-t-thread-void-value-ptr"><span class="nav-number">1.1.2.</span> <span class="nav-text">int pthread_join(pthread_t thread, void **value_ptr)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个线程创建前后的内存环境分析："><span class="nav-number">1.2.</span> <span class="nav-text">一个线程创建前后的内存环境分析：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一个demo"><span class="nav-number">1.2.1.</span> <span class="nav-text">一个demo:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Arena的数量限制"><span class="nav-number">1.2.2.</span> <span class="nav-text">Arena的数量限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multiple-Arena-arena的空间复用"><span class="nav-number">1.2.3.</span> <span class="nav-text">Multiple Arena(arena的空间复用)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multiple-Heaps"><span class="nav-number">1.2.4.</span> <span class="nav-text">Multiple Heaps</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS："><span class="nav-number">1.3.</span> <span class="nav-text">TLS：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#girlfriend"><span class="nav-number">2.</span> <span class="nav-text">girlfriend:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XiaoXiaoRenWu's blog</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
