@@ -2031,7 +2031,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ffc4db;
+  background: #46fcbe;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2898,7 +2898,7 @@ img:hover {
   position: static;
   float: left;
   margin-top: 300px;
-  width: 240px;
+  width: 300px;
   background: #eee;
   box-shadow: none;
 }
