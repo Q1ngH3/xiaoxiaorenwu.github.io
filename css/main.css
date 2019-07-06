@@ -2031,7 +2031,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ffffb0;
+  background: #b08ee9;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3329,12 +3329,6 @@ img:hover {
     margin: 8px 0 0;
   }
 }
-body {
-  background: url("/images/background.png");
-  background-size: contain;
-  background-repeat: repeat;
-  background-attachment: fixed;
-}
 @font-face {
   font-family: Zitiming;
   src: url("/fonts/Zitiming.ttf");
@@ -3349,6 +3343,52 @@ body {
   padding: 25px;
   -webkit-box-shadow: 0 0 5px rgba(202,203,203,0.5);
   -moz-box-shadow: 0 0 5px rgba(202,203,204,0.5);
+}
+[class="container sidebar-position-left "],
+.main,
+[class$="page-home"] #footer,
+[class$="page-post-detail"] #footer,
+.page-archive {
+  background: rgba(255,255,255,0.83);
+}
+[class="container sidebar-position-left "] .main,
+[class$="sidebar-position-left"] #footer,
+.page-archive .main {
+  background: transparent;
+}
+.pagination,
+.post-block,
+.comments,
+.container .header-inner,
+.sidebar-inner {
+  background: rgba(255,255,255,0.45);
+}
+#sidebar {
+  background: rgba(255,255,255,0);
+}
+.menu .menu-item a:hover {
+  background: rgba(34,34,34,0.231);
+  border-bottom-color: transparent;
+}
+.menu-item-active a {
+  background: rgba(251,203,63,0.741);
+  border-bottom-color: transparent;
+}
+.tabs ul.nav-tabs li.tab.active,
+.tabs .tab-content {
+  background-color: rgba(255,255,255,0.62) !important;
+}
+.gitment-editor-body textarea {
+  background-color: rgba(255,255,255,0.62) !important;
+}
+.gitment-editor-preview-field {
+  background-color: rgba(255,255,255,0.251) !important;
+}
+.gitment-comment-header {
+  background-color: transparent !important;
+}
+#gitment-container a {
+  border-bottom: none;
 }
 .post-toc ol a {
   border-bottom-color: transparent;
@@ -3570,4 +3610,3 @@ code {
   height: 1px;
   padding-bottom: 1.9%;
 }
-*
