@@ -94,7 +94,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成）">
 <meta property="og:url" content="http://yoursite.com/2019/07/05/5种方法解heap_master/index.html">
-<meta property="og:site_name" content="QingHe">
+<meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-07-06T02:20:39.325Z">
@@ -110,7 +110,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"right","display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    sidebar: {"position":"left","display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -136,7 +136,7 @@
 
 
 
-  <title>五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成） | QingHe</title>
+  <title>五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成） | xiaoxiaorenwu</title>
   
 
 
@@ -155,7 +155,7 @@
     
   
 
-  <div class="container sidebar-position-right page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -166,12 +166,12 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">QingHe</span>
+        <span class="site-title">xiaoxiaorenwu</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">梦想做个平凡人</p>
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
       
   </div>
 
@@ -308,13 +308,13 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/05/5种方法解heap_master/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="XiaoXiaoRenWu's blog">
+      <meta itemprop="name" content="xiaoxiaorenwu's blog">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="QingHe">
+      <meta itemprop="name" content="xiaoxiaorenwu">
     </span>
 
     
@@ -470,14 +470,14 @@
 
     
       <div id="wechat" style="display: inline-block">
-        <img id="wechat_qr" src="/images/weichat.png" alt="XiaoXiaoRenWu's blog 微信支付">
+        <img id="wechat_qr" src="/images/weichat.png" alt="xiaoxiaorenwu's blog 微信支付">
         <p>微信支付</p>
       </div>
     
 
     
       <div id="alipay" style="display: inline-block">
-        <img id="alipay_qr" src="/images/alipay.jpg" alt="XiaoXiaoRenWu's blog 支付宝">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="xiaoxiaorenwu's blog 支付宝">
         <p>支付宝</p>
       </div>
     
@@ -580,9 +580,9 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg" alt="XiaoXiaoRenWu's blog">
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg" alt="xiaoxiaorenwu's blog">
             
-              <p class="site-author-name" itemprop="name">XiaoXiaoRenWu's blog</p>
+              <p class="site-author-name" itemprop="name">xiaoxiaorenwu's blog</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -719,7 +719,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">XiaoXiaoRenWu's blog</span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu's blog</span>
 
   
 </div>
