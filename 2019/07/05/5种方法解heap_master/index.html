@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="ctf,pwn,堆,栈">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成）">
+<meta property="og:url" content="http://yoursite.com/2019/07/05/5种方法解heap_master/index.html">
+<meta property="og:site_name" content="QingHe">
+<meta property="og:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-06T02:20:39.325Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成）">
+<meta name="twitter:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":320,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/05/5种方法解heap_master/">
+
+
+
+
+
+  <title>五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成） | QingHe</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">QingHe</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/05/5种方法解heap_master/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaoxiaorenwu's blog">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="QingHe">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-05T17:41:35+08:00">
+                2019-07-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/05/5种方法解heap_master/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/05/5种方法解heap_master/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。</p>
+<p>这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的师傅和其他一些大师傅的wp，又查了许多资料才汇总出这一篇拙作。</p>
+<p><a href="https://github.com/xiaoxiaorenwu/mypwn/tree/master/2019star_ctf/heap_master" target="_blank" rel="noopener">heap_master</a></p>
+<h1 id="一些必须知道的前置知识准备和利用手段："><a href="#一些必须知道的前置知识准备和利用手段：" class="headerlink" title="一些必须知道的前置知识准备和利用手段："></a>一些必须知道的前置知识准备和利用手段：</h1><h2 id="global-fast-max"><a href="#global-fast-max" class="headerlink" title="global_fast_max:"></a>global_fast_max:</h2><h2 id="dl-open-hook"><a href="#dl-open-hook" class="headerlink" title="dl_open_hook:"></a>dl_open_hook:</h2><h2 id="setcontext"><a href="#setcontext" class="headerlink" title="setcontext:"></a>setcontext:</h2><h2 id="after-morecore-hook"><a href="#after-morecore-hook" class="headerlink" title="__after_morecore_hook:"></a>__after_morecore_hook:</h2><h2 id="chroot"><a href="#chroot" class="headerlink" title="chroot:"></a>chroot:</h2><h2 id="mprotect与mmap"><a href="#mprotect与mmap" class="headerlink" title="mprotect与mmap:"></a>mprotect与mmap:</h2><h2 id="IO-str-jumps："><a href="#IO-str-jumps：" class="headerlink" title="_IO_str_jumps："></a>_IO_str_jumps：</h2><h2 id="IO-list-all"><a href="#IO-list-all" class="headerlink" title="_IO_list_all:"></a>_IO_list_all:</h2><h1 id="第一种方法："><a href="#第一种方法：" class="headerlink" title="第一种方法："></a>第一种方法：</h1><p>第一种方法是用<code>largebin_attack</code>的两次向任意地址写<code>victim</code>的地址，来对<code>stdout结构体</code>的<code>flag</code>和<code>_IO_write_base</code>的最后一个字节（错位写入，修改<code>_IO_read_base</code>的前七个字节和<code>_IO_write_base</code>的最后一个字节，<code>victim</code>的地址长度不够八个字节会将缺的位自动当为零写入）进行修改，利用<code>mmap</code>地址的随机性（大概1/16的概率）可以泄露出<code>mmap</code>的地址的基址和<code>libc</code>的地址。</p>
+<hr>
+<p>然后再利用<code>largebin_attack</code>向<code>_IO_list_all</code>写入<code>victim</code>的地址，在<code>victim</code>处伪造一个<code>fake_IO_file_plus</code>，利用<code>exit()</code>中的<code>_IO_flush_all_lockp</code>调用<code>_IO_str_overflow</code>（所以在<code>fp+0xd8</code>处（也就是<code>vtable</code>处）我们应填入<code>_IO_str_jumps</code>的地址），利用<code>_IO_str_overflow</code>中的<code>call [rdi+0xe0]</code>来进行程序控制流的劫持(<code>rdi</code>里装的是<code>_IO_str_overflow</code>的第一个参数<code>fp</code>，也就是当前的文件结构体指针)，这里因为远程只能用<code>orw(open read write)</code>来读取<code>flag</code>，但是在本地的话可以用<code>one_gadget</code>来打开<code>shell</code>，所以在exp的最后地方会有一个分支。</p>
+<hr>
+<h1 id="第二种方法："><a href="#第二种方法：" class="headerlink" title="第二种方法："></a>第二种方法：</h1><p>第二种方法的泄露方法和第一种方法一样，但是改变了控制程序执行流的方法。</p>
+<p>第二种方法我们使用<code>modify dl_open_hook</code>的方法来劫持程序控制流，利用<code>largebin_attack</code>将<code>dl_open_hook</code>覆盖为<code>victim</code>的地址，因为在。。。。。里会将<code>dl_open_hook</code>的值赋给一个寄存器，然后会<code>call [寄存器]</code>，也就等于是<code>call [victim_addr]</code>，所以我们可以在<code>victim</code>的地址处填好<code>one_gadget</code>或者<code>gadgets</code>来劫持程序控制流。</p>
+<h1 id="第三种方法："><a href="#第三种方法：" class="headerlink" title="第三种方法："></a>第三种方法：</h1><p>第三种方法是先利用<code>unsortedbin_attack/largebin_attack</code>将任意地址修改为<code>victim</code>的地址，我们准备改写<code>global_fast_max</code>，然后突破<code>fastbinY[]</code>的限制，产生<code>fastbin_index_overflow</code>将<code>stdout</code>流<code>modify</code>为某一处<code>mmap</code>的地址（我们事先已应在这里伪造好一个<code>fake_IO_2_1_stdout</code>结构体），然后有1/16的概率可以成功泄露。</p>
+<hr>
+<p>之后我们再将<code>_IO_list_all</code>覆盖为某一处<code>mmap</code>的地址（我们事先应在这里伪造一个<code>fake_IO_FIFE_plus</code>），然后利用<code>_IO_str_overflow</code>来跳到<code>setcontext+53</code>处控制我们所有的寄存器，将栈劫持到<code>mmap</code>地址处，然后利用<code>orw</code>来读取<code>flag</code>。</p>
+<h1 id="第四种方法："><a href="#第四种方法：" class="headerlink" title="第四种方法："></a>第四种方法：</h1><p>第四种方法和前面的方法不同点主要在于劫持程序控制流，泄露的方法在前面都已经明确了，在此就不赘述。</p>
+<p>第四种方法劫持程序执行流的方法是先改写<code>global_fast_max</code>，然后向<code>free_hook</code>放入<code>victim</code>的地址，然后在<code>victim</code>处构造一个chunk，在这个chunk的<code>fd</code>指针处改为<code>system_addr</code>，将这个chunk申请出来，这时<code>system_addr</code>就放入了<code>free_hook</code>中，然后再构造一个chunk，使其首八个字节为<code>&#39;/bin/sh\x00&#39;</code>，free()其即可打开shell。</p>
+<h1 id="第五种方法："><a href="#第五种方法：" class="headerlink" title="第五种方法："></a>第五种方法：</h1><p>第五种方法也是劫持程序控制流方法不同。</p>
+<p>第五种方法我们在泄露之后，改写<code>_IO_list_all</code>来控制程序控制流之后，利用<code>_IO_str_overflow</code>来跳到<code>setcontext+53</code>，然后控制寄存器调用<code>mprotect</code>来改写<code>mmap</code>段的权限，然后在<code>mmap</code>上注入<code>shellcode</code>。</p>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>唉，其实一路看下来的话其实所谓的多解就是两种泄露方式和三四种劫持程序控制流的方式进行排列组合罢了，融会贯通了其实五种方法就是一种方法。</p>
+<p><code>leak</code>方式：</p>
+<ol>
+<li>改写<code>stdout</code>流的关键字节，使<code>flag</code>过了检查<code>f-&gt;flag &amp; 0xa00 and f-&gt;flag &amp; 0x1000 == 1</code>，并且<code>_IO_write_base!=_IO_write_ptr</code>。</li>
+<li>在我们可控的地址上劫持伪造<code>stdout</code>流。</li>
+</ol>
+<p><code>modify</code>方式：</p>
+<ol>
+<li>改写<code>dl_open_hook</code>。</li>
+<li>改写<code>_IO_list_all</code>，伪造<code>_IO_FIFE_plus</code>结构体，将<code>vtable</code>改为<code>_IO_str_jumps</code>的地址，然后在<code>_IO_str_overflow</code>里进行劫持。（<code>abort-&gt;__libc_message-&gt;_IO_flush_all_lockp-&gt;_IO_str_overflow</code>），需要过一系列<code>fllush</code>的检查。</li>
+</ol>
+<h1 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h1><p><a href="https://paper.seebug.org/935/" target="_blank" rel="noopener">深入分析 IO_FILE 与 Unosrtbin Largebin attack 的结合利用</a></p>
+<p><a href="https://e3pem.github.io/2019/05/11/starctf2019/starctf-heap_master%E9%A2%98%E8%A7%A3/#more" target="_blank" rel="noopener">starctf-heap_master题解</a></p>
+<p><a href="https://n132.github.io/2019/05/10/2019-05-08-Startctf2019-Heap-master/#%E6%80%9D%E8%B7%AF" target="_blank" rel="noopener">Startctf2019_Heap_master</a></p>
+<p><a href="http://m4x.fun/post/jarvisoj-pwn-writeup/" target="_blank" rel="noopener">JarvisOJ Pwn Writeup</a></p>
+<p><a href="https://www.anquanke.com/post/id/168802#h3-5" target="_blank" rel="noopener">新手向——IO_file全流程浅析</a> (这篇文章里在分析_IO_str_overflow时有错误orz，可能会误导人。)</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt="xiaoxiaorenwu's blog 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="xiaoxiaorenwu's blog 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    xiaoxiaorenwu's blog
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2019/07/05/5种方法解heap_master/" title="五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成）">https://xiaoxiaorenwu.top/2019/07/05/5种方法解heap_master/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/22/多线程pwn专题学习与总结/" rel="next" title="多线程pwn专题学习与总结">
+                <i class="fa fa-chevron-left"></i> 多线程pwn专题学习与总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/01/29/5c5007a7f263b.jpg" alt="xiaoxiaorenwu's blog">
+            
+              <p class="site-author-name" itemprop="name">xiaoxiaorenwu's blog</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些必须知道的前置知识准备和利用手段："><span class="nav-number">1.</span> <span class="nav-text">一些必须知道的前置知识准备和利用手段：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#global-fast-max"><span class="nav-number">1.1.</span> <span class="nav-text">global_fast_max:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dl-open-hook"><span class="nav-number">1.2.</span> <span class="nav-text">dl_open_hook:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setcontext"><span class="nav-number">1.3.</span> <span class="nav-text">setcontext:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#after-morecore-hook"><span class="nav-number">1.4.</span> <span class="nav-text">__after_morecore_hook:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chroot"><span class="nav-number">1.5.</span> <span class="nav-text">chroot:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mprotect与mmap"><span class="nav-number">1.6.</span> <span class="nav-text">mprotect与mmap:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO-str-jumps："><span class="nav-number">1.7.</span> <span class="nav-text">_IO_str_jumps：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO-list-all"><span class="nav-number">1.8.</span> <span class="nav-text">_IO_list_all:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一种方法："><span class="nav-number">2.</span> <span class="nav-text">第一种方法：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二种方法："><span class="nav-number">3.</span> <span class="nav-text">第二种方法：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三种方法："><span class="nav-number">4.</span> <span class="nav-text">第三种方法：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第四种方法："><span class="nav-number">5.</span> <span class="nav-text">第四种方法：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第五种方法："><span class="nav-number">6.</span> <span class="nav-text">第五种方法：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结："><span class="nav-number">7.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料："><span class="nav-number">8.</span> <span class="nav-text">参考资料：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu's blog</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
