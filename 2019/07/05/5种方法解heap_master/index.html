@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="QingHe">
 <meta property="og:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-05T15:50:19.358Z">
+<meta property="og:updated_time" content="2019-07-06T02:20:39.325Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="五种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解（未完成）">
 <meta name="twitter:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
@@ -415,6 +415,7 @@
       
         <p>作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。</p>
 <p>这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的师傅和其他一些大师傅的wp，又查了许多资料才汇总出这一篇拙作。</p>
+<p><a href="https://github.com/xiaoxiaorenwu/mypwn/tree/master/2019star_ctf/heap_master" target="_blank" rel="noopener">heap_master</a></p>
 <h1 id="一些必须知道的前置知识准备和利用手段："><a href="#一些必须知道的前置知识准备和利用手段：" class="headerlink" title="一些必须知道的前置知识准备和利用手段："></a>一些必须知道的前置知识准备和利用手段：</h1><h2 id="global-fast-max"><a href="#global-fast-max" class="headerlink" title="global_fast_max:"></a>global_fast_max:</h2><h2 id="dl-open-hook"><a href="#dl-open-hook" class="headerlink" title="dl_open_hook:"></a>dl_open_hook:</h2><h2 id="setcontext"><a href="#setcontext" class="headerlink" title="setcontext:"></a>setcontext:</h2><h2 id="after-morecore-hook"><a href="#after-morecore-hook" class="headerlink" title="__after_morecore_hook:"></a>__after_morecore_hook:</h2><h2 id="chroot"><a href="#chroot" class="headerlink" title="chroot:"></a>chroot:</h2><h2 id="mprotect与mmap"><a href="#mprotect与mmap" class="headerlink" title="mprotect与mmap:"></a>mprotect与mmap:</h2><h2 id="IO-str-jumps："><a href="#IO-str-jumps：" class="headerlink" title="_IO_str_jumps："></a>_IO_str_jumps：</h2><h2 id="IO-list-all"><a href="#IO-list-all" class="headerlink" title="_IO_list_all:"></a>_IO_list_all:</h2><h1 id="第一种方法："><a href="#第一种方法：" class="headerlink" title="第一种方法："></a>第一种方法：</h1><p>第一种方法是用<code>largebin_attack</code>的两次向任意地址写<code>victim</code>的地址，来对<code>stdout结构体</code>的<code>flag</code>和<code>_IO_write_base</code>的最后一个字节（错位写入，修改<code>_IO_read_base</code>的前七个字节和<code>_IO_write_base</code>的最后一个字节，<code>victim</code>的地址长度不够八个字节会将缺的位自动当为零写入）进行修改，利用<code>mmap</code>地址的随机性（大概1/16的概率）可以泄露出<code>mmap</code>的地址的基址和<code>libc</code>的地址。</p>
 <hr>
 <p>然后再利用<code>largebin_attack</code>向<code>_IO_list_all</code>写入<code>victim</code>的地址，在<code>victim</code>处伪造一个<code>fake_IO_file_plus</code>，利用<code>exit()</code>中的<code>_IO_flush_all_lockp</code>调用<code>_IO_str_overflow</code>（所以在<code>fp+0xd8</code>处（也就是<code>vtable</code>处）我们应填入<code>_IO_str_jumps</code>的地址），利用<code>_IO_str_overflow</code>中的<code>call [rdi+0xe0]</code>来进行程序控制流的劫持(<code>rdi</code>里装的是<code>_IO_str_overflow</code>的第一个参数<code>fp</code>，也就是当前的文件结构体指针)，这里因为远程只能用<code>orw(open read write)</code>来读取<code>flag</code>，但是在本地的话可以用<code>one_gadget</code>来打开<code>shell</code>，所以在exp的最后地方会有一个分支。</p>
@@ -497,7 +498,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/22/多线程专题学习与总结/" rel="next" title="多线程pwn专题学习与总结">
+              <a href="/2019/06/22/多线程pwn专题学习与总结/" rel="next" title="多线程pwn专题学习与总结">
                 <i class="fa fa-chevron-left"></i> 多线程pwn专题学习与总结
               </a>
             
