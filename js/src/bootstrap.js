@@ -1,3 +1,4 @@
+/*
 $(document).ready(function () {
     // ���ͷ��������һ���������ǵĹ��ܣ����ѡȡ1������ͼ�����صĴ���
     var backgroundImgUrls = [
@@ -13,13 +14,8 @@ $(document).ready(function () {
         var background_image = "url(" + backgroundImgUrls[randomIndex] + ")";
         $("body").css({"background":background_image, "background-attachment":"fixed", "background-size":"cover"});
     }
-    //...NexTԭ�еĴ���
-//}
-
-/* global NexT: true */
-
-//$(document).ready(function () {
-
+*/
+$(document).ready(function () {
   $(document).trigger('bootstrap:before');
 
   NexT.utils.isMobile() && window.FastClick.attach(document.body);
