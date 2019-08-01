@@ -86,14 +86,14 @@
 
 <meta name="description" content="NOFIFE思路：因为两次输入栈上数据，可以第一次泄露出canary和程序基址，第二次利用rop调用puts函数打印出read函数的实际地址泄露出libc，并把程序的最后的ret_addr改为main，当再次从头开始运行时利用rop在bss段伪造一个rilimit结构体，将其值设置为合理值即可，然后调用setrlimit()函数解除文件打开数量为零的限制，最后用system()打开shell（on">
 <meta property="og:type" content="article">
-<meta property="og:title" content="tsctf_2019_pwn前四题writeups">
+<meta property="og:title" content="TSCTF_2019_pwn前四题writeups">
 <meta property="og:url" content="http://yoursite.com/2019/05/18/tsctf-2019-pwn-writeups/index.html">
 <meta property="og:site_name" content="QingHe">
 <meta property="og:description" content="NOFIFE思路：因为两次输入栈上数据，可以第一次泄露出canary和程序基址，第二次利用rop调用puts函数打印出read函数的实际地址泄露出libc，并把程序的最后的ret_addr改为main，当再次从头开始运行时利用rop在bss段伪造一个rilimit结构体，将其值设置为合理值即可，然后调用setrlimit()函数解除文件打开数量为零的限制，最后用system()打开shell（on">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-18T13:31:24.336Z">
+<meta property="og:updated_time" content="2019-08-01T01:28:22.791Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tsctf_2019_pwn前四题writeups">
+<meta name="twitter:title" content="TSCTF_2019_pwn前四题writeups">
 <meta name="twitter:description" content="NOFIFE思路：因为两次输入栈上数据，可以第一次泄露出canary和程序基址，第二次利用rop调用puts函数打印出read函数的实际地址泄露出libc，并把程序的最后的ret_addr改为main，当再次从头开始运行时利用rop在bss段伪造一个rilimit结构体，将其值设置为合理值即可，然后调用setrlimit()函数解除文件打开数量为零的限制，最后用system()打开shell（on">
 
 
@@ -130,7 +130,7 @@
 
 
 
-  <title>tsctf_2019_pwn前四题writeups | QingHe</title>
+  <title>TSCTF_2019_pwn前四题writeups | QingHe</title>
   
 
 
@@ -316,7 +316,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">tsctf_2019_pwn前四题writeups</h1>
+          <h1 class="post-title" itemprop="name headline">TSCTF_2019_pwn前四题writeups</h1>
         
 
         <div class="post-meta">
@@ -491,7 +491,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/05/18/tsctf-2019-pwn-writeups/" title="tsctf_2019_pwn前四题writeups">https://xiaoxiaorenwu.top/2019/05/18/tsctf-2019-pwn-writeups/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/05/18/tsctf-2019-pwn-writeups/" title="TSCTF_2019_pwn前四题writeups">https://xiaoxiaorenwu.top/2019/05/18/tsctf-2019-pwn-writeups/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -607,7 +607,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
