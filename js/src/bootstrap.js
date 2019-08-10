@@ -1,12 +1,12 @@
 $(document).ready(function () {
     // ���ͷ��������һ���������ǵĹ��ܣ����ѡȡ1������ͼ�����صĴ���
     var backgroundImgUrls = [
-        "/images/1",
-        "/images/3",
-        "/images/5",
-		"/images/8",
-		"/images/11",
-		"/images/12",
+        "/images/1.jpg",
+        "/images/2.jpg",
+        "/images/3.jpg",
+        "/images/4.jpg",
+        "/images/5.jpg",
+        "/images/6.jpg",
     ];
     var randomIndex = Math.floor(Math.random() * (backgroundImgUrls.length + 1));
     if (randomIndex == backgroundImgUrls.length) {
