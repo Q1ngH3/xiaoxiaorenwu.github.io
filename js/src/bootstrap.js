@@ -4,9 +4,7 @@ $(document).ready(function () {
         "/images/1.jpg",
         "/images/3.jpg",
         "/images/5.jpg",
-		"/images/7.jpg",
 		"/images/8.jpg",
-		"/images/10.jpg",
 		"/images/11.jpg",
 		"/images/12.jpg",
     ];
