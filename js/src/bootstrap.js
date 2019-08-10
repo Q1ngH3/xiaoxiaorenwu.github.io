@@ -2,11 +2,13 @@ $(document).ready(function () {
     // ���ͷ��������һ���������ǵĹ��ܣ����ѡȡ1������ͼ�����صĴ���
     var backgroundImgUrls = [
         "/images/1.jpg",
-        "/images/2.jpg",
         "/images/3.jpg",
-        "/images/4.jpg",
         "/images/5.jpg",
-        "/images/6.jpg",
+		"/images/7.jpg",
+		"/images/8.jpg",
+		"/images/10.jpg",
+		"/images/11.jpg",
+		"/images/12.jpg",
     ];
     var randomIndex = Math.floor(Math.random() * (backgroundImgUrls.length + 1));
     if (randomIndex == backgroundImgUrls.length) {
