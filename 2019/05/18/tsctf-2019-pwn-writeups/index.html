@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="QingHe">
 <meta property="og:description" content="NOFIFE思路：因为两次输入栈上数据，可以第一次泄露出canary和程序基址，第二次利用rop调用puts函数打印出read函数的实际地址泄露出libc，并把程序的最后的ret_addr改为main，当再次从头开始运行时利用rop在bss段伪造一个rilimit结构体，将其值设置为合理值即可，然后调用setrlimit()函数解除文件打开数量为零的限制，最后用system()打开shell（on">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-01T01:28:22.791Z">
+<meta property="og:updated_time" content="2019-08-10T02:41:38.353Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TSCTF_2019_pwn前四题writeups">
 <meta name="twitter:description" content="NOFIFE思路：因为两次输入栈上数据，可以第一次泄露出canary和程序基址，第二次利用rop调用puts函数打印出read函数的实际地址泄露出libc，并把程序的最后的ret_addr改为main，当再次从头开始运行时利用rop在bss段伪造一个rilimit结构体，将其值设置为合理值即可，然后调用setrlimit()函数解除文件打开数量为零的限制，最后用system()打开shell（on">
@@ -351,8 +351,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-writeups/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-writeups</span>
+                  <a href="/categories/ctf-pwn-2019TSCTFwp/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf-pwn-2019TSCTFwp</span>
                   </a>
                 </span>
 
@@ -618,7 +618,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -629,7 +629,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

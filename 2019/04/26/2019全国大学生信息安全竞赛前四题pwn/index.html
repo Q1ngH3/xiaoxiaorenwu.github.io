@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="pwn,">
+  <meta name="keywords" content="ctf,pwn,堆,栈">
 
 
 
@@ -85,7 +85,6 @@
 
 
 <meta name="description" content="前言：这次比赛很尴尬，我本来以为自己报上了名，但是结果没报上。。。只能让同学给我发题目然后自己做，没法拿flag，一共六题，只做出来四题，两题栈，两题堆，最后两题做出来的队伍个数都是16个，显然不是我这小破邮大一菜狗可以做出来的 Or2。 所有的二进制文件都在这里：题目的二进制文件 栈部分：0x1   第一天_your_pwn:0x11功能分析和漏洞寻找：首先gdb看一下题目基本信息，是64位的程">
-<meta name="keywords" content="pwn">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2019全国大学生信息安全竞赛初赛pwn前四题writeups">
 <meta property="og:url" content="http://yoursite.com/2019/04/26/2019全国大学生信息安全竞赛前四题pwn/index.html">
@@ -103,7 +102,7 @@
 <meta property="og:image" content="https://i.loli.net/2019/04/22/5cbd76773bde9.png">
 <meta property="og:image" content="https://i.loli.net/2019/04/22/5cbd7672c735b.png">
 <meta property="og:image" content="https://i.loli.net/2019/04/22/5cbd7676bf4d9.png">
-<meta property="og:updated_time" content="2019-04-25T16:37:43.511Z">
+<meta property="og:updated_time" content="2019-08-10T02:39:32.627Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2019全国大学生信息安全竞赛初赛pwn前四题writeups">
 <meta name="twitter:description" content="前言：这次比赛很尴尬，我本来以为自己报上了名，但是结果没报上。。。只能让同学给我发题目然后自己做，没法拿flag，一共六题，只做出来四题，两题栈，两题堆，最后两题做出来的队伍个数都是16个，显然不是我这小破邮大一菜狗可以做出来的 Or2。 所有的二进制文件都在这里：题目的二进制文件 栈部分：0x1   第一天_your_pwn:0x11功能分析和漏洞寻找：首先gdb看一下题目基本信息，是64位的程">
@@ -364,8 +363,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-writeups/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-writeups</span>
+                  <a href="/categories/ctf-pwn-国赛wp/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf-pwn-国赛wp</span>
                   </a>
                 </span>
 
@@ -464,9 +463,7 @@
 <p>至于ret2_dl_resolve的教程在wiki上有，这篇文章也很详细：<a href="http://pwn4.fun/2016/11/09/Return-to-dl-resolve/" target="_blank" rel="noopener">ret2_dl_resolve</a>，我就不斗胆再说了orz，这里只分享一些我的感悟：</p>
 <h3 id="0x22-ret2-dl-runtime-solve-总结："><a href="#0x22-ret2-dl-runtime-solve-总结：" class="headerlink" title="0x22 ret2_dl_runtime_solve 总结："></a>0x22 ret2_dl_runtime_solve 总结：</h3><p>需要对三个部分和函数延迟绑定技术的流程熟悉：</p>
 <ol>
-<li>.rel.plt节(函数重定位表)的结构体：     //readelf  -r   <filename><br>typedef struct {<pre><code>Elf32_Addr r_offset;    // 即got表的条目
-Elf32_Word r_info;      // 很重要，为重点伪造对象。
-</code></pre>} Elf32_Rel;<br>#define ELF32_R_SYM(info) ((info)&gt;&gt;8)<br>#define ELF32_R_TYPE(info) ((unsigned char)(info))<br>#define ELF32_R_INFO(sym, type) (((sym)&lt;&lt;8)+(unsigned char)(type))</filename></li>
+<li>.rel.plt节(函数重定位表)的结构体：     //readelf  -r   <filename><br>typedef struct {<br>​    Elf32_Addr r_offset;    // 即got表的条目<br>​    Elf32_Word r_info;      // 很重要，为重点伪造对象。<br>} Elf32_Rel;<br>#define ELF32_R_SYM(info) ((info)&gt;&gt;8)<br>#define ELF32_R_TYPE(info) ((unsigned char)(info))<br>#define ELF32_R_INFO(sym, type) (((sym)&lt;&lt;8)+(unsigned char)(type))</filename></li>
 <li>.dynsym节(动态链接符号表)的结构体（其大小在32位中为0x10）：<br>typedef struct<br>{<br>Elf32_Word st_name;     // 函数名字符串相对于.dynstr节起始地址的偏移<br>Elf32_Addr st_value;    // Symbol value<br>Elf32_Word st_size;     // Symbol size<br>unsigned char st_info;  // Symbol type and binding<br>unsigned char st_other; // Symbol visibility under glibc&gt;=2.2<br>Elf32_Section st_shndx; // Section index<br>} Elf32_Sym;</li>
 <li>.dynstr节（动态链接的字符串）中储存了函数名。</li>
 </ol>
@@ -572,12 +569,6 @@ Elf32_Word r_info;      // 很重要，为重点伪造对象。
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn/" rel="tag"><i class="fa fa-tag"></i> pwn</a>
-          
-        </div>
       
 
       
@@ -693,7 +684,7 @@ Elf32_Word r_info;      // 很重要，为重点伪造对象。
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -704,7 +695,7 @@ Elf32_Word r_info;      // 很重要，为重点伪造对象。
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

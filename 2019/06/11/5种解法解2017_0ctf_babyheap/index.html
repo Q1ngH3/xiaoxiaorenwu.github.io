@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="ctf,pwn,堆,栈">
+  <meta name="keywords" content="多解,">
 
 
 
@@ -85,6 +85,7 @@
 
 
 <meta name="description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 题目放在我的github上：2017_0CTF_babyheap 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储">
+<meta name="keywords" content="多解">
 <meta property="og:type" content="article">
 <meta property="og:title" content="5种解法解2017_0ctf_babyheap">
 <meta property="og:url" content="http://yoursite.com/2019/06/11/5种解法解2017_0ctf_babyheap/index.html">
@@ -97,7 +98,7 @@
 <meta property="og:image" content="https://i.loli.net/2019/04/03/5ca4a2427d8c3.png">
 <meta property="og:image" content="https://i.loli.net/2019/06/09/5cfcf8b138af497064.png">
 <meta property="og:image" content="https://i.loli.net/2019/06/09/5cfcf90a145b427292.png">
-<meta property="og:updated_time" content="2019-06-16T10:46:52.100Z">
+<meta property="og:updated_time" content="2019-08-10T02:35:29.551Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5种解法解2017_0ctf_babyheap">
 <meta name="twitter:description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 题目放在我的github上：2017_0CTF_babyheap 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储">
@@ -358,8 +359,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-writeups/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-writeups</span>
+                  <a href="/categories/ctf-pwn-wp/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf-pwn-wp</span>
                   </a>
                 </span>
 
@@ -538,6 +539,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/多解/" rel="tag"><i class="fa fa-tag"></i> 多解</a>
+          
+        </div>
+      
 
       
       
@@ -652,7 +659,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -663,7 +670,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
