@@ -92,12 +92,15 @@
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="我自己做的一张图，来警醒自己只学了pwn的七分之一个大板块里的一点点皮毛，学无止境，你我共勉。 前言：这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。。我静下心想了半天。。觉得自己遇到瓶颈的原因">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/08/18/ZjUr9hLiM37vuCN.png">
-<meta property="og:updated_time" content="2019-08-18T13:04:05.754Z">
+<meta property="og:image" content="https://i.loli.net/2019/08/26/5dBO7tcMKrQLn3F.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/wnAKORXk6M2Vaeu.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/7P9W5DRLQG3iIn2.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/VxpeJBGdDqaU892.png">
+<meta property="og:updated_time" content="2019-08-28T14:35:29.482Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小心得2">
 <meta name="twitter:description" content="我自己做的一张图，来警醒自己只学了pwn的七分之一个大板块里的一点点皮毛，学无止境，你我共勉。 前言：这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。。我静下心想了半天。。觉得自己遇到瓶颈的原因">
-<meta name="twitter:image" content="https://i.loli.net/2019/08/18/ZjUr9hLiM37vuCN.png">
+<meta name="twitter:image" content="https://i.loli.net/2019/08/26/5dBO7tcMKrQLn3F.png">
 
 
 
@@ -378,7 +381,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2k
+                  2.9k
                 </span>
               
 
@@ -394,7 +397,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6 min
+                  10 min
                 </span>
               
             </div>
@@ -415,7 +418,7 @@
       
 
       
-        <p><img src="https://i.loli.net/2019/08/18/ZjUr9hLiM37vuCN.png" alt="PWN.png"></p>
+        <p><img src="https://i.loli.net/2019/08/26/5dBO7tcMKrQLn3F.png" alt="1.PNG"></p>
 <p>我自己做的一张图，来警醒自己只学了pwn的七分之一个大板块里的一点点皮毛，学无止境，你我共勉。</p>
 <h1 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h1><p>这算是写给自己看的一篇水文，呃，暑假也快过完了。。。各种大型比赛的题，来源奇怪的题也刷了不少了。。。但总感觉自己遇到了瓶颈。。。具体说也说不上来。。。虽然在跟着天枢打比赛，但是感觉个人能力没有在很高效地提升，这样下去以后很难独当一面，顶起战队的大梁。。。我静下心想了半天。。觉得自己遇到瓶颈的原因主要有以下几个方面：</p>
 <ul>
@@ -463,6 +466,199 @@
 </ul>
 <h2 id="库函数自身漏洞："><a href="#库函数自身漏洞：" class="headerlink" title="库函数自身漏洞："></a>库函数自身漏洞：</h2><h3 id="printf"><a href="#printf" class="headerlink" title="printf"></a>printf</h3><h3 id="printf-chk"><a href="#printf-chk" class="headerlink" title="__printf_chk"></a>__printf_chk</h3><h3 id="scanf"><a href="#scanf" class="headerlink" title="scanf"></a>scanf</h3><h3 id="abs"><a href="#abs" class="headerlink" title="abs"></a>abs</h3><h3 id="snprintf"><a href="#snprintf" class="headerlink" title="snprintf"></a>snprintf</h3><h3 id="strchr"><a href="#strchr" class="headerlink" title="strchr"></a>strchr</h3><h2 id="其他（算是特点，不算是漏洞了其实）："><a href="#其他（算是特点，不算是漏洞了其实）：" class="headerlink" title="其他（算是特点，不算是漏洞了其实）："></a>其他（算是特点，不算是漏洞了其实）：</h2><h3 id="类编辑操作次数不限："><a href="#类编辑操作次数不限：" class="headerlink" title="类编辑操作次数不限："></a>类编辑操作次数不限：</h3><p>常见的有堆题的upgrade功能，有的逻辑复杂的程序会自定义类编辑操作，如果次数不限的话，就很好用，哪怕一次只能对一个字节进行操作，1 * 无限 = 无限。</p>
 <h3 id="无干扰字符："><a href="#无干扰字符：" class="headerlink" title="无干扰字符："></a>无干扰字符：</h3><p>可以输入空，也就是碰到回车直接返回不会补零干扰content，这是一个很方便的点。</p>
+<h3 id="最难的一类漏洞："><a href="#最难的一类漏洞：" class="headerlink" title="最难的一类漏洞："></a>最难的一类漏洞：</h3><p>程序自身功能设计不严密导致的逻辑漏洞。。。这个很难描述，但是找的难度真的很大，一般扫了多遍题目都没有找到奇怪的地方，很有可能就是这一类。。。一般程序出现某个地方显得很诡异（就是那种直接看似乎没啥毛病，但是和其他功能配合起来就会产生逻辑漏洞。。。）。。或是一个有点陌生的函数。。</p>
+<p>需要很深的理解程序。。但是一般利用起来不难，exp短而精。。。。</p>
+<h1 id="一个表，方便查找数据类型："><a href="#一个表，方便查找数据类型：" class="headerlink" title="一个表，方便查找数据类型："></a>一个表，方便查找数据类型：</h1><ul>
+<li>2015/06/09</li>
+</ul>
+<p>Visual C++ 32 位和 64 位编译器可识别本文后面的表中的类型。</p>
+<ul>
+<li>int (unsigned int)</li>
+<li><strong>int8 (unsigned </strong>int8)</li>
+<li><strong>int16 (unsigned </strong>int16)</li>
+<li><strong>int32 (unsigned </strong>int32)</li>
+<li><strong>int64 (unsigned </strong>int64)</li>
+<li>short (unsigned short)</li>
+<li>long (unsigned long)</li>
+<li>long long (unsigned long long)</li>
+</ul>
+<p>如果其名称以两个下划线 (__) 开始，则数据类型是非标准的。</p>
+<p>下表中指定的范围均包含起始值和结束值。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">类型名称</th>
+<th style="text-align:left">字节</th>
+<th style="text-align:left">其他名称</th>
+<th style="text-align:left">值的范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">int</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">signed</td>
+<td style="text-align:left">–2,147,483,648 到 2,147,483,647</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned int</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">unsigned</td>
+<td style="text-align:left">0 到 4,294,967,295</td>
+</tr>
+<tr>
+<td style="text-align:left">__int8</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">char</td>
+<td style="text-align:left">–128 到 127</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned __int8</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">unsigned char</td>
+<td style="text-align:left">0 到 255</td>
+</tr>
+<tr>
+<td style="text-align:left">__int16</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">short、short int、signed short int</td>
+<td style="text-align:left">–32,768 到 32,767</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned __int16</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">unsigned short、unsigned short int</td>
+<td style="text-align:left">0 到 65,535</td>
+</tr>
+<tr>
+<td style="text-align:left">__int32</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">signed、signed int、int</td>
+<td style="text-align:left">–2,147,483,648 到 2,147,483,647</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned __int32</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">unsigned、unsigned int</td>
+<td style="text-align:left">0 到 4,294,967,295</td>
+</tr>
+<tr>
+<td style="text-align:left">__int64</td>
+<td style="text-align:left">8</td>
+<td style="text-align:left">long long、signed long long</td>
+<td style="text-align:left">–9,223,372,036,854,775,808 到 9,223,372,036,854,775,807</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned __int64</td>
+<td style="text-align:left">8</td>
+<td style="text-align:left">unsigned long long</td>
+<td style="text-align:left">0 到 18,446,744,073,709,551,615</td>
+</tr>
+<tr>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">false 或 true</td>
+</tr>
+<tr>
+<td style="text-align:left">char</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">-128 到 127（默认）0 到 255（当使用 <a href="https://docs.microsoft.com/zh-cn/previous-versions/0d294k5z(v%3dvs.120" target="_blank" rel="noopener">/J</a>) 编译时）</td>
+</tr>
+<tr>
+<td style="text-align:left">signed char</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">–128 到 127</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned char</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">0 到 255</td>
+</tr>
+<tr>
+<td style="text-align:left">short</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">short int、signed short int</td>
+<td style="text-align:left">–32,768 到 32,767</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned short</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">unsigned short int</td>
+<td style="text-align:left">0 到 65,535</td>
+</tr>
+<tr>
+<td style="text-align:left">long</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">long int、signed long int</td>
+<td style="text-align:left">–2,147,483,648 到 2,147,483,647</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">unsigned long int</td>
+<td style="text-align:left">0 到 4,294,967,295</td>
+</tr>
+<tr>
+<td style="text-align:left">long long</td>
+<td style="text-align:left">8</td>
+<td style="text-align:left">无（与 __int64 等效）</td>
+<td style="text-align:left">–9,223,372,036,854,775,808 到 9,223,372,036,854,775,807</td>
+</tr>
+<tr>
+<td style="text-align:left">unsigned long long</td>
+<td style="text-align:left">8</td>
+<td style="text-align:left">无（与无符号的 __int64 等效）</td>
+<td style="text-align:left">0 到 18,446,744,073,709,551,615</td>
+</tr>
+<tr>
+<td style="text-align:left">enum</td>
+<td style="text-align:left">varies</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">请参阅本文后面的备注。</td>
+</tr>
+<tr>
+<td style="text-align:left">float</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">3.4E +/- 38（7 位数）</td>
+</tr>
+<tr>
+<td style="text-align:left">double</td>
+<td style="text-align:left">8</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">1.7E +/- 308（15 位数）</td>
+</tr>
+<tr>
+<td style="text-align:left">long double</td>
+<td style="text-align:left">与 double 相同</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">与 double 相同</td>
+</tr>
+<tr>
+<td style="text-align:left">wchar_t</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">__wchar_t</td>
+<td style="text-align:left">0 到 65,535</td>
+</tr>
+</tbody>
+</table>
+<p>根据使用方式，__wchar_t 的变量指定宽字符类型或多字节字符类型。 在字符或字符串常量前使用 L 前缀以指定宽字符类型常量。</p>
+<p>signed 和 unsigned 是可用于任何整型（bool 除外）的修饰符。 请注意，对于重载和模板等机制而言，char、signed char 和 unsigned char 是三种不同的类型。</p>
+<p>int 和 unsigned int 类型具有四个字节的大小。 但是，由于语言标准允许可移植代码特定于实现，因此该代码不应依赖于 int 的大小。</p>
+<p>Visual Studio 中的 C/C++ 还支持按大小分类的整型。 有关更多信息，请参见<a href="https://docs.microsoft.com/zh-cn/previous-versions/29dh1w7z(v%3dvs.120" target="_blank" rel="noopener"><strong>int8、</strong>int16、<strong>int32、</strong>int64</a>)和<a href="https://docs.microsoft.com/zh-cn/previous-versions/296az74e(v%3dvs.120" target="_blank" rel="noopener">整数限制</a>)。</p>
+<p>有关每个类型的大小限制的详细信息，请参阅<a href="https://docs.microsoft.com/zh-cn/previous-versions/cc953fe1(v%3dvs.120" target="_blank" rel="noopener">基本类型 (C++)</a>)。</p>
+<p>枚举类型的范围因语言上下文和指定的编译器标志而异。 有关更多信息，请参见<a href="https://docs.microsoft.com/zh-cn/previous-versions/whbyts4t(v%3dvs.120" target="_blank" rel="noopener">C 枚举声明</a>)和<a href="https://docs.microsoft.com/zh-cn/previous-versions/2dzy4k6e(v%3dvs.120" target="_blank" rel="noopener">C++ 枚举声明</a>)。</p>
+<h2 id="请参见"><a href="#请参见" class="headerlink" title="请参见"></a>请参见</h2><h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://docs.microsoft.com/zh-cn/previous-versions/2e6a4at9(v%3dvs.120" target="_blank" rel="noopener">C++ 关键字</a>)</p>
+<p><a href="https://docs.microsoft.com/zh-cn/previous-versions/cc953fe1(v%3dvs.120" target="_blank" rel="noopener">基本类型 (C++)</a>)</p>
+<h1 id="一点小发现："><a href="#一点小发现：" class="headerlink" title="一点小发现："></a>一点小发现：</h1><p>系统调用里存在syscall的地址，且貌似都是<code>func_addr+0xe</code>。。让我想起<code>unprintable</code>里那个用puts的残留栈数据加<code>partial overwrite</code>来产生<code>syscall</code>的技巧。。。</p>
+<p>看图：</p>
+<p><img src="https://i.loli.net/2019/08/28/wnAKORXk6M2Vaeu.png" alt="2.PNG"></p>
+<p><img src="https://i.loli.net/2019/08/28/7P9W5DRLQG3iIn2.png" alt="3.PNG"></p>
+<p><img src="https://i.loli.net/2019/08/28/VxpeJBGdDqaU892.png" alt="4.PNG"></p>
 
       
     </div>
@@ -737,7 +933,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言："><span class="nav-number">1.</span> <span class="nav-text">前言：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我个人对题目的等级划分："><span class="nav-number">2.</span> <span class="nav-text">我个人对题目的等级划分：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞整理："><span class="nav-number">3.</span> <span class="nav-text">漏洞整理：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#溢出类漏洞："><span class="nav-number">3.1.</span> <span class="nav-text">溢出类漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈溢出："><span class="nav-number">3.1.1.</span> <span class="nav-text">栈溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆溢出："><span class="nav-number">3.1.2.</span> <span class="nav-text">堆溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数溢出-字符溢出："><span class="nav-number">3.1.3.</span> <span class="nav-text">整数溢出/字符溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组下标缺失检查"><span class="nav-number">3.1.4.</span> <span class="nav-text">数组下标缺失检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间复用："><span class="nav-number">3.1.5.</span> <span class="nav-text">空间复用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">3.1.6.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑类漏洞："><span class="nav-number">3.2.</span> <span class="nav-text">逻辑类漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件竞争："><span class="nav-number">3.2.1.</span> <span class="nav-text">条件竞争：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运算符优先级："><span class="nav-number">3.2.2.</span> <span class="nav-text">运算符优先级：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态检查："><span class="nav-number">3.2.3.</span> <span class="nav-text">状态检查：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#极端情况漏洞："><span class="nav-number">3.3.</span> <span class="nav-text">极端情况漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#极大："><span class="nav-number">3.3.1.</span> <span class="nav-text">极大：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极小："><span class="nav-number">3.3.2.</span> <span class="nav-text">极小：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#库函数自身漏洞："><span class="nav-number">3.4.</span> <span class="nav-text">库函数自身漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#printf"><span class="nav-number">3.4.1.</span> <span class="nav-text">printf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#printf-chk"><span class="nav-number">3.4.2.</span> <span class="nav-text">__printf_chk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scanf"><span class="nav-number">3.4.3.</span> <span class="nav-text">scanf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#abs"><span class="nav-number">3.4.4.</span> <span class="nav-text">abs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#snprintf"><span class="nav-number">3.4.5.</span> <span class="nav-text">snprintf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strchr"><span class="nav-number">3.4.6.</span> <span class="nav-text">strchr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他（算是特点，不算是漏洞了其实）："><span class="nav-number">3.5.</span> <span class="nav-text">其他（算是特点，不算是漏洞了其实）：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类编辑操作次数不限："><span class="nav-number">3.5.1.</span> <span class="nav-text">类编辑操作次数不限：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无干扰字符："><span class="nav-number">3.5.2.</span> <span class="nav-text">无干扰字符：</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言："><span class="nav-number">1.</span> <span class="nav-text">前言：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我个人对题目的等级划分："><span class="nav-number">2.</span> <span class="nav-text">我个人对题目的等级划分：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞整理："><span class="nav-number">3.</span> <span class="nav-text">漏洞整理：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#溢出类漏洞："><span class="nav-number">3.1.</span> <span class="nav-text">溢出类漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈溢出："><span class="nav-number">3.1.1.</span> <span class="nav-text">栈溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆溢出："><span class="nav-number">3.1.2.</span> <span class="nav-text">堆溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数溢出-字符溢出："><span class="nav-number">3.1.3.</span> <span class="nav-text">整数溢出/字符溢出：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组下标缺失检查"><span class="nav-number">3.1.4.</span> <span class="nav-text">数组下标缺失检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间复用："><span class="nav-number">3.1.5.</span> <span class="nav-text">空间复用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">3.1.6.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑类漏洞："><span class="nav-number">3.2.</span> <span class="nav-text">逻辑类漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件竞争："><span class="nav-number">3.2.1.</span> <span class="nav-text">条件竞争：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运算符优先级："><span class="nav-number">3.2.2.</span> <span class="nav-text">运算符优先级：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态检查："><span class="nav-number">3.2.3.</span> <span class="nav-text">状态检查：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#极端情况漏洞："><span class="nav-number">3.3.</span> <span class="nav-text">极端情况漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#极大："><span class="nav-number">3.3.1.</span> <span class="nav-text">极大：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极小："><span class="nav-number">3.3.2.</span> <span class="nav-text">极小：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#库函数自身漏洞："><span class="nav-number">3.4.</span> <span class="nav-text">库函数自身漏洞：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#printf"><span class="nav-number">3.4.1.</span> <span class="nav-text">printf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#printf-chk"><span class="nav-number">3.4.2.</span> <span class="nav-text">__printf_chk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scanf"><span class="nav-number">3.4.3.</span> <span class="nav-text">scanf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#abs"><span class="nav-number">3.4.4.</span> <span class="nav-text">abs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#snprintf"><span class="nav-number">3.4.5.</span> <span class="nav-text">snprintf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strchr"><span class="nav-number">3.4.6.</span> <span class="nav-text">strchr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他（算是特点，不算是漏洞了其实）："><span class="nav-number">3.5.</span> <span class="nav-text">其他（算是特点，不算是漏洞了其实）：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类编辑操作次数不限："><span class="nav-number">3.5.1.</span> <span class="nav-text">类编辑操作次数不限：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无干扰字符："><span class="nav-number">3.5.2.</span> <span class="nav-text">无干扰字符：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最难的一类漏洞："><span class="nav-number">3.5.3.</span> <span class="nav-text">最难的一类漏洞：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一个表，方便查找数据类型："><span class="nav-number">4.</span> <span class="nav-text">一个表，方便查找数据类型：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#请参见"><span class="nav-number">4.1.</span> <span class="nav-text">请参见</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#一点小发现："><span class="nav-number">5.</span> <span class="nav-text">一点小发现：</span></a></li></div>
             
 
           </div>
