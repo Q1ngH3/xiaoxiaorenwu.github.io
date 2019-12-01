@@ -84,18 +84,18 @@
 
 
 
-<meta name="description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。 写（">
+<meta name="description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
 <meta name="keywords" content="pwn基础,小心得">
 <meta property="og:type" content="article">
 <meta property="og:title" content="格式化字符串小心得">
 <meta property="og:url" content="http://yoursite.com/2019/03/31/格式化字符串小心得/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。 写（">
+<meta property="og:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-31T09:47:23.505Z">
+<meta property="og:updated_time" content="2019-12-01T12:52:34.165Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="格式化字符串小心得">
-<meta name="twitter:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。 写（">
+<meta name="twitter:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
 
 
 
@@ -398,7 +398,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  586
+                  595
                 </span>
               
 
@@ -439,26 +439,26 @@
 <li>虽然做的题目不多，但是还是有一点感悟，小总结一下。</li>
 <li>格式化字符串漏洞可以实现的事情：</li>
 <li><ol>
-<li>读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86-64的偏移计算方法的差别。</li>
+<li>读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要<code>ELF</code>功能来获取<code>got</code>表地址，payload一般为<code>‘%k$s’+p32(fun_got)</code>，k为<code>fun_got</code>这个字符串所在位置的偏移，还要注意<code>x86</code>和<code>x86_64</code>的偏移计算方法的差别。</li>
 <li>写（篡改）：<ol>
 <li>篡改某一个函数的got表内容，这个函数选择很重要，可能决定了exp的复杂程度：<ol>
-<li>当程序没有循环时，尽量选择printf()之后的函数，实在不行只能同时改两个地址，一个选择的函数的地址，一个fini_arry首元素的内容为start的地址，使程序重新运行。</li>
+<li>当程序没有循环时，尽量选择<code>printf()</code>之后的函数，实在不行只能同时改两个地址，一个选择的函数的地址，一个<code>fini_arry</code>首元素的内容为<code>start</code>的地址，使程序重新运行。</li>
 <li>当程序有循环时就无需那么麻烦。</li>
 </ol>
 </li>
-<li>看程序中有无system(‘/bin/sh’):<ol>
-<li>有的话难度较低，将printf之后的一个函数的got表改成system(‘/bin/sh’)的地址即可，再想办使这个函数被调用。</li>
-<li>没有的话得先用读的功能泄露Libc版本，然后获取system函数的地址，这时候所选择函数必须是类似这种：puts(buf),printf(buf)这种，并且buf必须可输入，这样才可将buf改为‘/bin/sh’并调用system(‘/bin/sh’)。</li>
+<li>看程序中有无<code>system(&#39;/bin/sh&#39;)</code>:<ol>
+<li>有的话难度较低，将printf之后的一个函数的got表改成<code>system(&#39;/bin/sh&#39;)</code>的地址即可，再想办使这个函数被调用。</li>
+<li>没有的话得先用读的功能泄露<code>Libc</code>版本，然后获取system函数的地址，这时候所选择函数必须是类似这种：<code>puts(buf)</code>，<code>printf(buf)</code>这种，并且buf必须可输入，这样才可将buf改为<code>‘/bin/sh’</code>并调用<code>system(&#39;/bin/sh&#39;)</code>。</li>
 </ol>
 </li>
 <li>特殊情况：<ol>
-<li>改写某一数据使其符合if语句条件从而调用if之后的system(‘/bin/sh’)。</li>
-<li>改写printf函数的调用函数（不是main函数）的返回地址，使其返回到system(‘/bin/sh’)上。这里比较特殊，需要调用函数不太复杂，其中没有很多变量，才能使得其bp能在偏移中找到，然后才能确定offset。进而用读的方式获取返回地址，然后篡改。</li>
+<li>改写某一数据使其符合<code>if</code>语句条件从而调用<code>if</code>之后的<code>system(&#39;/bin/sh&#39;)</code>。</li>
+<li>改写<code>printf</code>函数的调用函数（不是main函数）的返回地址，使其返回到<code>system(&#39;/bin/sh&#39;)</code>上。这里比较特殊，需要调用函数不太复杂，其中没有很多变量，才能使得其<code>bp</code>能在偏移中找到，然后才能确定<code>offset</code>。进而用读的方式获取返回地址，然后篡改。</li>
 </ol>
 </li>
 <li>利用形式：<ol>
-<li>x86：单个改写可用fmtstr_payload=(k,{fun_got:sys_addr})，较简单。</li>
-<li>x64：因为地址中带有‘\x00’所以直接用%k$lln改写时不能将p64(fun_got)放到‘%k$lln’前面，否则会截断，只能将其放在后面。或者采用$hn的方法改写尾部。</li>
+<li><code>x86</code>：单个改写可用<code>fmtstr_payload=(k,{fun_got:sys_addr})</code>，较简单。</li>
+<li><code>x86_64</code>：因为地址中带有<code>‘\x00’</code>所以直接用<code>%k$lln</code>改写时不能将<code>p64(fun_got)</code>放到<code>‘%k$lln’</code>前面，否则会截断，只能将其放在后面。或者采用<code>$hn</code>的方法改写尾部。</li>
 <li>注意两个对齐：格式化字符串字节数与地址对齐，输出长度与改写数据对齐。</li>
 </ol>
 </li>
