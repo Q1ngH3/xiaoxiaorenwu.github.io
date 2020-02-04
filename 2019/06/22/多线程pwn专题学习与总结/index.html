@@ -110,7 +110,7 @@
 <meta property="og:image" content="https://i.loli.net/2019/06/29/5d170d31342b614457.png">
 <meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadarena.png">
 <meta property="og:image" content="https://i.loli.net/2019/10/06/r8o9xdunzmeaiRf.png">
-<meta property="og:updated_time" content="2019-10-06T08:49:05.314Z">
+<meta property="og:updated_time" content="2020-01-16T14:48:13.833Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多线程pwn专题学习与总结">
 <meta name="twitter:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
@@ -454,7 +454,7 @@
       
 
       
-        <p>因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。</p>
+        <p>因为近期为了获得参加暑假方班夏令营的资格去<code>digapis</code>的平台上刷题，有幸做到了<code>T3LS</code>大佬出的<code>girlfriend</code>这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。</p>
 <p>（我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写得已经很详尽了，也没必要在写拙文。。但是总有一天我也会成为大师傅的么orz，所以现在开始逐渐记录自己学习新技术的过程，之前的就懒得写了，也没学到啥反正。。）</p>
 <h1 id="对于ptmalloc2中多线程方面的知识："><a href="#对于ptmalloc2中多线程方面的知识：" class="headerlink" title="对于ptmalloc2中多线程方面的知识："></a>对于ptmalloc2中多线程方面的知识：</h1><p>在早期的 Linux 里，dlmalloc 被用做默认的内存分配器。但之后因为 ptmalloc2 添加了线程支持，ptmalloc2 成为了 Linux 默认内存分配器。线程支持可帮助提升内存分配器以及应用程序的性能。在 dlmalloc 里，当两个线程同时调用 malloc 时，只有一个线程能进入到临界段，因为这里的<code>free list</code>是所有可用线程共用的。因此内存分配器要在多线程应用里耗费时间，从而导致性能降低。</p>
 <p>ptmalloc2中，当多个线程同时调用malloc，内存会立即得到分配，因为每个线程有一个单独的<code>arena</code>，因此<code>free list</code>数据结构中（在ptmalloc2中是bins）保存的这些堆也是分开的。<strong>这种为每个线程分配一个单独的<code>arena</code>和<code>free list</code>数据结构（bins）的行为称为<code>per thread arena</code>。</strong></p>
@@ -867,7 +867,15 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
-                    <a href="https://ama2in9.top" title="ama2in9" target="_blank">ama2in9</a>
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
                   </li>
                 
               </ul>
