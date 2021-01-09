@@ -2034,7 +2034,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #630bff;
+  background: #41b0ff;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3331,6 +3331,13 @@ pre .javascript .function {
   .pagination {
     margin: 8px 0 0;
   }
+}
+body {
+  background: url("https://source.unsplash.com/random/1600x900");
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 @font-face {
   font-family: Zitiming;

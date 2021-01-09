@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="ctf,pwn,堆,栈">
+  <meta name="keywords" content="ctf,pwn,Qemu,kvm,虚拟化,LinuxKernel">
 
 
 
@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="说起来蛮丢人的，一直看大佬们做题都是用docker，而自己还一直用笨重的虚拟机，但是虚拟机又用习惯了，一直懒得整docker，直到一次线下赛19.04的ubuntu崩了，让我下定了要换docker的决心，昨天简单整了一下，在此记录一下。 docker在pwn里使用的方面我了解到的暂时主要有两个： 搭好环境，安好工具，用来做题：先从dockerhub上pull一个普通的ubuntu19.04，再ru">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-20T05:46:00.862Z">
+<meta property="og:updated_time" content="2021-01-09T03:30:26.792Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker初识">
 <meta name="twitter:description" content="说起来蛮丢人的，一直看大佬们做题都是用docker，而自己还一直用笨重的虚拟机，但是虚拟机又用习惯了，一直懒得整docker，直到一次线下赛19.04的ubuntu崩了，让我下定了要换docker的决心，昨天简单整了一下，在此记录一下。 docker在pwn里使用的方面我了解到的暂时主要有两个： 搭好环境，安好工具，用来做题：先从dockerhub上pull一个普通的ubuntu19.04，再ru">
@@ -351,8 +351,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/知识积累/" itemprop="url" rel="index">
-                    <span itemprop="name">知识积累</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -434,9 +434,9 @@
       
 
       
-        <p>说起来蛮丢人的，一直看大佬们做题都是用<code>docker</code>，而自己还一直用笨重的虚拟机，但是虚拟机又用习惯了，一直懒得整docker，直到一次线下赛19.04的ubuntu崩了，让我下定了要换<code>docker</code>的决心，昨天简单整了一下，在此记录一下。</p>
-<p>docker在pwn里使用的方面我了解到的暂时主要有两个：</p>
-<h2 id="搭好环境，安好工具，用来做题："><a href="#搭好环境，安好工具，用来做题：" class="headerlink" title="搭好环境，安好工具，用来做题："></a>搭好环境，安好工具，用来做题：</h2><p>先从dockerhub上pull一个普通的ubuntu19.04，再run起来：</p>
+        <p>说起来蛮丢人的，一直看大佬们做题都是用<code>docker</code>，而自己还一直用笨重的虚拟机，但是虚拟机又用习惯了，一直懒得整<code>docker</code>，直到一次线下赛<code>19.04</code>的<code>ubuntu</code>崩了，让我下定了要换<code>docker</code>的决心，昨天简单整了一下，在此记录一下。</p>
+<p><code>docker</code>在<code>pwn</code>里使用的方面我了解到的暂时主要有两个：</p>
+<h2 id="搭好环境，安好工具，用来做题："><a href="#搭好环境，安好工具，用来做题：" class="headerlink" title="搭好环境，安好工具，用来做题："></a>搭好环境，安好工具，用来做题：</h2><p>先从<code>dockerhub</code>上<code>pull</code>一个普通的<code>ubuntu19.04</code>，再<code>run</code>起来：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull ubuntu:19.04</span><br><span class="line">$ docker run -i -t --name create_env ubuntu:19.04 bash</span><br><span class="line"></span><br><span class="line"><span class="string">''</span><span class="string">'</span></span><br><span class="line"><span class="string">docker run：启动container</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ubuntu:19.04：你想要启动的image:tag</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-t：进入终端</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-i：获得一个交互式的连接，通过获取container的输入</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">bash：在container中启动一个bash shell</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Usage: docker run [OPTIONS] IMAGE [COMMAND] [ARG...]    </span></span><br><span class="line"><span class="string">02.  </span></span><br><span class="line"><span class="string">03.  -d, --detach=false         指定容器运行于前台还是后台，默认为false     </span></span><br><span class="line"><span class="string">04.  -i, --interactive=false   打开STDIN，用于控制台交互，常与-t一起使用</span></span><br><span class="line"><span class="string">05.  -t, --tty=false            分配tty设备，该可以支持终端登录，默认为false，常与-i一起使用 </span></span><br><span class="line"><span class="string">06.  -u, --user=""              指定容器的用户    </span></span><br><span class="line"><span class="string">07.  -a, --attach=[]            登录容器（必须是以docker run -d启动的容器）  </span></span><br><span class="line"><span class="string">08.  -w, --workdir=""           指定容器的工作目录   </span></span><br><span class="line"><span class="string">09.  -c, --cpu-shares=0        设置容器CPU权重，在CPU共享场景使用    </span></span><br><span class="line"><span class="string">10.  -e, --env=[]               指定环境变量，容器中可以使用该环境变量    </span></span><br><span class="line"><span class="string">11.  -m, --memory=""            指定容器的内存上限    </span></span><br><span class="line"><span class="string">12.  -P, --publish-all=false    指定容器暴露的端口    </span></span><br><span class="line"><span class="string">13.  -p, --publish=[]           指定容器暴露的端口   </span></span><br><span class="line"><span class="string">14.  -h, --hostname=""          指定容器的主机名    </span></span><br><span class="line"><span class="string">15.  -v, --volume=[]            给容器挂载存储卷，挂载到容器的某个目录    </span></span><br><span class="line"><span class="string">16.  --volumes-from=[]          给容器挂载其他容器上的卷，挂载到容器的某个目录  </span></span><br><span class="line"><span class="string">17.  --cap-add=[]               添加权限，权限清单详见：http://linux.die.net/man/7/capabilities    </span></span><br><span class="line"><span class="string">18.  --cap-drop=[]              删除权限，权限清单详见：http://linux.die.net/man/7/capabilities    </span></span><br><span class="line"><span class="string">19.  --cidfile=""               运行容器后，在指定文件中写入容器PID值，一种典型的监控系统用法    </span></span><br><span class="line"><span class="string">20.  --cpuset=""                设置容器可以使用哪些CPU，此参数可以用来容器独占CPU    </span></span><br><span class="line"><span class="string">21.  --device=[]                添加主机设备给容器，相当于设备直通    </span></span><br><span class="line"><span class="string">22.  --dns=[]                   指定容器的dns服务器    </span></span><br><span class="line"><span class="string">23.  --dns-search=[]            指定容器的dns搜索域名，写入到容器的/etc/resolv.conf文件    </span></span><br><span class="line"><span class="string">24.  --entrypoint=""            覆盖image的入口点    </span></span><br><span class="line"><span class="string">25.  --env-file=[]              指定环境变量文件，文件格式为每行一个环境变量    </span></span><br><span class="line"><span class="string">26.  --expose=[]                指定容器暴露的端口，即修改镜像的暴露端口    </span></span><br><span class="line"><span class="string">27.  --link=[]                  指定容器间的关联，使用其他容器的IP、env等信息    </span></span><br><span class="line"><span class="string">28.  --lxc-conf=[]              指定容器的配置文件，只有在指定--exec-driver=lxc时使用    </span></span><br><span class="line"><span class="string">29.  --name=""                  指定容器名字，后续可以通过名字进行容器管理，links特性需要使用名字    </span></span><br><span class="line"><span class="string">30.  --net="bridge"             容器网络设置:  </span></span><br><span class="line"><span class="string">31.                                bridge 使用docker daemon指定的网桥       </span></span><br><span class="line"><span class="string">32.                                host    //容器使用主机的网络    </span></span><br><span class="line"><span class="string">33.                                container:NAME_or_ID  &gt;//使用其他容器的网路，共享IP和PORT等网络资源    </span></span><br><span class="line"><span class="string">34.                                none 容器使用自己的网络（类似--net=bridge），但是不进行配置   </span></span><br><span class="line"><span class="string">35.  --privileged=false         指定容器是否为特权容器，特权容器拥有所有的capabilities    </span></span><br><span class="line"><span class="string">36.  --restart="no"             指定容器停止后的重启策略:  </span></span><br><span class="line"><span class="string">37.                                no：容器退出时不重启    </span></span><br><span class="line"><span class="string">38.                                on-failure：容器故障退出（返回值非零）时重启   </span></span><br><span class="line"><span class="string">39.                                always：容器退出时总是重启    </span></span><br><span class="line"><span class="string">40.  --rm=false                 指定容器停止后自动删除容器(不支持以docker run -d启动的容器)    </span></span><br><span class="line"><span class="string">41.  --sig-proxy=true           设置由代理接受并处理信号，但是SIGCHLD、SIGSTOP和SIGKILL不能被代理   </span></span><br><span class="line"><span class="string">'</span><span class="string">''</span></span><br></pre></td></tr></table></figure>
 <p>之后我们就进入了ubuntu19.04的docker内部，我们可以在这里装做题需要用到的工具。</p>
 <p>当然我们需要先换源，我用的是163的源，换源的命令行：</p>
@@ -545,8 +545,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/07/大型复盘：2019-强网杯线上赛部分pwn/" rel="next" title="大型复盘：2019_强网杯线上赛部分pwn">
-                <i class="fa fa-chevron-left"></i> 大型复盘：2019_强网杯线上赛部分pwn
+              <a href="/2019/08/07/大型复盘：2019-SCTF/" rel="next" title="2019SCTF">
+                <i class="fa fa-chevron-left"></i> 2019SCTF
               </a>
             
           </div>
@@ -555,8 +555,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/12/大型复盘：2019-DeLCTF/" rel="prev" title="大型复盘：2019_DeLCTF/magic exit">
-                大型复盘：2019_DeLCTF/magic exit <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/12/大型复盘：2019-DeLCTF/" rel="prev" title="2019De1CTF/magic_exit">
+                2019De1CTF/magic_exit <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -639,7 +639,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -650,7 +650,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -661,7 +661,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

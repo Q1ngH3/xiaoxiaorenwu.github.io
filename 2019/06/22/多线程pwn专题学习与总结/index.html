@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="多线程pwn,">
+  <meta name="keywords" content="summary,">
 
 
 
@@ -84,13 +84,13 @@
 
 
 
-<meta name="description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
-<meta name="keywords" content="多线程pwn">
+<meta name="description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 对于ptmalloc2中多线程方面的知识：在早期的 Linux 里，dlm">
+<meta name="keywords" content="summary">
 <meta property="og:type" content="article">
-<meta property="og:title" content="多线程pwn专题学习与总结">
+<meta property="og:title" content="多线程pwn学习与总结">
 <meta property="og:url" content="http://yoursite.com/2019/06/22/多线程pwn专题学习与总结/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
+<meta property="og:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 对于ptmalloc2中多线程方面的知识：在早期的 Linux 里，dlm">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadandmain.png">
 <meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadarena.png">
@@ -110,10 +110,10 @@
 <meta property="og:image" content="https://i.loli.net/2019/06/29/5d170d31342b614457.png">
 <meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadarena.png">
 <meta property="og:image" content="https://i.loli.net/2019/10/06/r8o9xdunzmeaiRf.png">
-<meta property="og:updated_time" content="2020-01-16T14:48:13.833Z">
+<meta property="og:updated_time" content="2021-01-09T04:02:49.237Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="多线程pwn专题学习与总结">
-<meta name="twitter:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 （我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写">
+<meta name="twitter:title" content="多线程pwn学习与总结">
+<meta name="twitter:description" content="因为近期为了获得参加暑假方班夏令营的资格去digapis的平台上刷题，有幸做到了T3LS大佬出的girlfriend这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。 对于ptmalloc2中多线程方面的知识：在早期的 Linux 里，dlm">
 <meta name="twitter:image" content="http://pwn4.fun/images/glibcmalloc/threadandmain.png">
 
 
@@ -150,7 +150,7 @@
 
 
 
-  <title>多线程pwn专题学习与总结 | xiaoxiaorenwu</title>
+  <title>多线程pwn学习与总结 | xiaoxiaorenwu</title>
   
 
 
@@ -336,7 +336,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">多线程pwn专题学习与总结</h1>
+          <h1 class="post-title" itemprop="name headline">多线程pwn学习与总结</h1>
         
 
         <div class="post-meta">
@@ -371,8 +371,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/专题分析-持续更新/" itemprop="url" rel="index">
-                    <span itemprop="name">专题分析-持续更新</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -417,7 +417,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  7.7k
+                  7.6k
                 </span>
               
 
@@ -433,7 +433,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  33 min
+                  32 min
                 </span>
               
             </div>
@@ -454,10 +454,9 @@
       
 
       
-        <p>因为近期为了获得参加暑假方班夏令营的资格去<code>digapis</code>的平台上刷题，有幸做到了<code>T3LS</code>大佬出的<code>girlfriend</code>这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的blog加上好几天的谷歌，决定来总结一下。</p>
-<p>（我突然发现我自己好像很少写学习的文章，都是题解，之前觉得大师傅们的文章写得已经很详尽了，也没必要在写拙文。。但是总有一天我也会成为大师傅的么orz，所以现在开始逐渐记录自己学习新技术的过程，之前的就懒得写了，也没学到啥反正。。）</p>
-<h1 id="对于ptmalloc2中多线程方面的知识："><a href="#对于ptmalloc2中多线程方面的知识：" class="headerlink" title="对于ptmalloc2中多线程方面的知识："></a>对于ptmalloc2中多线程方面的知识：</h1><p>在早期的 Linux 里，dlmalloc 被用做默认的内存分配器。但之后因为 ptmalloc2 添加了线程支持，ptmalloc2 成为了 Linux 默认内存分配器。线程支持可帮助提升内存分配器以及应用程序的性能。在 dlmalloc 里，当两个线程同时调用 malloc 时，只有一个线程能进入到临界段，因为这里的<code>free list</code>是所有可用线程共用的。因此内存分配器要在多线程应用里耗费时间，从而导致性能降低。</p>
-<p>ptmalloc2中，当多个线程同时调用malloc，内存会立即得到分配，因为每个线程有一个单独的<code>arena</code>，因此<code>free list</code>数据结构中（在ptmalloc2中是bins）保存的这些堆也是分开的。<strong>这种为每个线程分配一个单独的<code>arena</code>和<code>free list</code>数据结构（bins）的行为称为<code>per thread arena</code>。</strong></p>
+        <p>因为近期为了获得参加暑假方班夏令营的资格去<code>digapis</code>的平台上刷题，有幸做到了<code>T3LS</code>大佬出的<code>girlfriend</code>这题，这题我做了很久orz，查了很多资料，出的很巧妙，也是我第一次碰到多线程的题目，又谷歌了一下，发现多线程的题目在高端局中出现的并不低。。。所以参考了一大波师傅们的<code>blog</code>加上好几天的谷歌，决定来总结一下。</p>
+<h1 id="对于ptmalloc2中多线程方面的知识："><a href="#对于ptmalloc2中多线程方面的知识：" class="headerlink" title="对于ptmalloc2中多线程方面的知识："></a>对于ptmalloc2中多线程方面的知识：</h1><p>在早期的 Linux 里，<code>dlmalloc</code>被用做默认的内存分配器。但之后因为<code>ptmalloc2</code>添加了线程支持，<code>ptmalloc2</code>成为了Linux默认内存分配器。线程支持可帮助提升内存分配器以及应用程序的性能。在<code>dlmalloc</code>里，当两个线程同时调用<code>malloc</code>时，只有一个线程能进入到临界段，因为这里的<code>free list</code>是所有可用线程共用的。因此内存分配器要在多线程应用里耗费时间，从而导致性能降低。</p>
+<p><code>ptmalloc2</code>中，当多个线程同时调用<code>malloc</code>，内存会立即得到分配，因为每个线程有一个单独的<code>arena</code>，因此<code>free list</code>数据结构中（在<code>ptmalloc2</code>中是<code>bins</code>）保存的这些堆也是分开的。<strong>这种为每个线程分配一个单独的<code>arena</code>和<code>free list</code>数据结构（bins）的行为称为<code>per thread arena</code>。</strong></p>
 <h2 id="两个基本函数："><a href="#两个基本函数：" class="headerlink" title="两个基本函数："></a>两个基本函数：</h2><h3 id="pthread-create"><a href="#pthread-create" class="headerlink" title="pthread_create"></a>pthread_create</h3><p>所有线程都有一个线程号，也就是Thread ID。其类型为<code>pthread_t</code>。</p>
 <p>通过创建线程，线程将会执行一个线程函数，该线程格式必须按照下面来声明：</p>
 <p>​        <code>void * Thread_Function(void *)</code></p>
@@ -662,7 +661,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/06/22/多线程pwn专题学习与总结/" title="多线程pwn专题学习与总结">https://xiaoxiaorenwu.top/2019/06/22/多线程pwn专题学习与总结/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/06/22/多线程pwn专题学习与总结/" title="多线程pwn学习与总结">https://xiaoxiaorenwu.top/2019/06/22/多线程pwn专题学习与总结/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -677,7 +676,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/多线程pwn/" rel="tag"><i class="fa fa-tag"></i> 多线程pwn</a>
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
           
         </div>
       
@@ -690,8 +689,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/11/5种解法解2017_0ctf_babyheap/" rel="next" title="5种解法解2017_0ctf_babyheap">
-                <i class="fa fa-chevron-left"></i> 5种解法解2017_0ctf_babyheap
+              <a href="/2019/06/11/5种解法解2017_0ctf_babyheap/" rel="next" title="5种解法解20170ctf_babyheap">
+                <i class="fa fa-chevron-left"></i> 5种解法解20170ctf_babyheap
               </a>
             
           </div>
@@ -700,8 +699,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/05/5种方法解heap_master/" rel="prev" title="5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解">
-                5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/07/05/5种方法解heap_master/" rel="prev" title="5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解">
+                5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -784,7 +783,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -795,7 +794,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -806,7 +805,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

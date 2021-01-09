@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="堆的利用（fastbin_attack从基础到深度）,">
+  <meta name="keywords" content="WP,summary,0CTF,">
 
 
 
@@ -84,13 +84,13 @@
 
 
 
-<meta name="description" content="之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。（一家人就要整整齐齐。） 首先提供题目的二进制文件：2017_0ctf_babyheap      2018_0ctf_babyheap    2019_0ctf_babyheap 先来看2017的题目：预览：可以看到文件为64位，保护全开，给了Libc">
-<meta name="keywords" content="堆的利用（fastbin_attack从基础到深度）">
+<meta name="description" content="之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。 先来看2017的题目：预览：可以看到文件为64位，保护全开，给了Libc，标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来">
+<meta name="keywords" content="WP,summary,0CTF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2017&#x2F;2018&#x2F;2019_0ctf_babyheap_writeups">
+<meta property="og:title" content="从2017&#x2F;2018&#x2F;20190ctf_babyheap看fastbin_attack">
 <meta property="og:url" content="http://yoursite.com/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。（一家人就要整整齐齐。） 首先提供题目的二进制文件：2017_0ctf_babyheap      2018_0ctf_babyheap    2019_0ctf_babyheap 先来看2017的题目：预览：可以看到文件为64位，保护全开，给了Libc">
+<meta property="og:description" content="之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。 先来看2017的题目：预览：可以看到文件为64位，保护全开，给了Libc，标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/04/02/5ca3744785a48.png">
 <meta property="og:image" content="https://i.loli.net/2019/04/03/5ca4a2427f2a6.png">
@@ -100,10 +100,10 @@
 <meta property="og:image" content="https://i.loli.net/2019/06/21/5d0c8f5382f3f67542.png">
 <meta property="og:image" content="https://i.loli.net/2019/06/21/5d0c8f54c358d88495.png">
 <meta property="og:image" content="https://i.loli.net/2019/06/21/5d0c8f555d09c77137.png">
-<meta property="og:updated_time" content="2019-08-10T02:40:38.157Z">
+<meta property="og:updated_time" content="2021-01-09T04:06:48.046Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2017&#x2F;2018&#x2F;2019_0ctf_babyheap_writeups">
-<meta name="twitter:description" content="之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。（一家人就要整整齐齐。） 首先提供题目的二进制文件：2017_0ctf_babyheap      2018_0ctf_babyheap    2019_0ctf_babyheap 先来看2017的题目：预览：可以看到文件为64位，保护全开，给了Libc">
+<meta name="twitter:title" content="从2017&#x2F;2018&#x2F;20190ctf_babyheap看fastbin_attack">
+<meta name="twitter:description" content="之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。 先来看2017的题目：预览：可以看到文件为64位，保护全开，给了Libc，标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来">
 <meta name="twitter:image" content="https://i.loli.net/2019/04/02/5ca3744785a48.png">
 
 
@@ -140,7 +140,7 @@
 
 
 
-  <title>2017/2018/2019_0ctf_babyheap_writeups | xiaoxiaorenwu</title>
+  <title>从2017/2018/20190ctf_babyheap看fastbin_attack | xiaoxiaorenwu</title>
   
 
 
@@ -326,7 +326,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">2017/2018/2019_0ctf_babyheap_writeups</h1>
+          <h1 class="post-title" itemprop="name headline">从2017/2018/20190ctf_babyheap看fastbin_attack</h1>
         
 
         <div class="post-meta">
@@ -361,8 +361,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-pwn-2019tctf-0ctfwp/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-pwn-2019tctf/0ctfwp</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -407,7 +407,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.6k
+                  3.5k
                 </span>
               
 
@@ -444,8 +444,7 @@
       
 
       
-        <p>之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是fastbin_attack一个较完整的经历路程。（一家人就要整整齐齐。）</p>
-<p>首先提供题目的二进制文件：<a href="https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/heap/fastbin-attack/2017_0ctf_babyheap" target="_blank" rel="noopener">2017_0ctf_babyheap</a>      <a href="https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/babyheap.tar.gz" target="_blank" rel="noopener">2018_0ctf_babyheap</a>    <a href="https://github.com/xiaoxiaorenwu/mypwn/tree/master/2019_0ctf_babyheap" target="_blank" rel="noopener">2019_0ctf_babyheap</a></p>
+        <p>之前写过一个2017和2018的结合版分析，但是最近把2019年的复盘了，觉得三个在一起吧，算是<code>fastbin_attack</code>一个较完整的经历路程。</p>
 <h1 id="先来看2017的题目："><a href="#先来看2017的题目：" class="headerlink" title="先来看2017的题目："></a>先来看2017的题目：</h1><h2 id="预览："><a href="#预览：" class="headerlink" title="预览："></a>预览：</h2><p>可以看到文件为64位，保护全开，给了Libc，标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：</p>
 <p><img src="https://i.loli.net/2019/04/02/5ca3744785a48.png" alt=""></p>
 <h2 id="主要功能分析及漏洞寻找："><a href="#主要功能分析及漏洞寻找：" class="headerlink" title="主要功能分析及漏洞寻找："></a>主要功能分析及漏洞寻找：</h2><p>可以看到程序开始时先选了一段随机不可控的地址来储存heap列表的基地址（base_ptr）。紧接着就进入了死循环，打印菜单，输入选项，运行函数。逐个分析功能：</p>
@@ -571,7 +570,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/" title="2017/2018/2019_0ctf_babyheap_writeups">https://xiaoxiaorenwu.top/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/" title="从2017/2018/20190ctf_babyheap看fastbin_attack">https://xiaoxiaorenwu.top/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -586,7 +585,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/堆的利用（fastbin-attack从基础到深度）/" rel="tag"><i class="fa fa-tag"></i> 堆的利用（fastbin_attack从基础到深度）</a>
+            <a href="/tags/WP/" rel="tag"><i class="fa fa-tag"></i> WP</a>
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/0CTF/" rel="tag"><i class="fa fa-tag"></i> 0CTF</a>
           
         </div>
       
@@ -609,8 +612,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/11/5种解法解2017_0ctf_babyheap/" rel="prev" title="5种解法解2017_0ctf_babyheap">
-                5种解法解2017_0ctf_babyheap <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/11/5种解法解2017_0ctf_babyheap/" rel="prev" title="5种解法解20170ctf_babyheap">
+                5种解法解20170ctf_babyheap <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -693,7 +696,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -704,7 +707,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -715,7 +718,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

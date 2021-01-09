@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="多解,">
+  <meta name="keywords" content="WP,summary,0CTF,">
 
 
 
@@ -84,13 +84,13 @@
 
 
 
-<meta name="description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 题目放在我的github上：2017_0CTF_babyheap 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储">
-<meta name="keywords" content="多解">
+<meta name="description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储存chunk指针列表的基地址（base_ptr）。紧接着就进入了死">
+<meta name="keywords" content="WP,summary,0CTF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="5种解法解2017_0ctf_babyheap">
+<meta property="og:title" content="5种解法解20170ctf_babyheap">
 <meta property="og:url" content="http://yoursite.com/2019/06/11/5种解法解2017_0ctf_babyheap/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 题目放在我的github上：2017_0CTF_babyheap 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储">
+<meta property="og:description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储存chunk指针列表的基地址（base_ptr）。紧接着就进入了死">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/04/02/5ca3744785a48.png">
 <meta property="og:image" content="https://i.loli.net/2019/04/03/5ca4a2427f2a6.png">
@@ -98,10 +98,10 @@
 <meta property="og:image" content="https://i.loli.net/2019/04/03/5ca4a2427d8c3.png">
 <meta property="og:image" content="https://i.loli.net/2019/06/09/5cfcf8b138af497064.png">
 <meta property="og:image" content="https://i.loli.net/2019/06/09/5cfcf90a145b427292.png">
-<meta property="og:updated_time" content="2019-08-10T02:35:29.551Z">
+<meta property="og:updated_time" content="2021-01-09T04:05:34.096Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="5种解法解2017_0ctf_babyheap">
-<meta name="twitter:description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 题目放在我的github上：2017_0CTF_babyheap 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储">
+<meta name="twitter:title" content="5种解法解20170ctf_babyheap">
+<meta name="twitter:description" content="(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz 第一次解：预览题目：可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：  主要功能分析及漏洞寻找：可以看到程序开始时先选了一段随机不可控的地址来储存chunk指针列表的基地址（base_ptr）。紧接着就进入了死">
 <meta name="twitter:image" content="https://i.loli.net/2019/04/02/5ca3744785a48.png">
 
 
@@ -138,7 +138,7 @@
 
 
 
-  <title>5种解法解2017_0ctf_babyheap | xiaoxiaorenwu</title>
+  <title>5种解法解20170ctf_babyheap | xiaoxiaorenwu</title>
   
 
 
@@ -324,7 +324,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">5种解法解2017_0ctf_babyheap</h1>
+          <h1 class="post-title" itemprop="name headline">5种解法解20170ctf_babyheap</h1>
         
 
         <div class="post-meta">
@@ -359,8 +359,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-pwn-wp/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-pwn-wp</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -443,7 +443,6 @@
 
       
         <p>(这其实这是我的网安实践作业。。。后来觉得放上来凑个数吧。。。orz</p>
-<p>题目放在我的github上：<a href="https://github.com/xiaoxiaorenwu/mypwn/tree/master/2017_0ctf_babyheap" target="_blank" rel="noopener">2017_0CTF_babyheap</a></p>
 <h1 id="第一次解："><a href="#第一次解：" class="headerlink" title="第一次解："></a>第一次解：</h1><h2 id="预览题目："><a href="#预览题目：" class="headerlink" title="预览题目："></a>预览题目：</h2><p>可以看到文件为64位，保护全开，给了libc（版本为2.24），标准的堆题。。。看到full relro一般为改hook为one_gadget。放进ida里进一步分析：</p>
 <p><img src="https://i.loli.net/2019/04/02/5ca3744785a48.png" alt=""></p>
 <h2 id="主要功能分析及漏洞寻找："><a href="#主要功能分析及漏洞寻找：" class="headerlink" title="主要功能分析及漏洞寻找："></a>主要功能分析及漏洞寻找：</h2><p>可以看到程序开始时先选了一段随机不可控的地址来储存chunk指针列表的基地址（base_ptr）。紧接着就进入了死循环，打印菜单，输入选项，运行函数。我们来逐个分析功能：</p>
@@ -526,7 +525,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/06/11/5种解法解2017_0ctf_babyheap/" title="5种解法解2017_0ctf_babyheap">https://xiaoxiaorenwu.top/2019/06/11/5种解法解2017_0ctf_babyheap/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/06/11/5种解法解2017_0ctf_babyheap/" title="5种解法解20170ctf_babyheap">https://xiaoxiaorenwu.top/2019/06/11/5种解法解2017_0ctf_babyheap/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -541,7 +540,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/多解/" rel="tag"><i class="fa fa-tag"></i> 多解</a>
+            <a href="/tags/WP/" rel="tag"><i class="fa fa-tag"></i> WP</a>
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/0CTF/" rel="tag"><i class="fa fa-tag"></i> 0CTF</a>
           
         </div>
       
@@ -554,8 +557,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/" rel="next" title="2017/2018/2019_0ctf_babyheap_writeups">
-                <i class="fa fa-chevron-left"></i> 2017/2018/2019_0ctf_babyheap_writeups
+              <a href="/2019/06/09/2017-2018-2019-0ctf-babyheap-writeups/" rel="next" title="从2017/2018/20190ctf_babyheap看fastbin_attack">
+                <i class="fa fa-chevron-left"></i> 从2017/2018/20190ctf_babyheap看fastbin_attack
               </a>
             
           </div>
@@ -564,8 +567,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/22/多线程pwn专题学习与总结/" rel="prev" title="多线程pwn专题学习与总结">
-                多线程pwn专题学习与总结 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/22/多线程pwn专题学习与总结/" rel="prev" title="多线程pwn学习与总结">
+                多线程pwn学习与总结 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -648,7 +651,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -659,7 +662,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -670,7 +673,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="pwn基础,小心得,">
+  <meta name="keywords" content="summary,">
 
 
 
@@ -85,14 +85,14 @@
 
 
 <meta name="description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
-<meta name="keywords" content="pwn基础,小心得">
+<meta name="keywords" content="summary">
 <meta property="og:type" content="article">
 <meta property="og:title" content="格式化字符串小心得">
 <meta property="og:url" content="http://yoursite.com/2019/03/31/格式化字符串小心得/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-01T12:52:34.165Z">
+<meta property="og:updated_time" content="2021-01-09T04:03:05.001Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="格式化字符串小心得">
 <meta name="twitter:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
@@ -352,8 +352,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf</span>
+                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN基础</span>
                   </a>
                 </span>
 
@@ -531,9 +531,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/pwn基础/" rel="tag"><i class="fa fa-tag"></i> pwn基础</a>
-          
-            <a href="/tags/小心得/" rel="tag"><i class="fa fa-tag"></i> 小心得</a>
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
           
         </div>
       
@@ -640,7 +638,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -651,7 +649,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -662,7 +660,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

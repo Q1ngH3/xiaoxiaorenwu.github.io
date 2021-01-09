@@ -1,5 +1,6 @@
 $(document).ready(function () {
     // ���ͷ��������һ���������ǵĹ��ܣ����ѡȡ1������ͼ�����صĴ���
+    /*
     var backgroundImgUrls = [
         "/images/1.jpg",
         "/images/2.jpg",
@@ -15,7 +16,7 @@ $(document).ready(function () {
         var background_image = "url(" + backgroundImgUrls[randomIndex] + ")";
         $("body").css({"background":background_image, "background-attachment":"fixed", "background-size":"cover"});
     }
-
+    */
   $(document).trigger('bootstrap:before');
 
   NexT.utils.isMobile() && window.FastClick.attach(document.body);

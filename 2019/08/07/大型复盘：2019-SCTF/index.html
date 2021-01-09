@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="ctf,pwn,堆,栈">
+  <meta name="keywords" content="WP,SCTF,">
 
 
 
@@ -84,22 +84,23 @@
 
 
 
-<meta name="description" content="这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是中高端技巧题。 one_heap:中高端技巧题，一般限制次数的tcache都比较有趣就像解密一样hhhh，这题也是。 只有一个chunk位，限制了15次malloc，4次free，环境是2.27。 值得注意的一点是不会有\n这个干扰字节，也就是说你向chunk里只输入一个\n，就等于输入了空。有了这个特点可以把我们的double">
+<meta name="description" content="这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是技巧题。 one_heap:中高端技巧题，一般限制次数的tcache都比较有趣就像解密一样hhhh，这题也是。 只有一个chunk位，限制了15次malloc，4次free，环境是2.27。 值得注意的一点是不会有\n这个干扰字节，也就是说你向chunk里只输入一个\n，就等于输入了空。有了这个特点可以把我们的double fre">
+<meta name="keywords" content="WP,SCTF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="大型复盘：2019_SCTF">
+<meta property="og:title" content="2019SCTF">
 <meta property="og:url" content="http://yoursite.com/2019/08/07/大型复盘：2019-SCTF/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是中高端技巧题。 one_heap:中高端技巧题，一般限制次数的tcache都比较有趣就像解密一样hhhh，这题也是。 只有一个chunk位，限制了15次malloc，4次free，环境是2.27。 值得注意的一点是不会有\n这个干扰字节，也就是说你向chunk里只输入一个\n，就等于输入了空。有了这个特点可以把我们的double">
+<meta property="og:description" content="这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是技巧题。 one_heap:中高端技巧题，一般限制次数的tcache都比较有趣就像解密一样hhhh，这题也是。 只有一个chunk位，限制了15次malloc，4次free，环境是2.27。 值得注意的一点是不会有\n这个干扰字节，也就是说你向chunk里只输入一个\n，就等于输入了空。有了这个特点可以把我们的double fre">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/08/14/ZljwbofyEmstDdq.png">
 <meta property="og:image" content="https://i.loli.net/2019/08/14/lvUbqpAxyCKSRkj.png">
 <meta property="og:image" content="https://i.loli.net/2019/08/14/UBpdLJ1q5WrfbFl.png">
 <meta property="og:image" content="https://i.loli.net/2019/08/14/G6VxRU2TNAWJaBi.png">
 <meta property="og:image" content="https://i.loli.net/2019/08/14/T2ayN5cljd9H1r8.png">
-<meta property="og:updated_time" content="2019-08-14T11:33:09.946Z">
+<meta property="og:updated_time" content="2021-01-09T04:02:16.073Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="大型复盘：2019_SCTF">
-<meta name="twitter:description" content="这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是中高端技巧题。 one_heap:中高端技巧题，一般限制次数的tcache都比较有趣就像解密一样hhhh，这题也是。 只有一个chunk位，限制了15次malloc，4次free，环境是2.27。 值得注意的一点是不会有\n这个干扰字节，也就是说你向chunk里只输入一个\n，就等于输入了空。有了这个特点可以把我们的double">
+<meta name="twitter:title" content="2019SCTF">
+<meta name="twitter:description" content="这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是技巧题。 one_heap:中高端技巧题，一般限制次数的tcache都比较有趣就像解密一样hhhh，这题也是。 只有一个chunk位，限制了15次malloc，4次free，环境是2.27。 值得注意的一点是不会有\n这个干扰字节，也就是说你向chunk里只输入一个\n，就等于输入了空。有了这个特点可以把我们的double fre">
 <meta name="twitter:image" content="https://i.loli.net/2019/08/14/ZljwbofyEmstDdq.png">
 
 
@@ -136,7 +137,7 @@
 
 
 
-  <title>大型复盘：2019_SCTF | xiaoxiaorenwu</title>
+  <title>2019SCTF | xiaoxiaorenwu</title>
   
 
 
@@ -322,7 +323,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">大型复盘：2019_SCTF</h1>
+          <h1 class="post-title" itemprop="name headline">2019SCTF</h1>
         
 
         <div class="post-meta">
@@ -344,6 +345,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -418,7 +441,7 @@
       
 
       
-        <p>这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是中高端技巧题。</p>
+        <p>这场比赛当时因为快到期末考试了，没有打，现在复盘一下，貌似大部分都是技巧题。</p>
 <h1 id="one-heap"><a href="#one-heap" class="headerlink" title="one_heap:"></a>one_heap:</h1><p>中高端技巧题，一般限制次数的<code>tcache</code>都比较有趣就像解密一样hhhh，这题也是。</p>
 <p>只有一个chunk位，限制了15次malloc，4次free，环境是2.27。</p>
 <p>值得注意的一点是不会有<code>\n</code>这个干扰字节，也就是说你向chunk里只输入一个<code>\n</code>，就等于输入了空。有了这个特点可以把我们的<code>double free</code>变成一个无限循环圈。</p>
@@ -501,7 +524,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/08/07/大型复盘：2019-SCTF/" title="大型复盘：2019_SCTF">https://xiaoxiaorenwu.top/2019/08/07/大型复盘：2019-SCTF/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/08/07/大型复盘：2019-SCTF/" title="2019SCTF">https://xiaoxiaorenwu.top/2019/08/07/大型复盘：2019-SCTF/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -514,6 +537,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/WP/" rel="tag"><i class="fa fa-tag"></i> WP</a>
+          
+            <a href="/tags/SCTF/" rel="tag"><i class="fa fa-tag"></i> SCTF</a>
+          
+        </div>
+      
 
       
       
@@ -523,8 +554,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/07/大型复盘：2019-starCTF/" rel="next" title="大型复盘：2019_starCTF">
-                <i class="fa fa-chevron-left"></i> 大型复盘：2019_starCTF
+              <a href="/2019/08/01/2019-TSCTF-FINAL/" rel="next" title="2019TSCTF_FINAL">
+                <i class="fa fa-chevron-left"></i> 2019TSCTF_FINAL
               </a>
             
           </div>
@@ -533,8 +564,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/07/大型复盘：2019-RCTF/" rel="prev" title="大型复盘：2019_RCTF">
-                大型复盘：2019_RCTF <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/08/docker初识/" rel="prev" title="docker初识">
+                docker初识 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -617,7 +648,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -628,7 +659,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -639,7 +670,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

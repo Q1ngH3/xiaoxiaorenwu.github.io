@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="多解,">
+  <meta name="keywords" content="WP,summary,starCTF,">
 
 
 
@@ -84,22 +84,22 @@
 
 
 
-<meta name="description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
-<meta name="keywords" content="多解">
+<meta name="description" content="作为2019*CTF的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap_master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的">
+<meta name="keywords" content="WP,summary,starCTF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解">
+<meta property="og:title" content="5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解">
 <meta property="og:url" content="http://yoursite.com/2019/07/05/5种方法解heap_master/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
+<meta property="og:description" content="作为2019*CTF的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap_master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d24502911bff58682.png">
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d244ff48a9e065394.png">
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d244bd73984d48652.png">
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d2473507231241917.png">
-<meta property="og:updated_time" content="2020-01-26T17:04:37.272Z">
+<meta property="og:updated_time" content="2021-01-09T04:05:23.872Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解">
-<meta name="twitter:description" content="作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢">
+<meta name="twitter:title" content="5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解">
+<meta name="twitter:description" content="作为2019*CTF的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap_master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的">
 <meta name="twitter:image" content="https://i.loli.net/2019/07/09/5d24502911bff58682.png">
 
 
@@ -136,7 +136,7 @@
 
 
 
-  <title>5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解 | xiaoxiaorenwu</title>
+  <title>5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解 | xiaoxiaorenwu</title>
   
 
 
@@ -322,7 +322,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解</h1>
+          <h1 class="post-title" itemprop="name headline">5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解</h1>
         
 
         <div class="post-meta">
@@ -357,8 +357,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf-pwn-2019-CTFwp/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf-pwn-2019*CTFwp</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -440,8 +440,8 @@
       
 
       
-        <p>作为2019年*ctf的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。</p>
-<p>这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap的master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的师傅和其他一些大师傅的wp，又查了许多资料才汇总出这一篇拙作。</p>
+        <p>作为<code>2019*CTF</code>的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。</p>
+<p>这道<code>heap_master</code>从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为<code>heap_master</code>而不是<code>heap_baby</code>。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的师傅和其他一些大师傅的wp，又查了许多资料才汇总出这一篇拙作。</p>
 <p><a href="https://github.com/xiaoxiaorenwu/mypwn/tree/master/2019star_ctf/heap_master" target="_blank" rel="noopener">heap_master</a></p>
 <h1 id="一些必须知道的前置知识准备和利用手段："><a href="#一些必须知道的前置知识准备和利用手段：" class="headerlink" title="一些必须知道的前置知识准备和利用手段："></a>一些必须知道的前置知识准备和利用手段：</h1><h2 id="global-fast-max"><a href="#global-fast-max" class="headerlink" title="global_fast_max:"></a>global_fast_max:</h2><p>简答的来说<code>global_fast_max</code>就是一个全局变量，他的作用是控制<code>fastbinY[]</code>的阈值，正常情况下其值为0x80，也就是大小在0x80之内的都可以放进<code>fastbinY[]</code>里，所以如果更改了<code>global_max_fast</code>的值，那<code>fastbinY[]</code>的范围将超标，实现<code>fastbin_index_overflow</code>，所以当我们<code>free</code>一个<code>size</code>极大且经过精心构造的<code>victim_chunk</code>时，就实现了可以几乎任意地址（在<code>main_arena+88</code>之后）写入<code>victim_chunk</code>的地址，之后比较常见的几种利用方式是：</p>
 <ul>
@@ -642,7 +642,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/07/05/5种方法解heap_master/" title="5种方法解2019_*ctf_heap_master来加深对深层次堆利用手段的理解">https://xiaoxiaorenwu.top/2019/07/05/5种方法解heap_master/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/07/05/5种方法解heap_master/" title="5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解">https://xiaoxiaorenwu.top/2019/07/05/5种方法解heap_master/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -657,7 +657,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/多解/" rel="tag"><i class="fa fa-tag"></i> 多解</a>
+            <a href="/tags/WP/" rel="tag"><i class="fa fa-tag"></i> WP</a>
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/starCTF/" rel="tag"><i class="fa fa-tag"></i> starCTF</a>
           
         </div>
       
@@ -670,8 +674,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/22/多线程pwn专题学习与总结/" rel="next" title="多线程pwn专题学习与总结">
-                <i class="fa fa-chevron-left"></i> 多线程pwn专题学习与总结
+              <a href="/2019/06/22/多线程pwn专题学习与总结/" rel="next" title="多线程pwn学习与总结">
+                <i class="fa fa-chevron-left"></i> 多线程pwn学习与总结
               </a>
             
           </div>
@@ -680,8 +684,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/01/2019-TSCTF-FINAL/" rel="prev" title="2019_TSCTF_FINAL">
-                2019_TSCTF_FINAL <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/01/2019-TSCTF-FINAL/" rel="prev" title="2019TSCTF_FINAL">
+                2019TSCTF_FINAL <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -764,7 +768,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -775,7 +779,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -786,7 +790,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

