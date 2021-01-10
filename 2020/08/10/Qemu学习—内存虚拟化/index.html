@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="summary,Qemu,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Qemu内存模拟词汇约定   缩写 意义     VA Virtual Address 虚拟地址   PA Physical Address 物理地址   PT Page Table 页表(一级页表)   PDT Page Directory Table 页目录表(二级页表)   PDPT Page Directory Pointers Table 页目录指针表(三级页表)   PML4T Pag">
+<meta name="keywords" content="summary,Qemu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qemu学习-内存虚拟化">
+<meta property="og:url" content="http://yoursite.com/2020/08/10/Qemu学习—内存虚拟化/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="Qemu内存模拟词汇约定   缩写 意义     VA Virtual Address 虚拟地址   PA Physical Address 物理地址   PT Page Table 页表(一级页表)   PDT Page Directory Table 页目录表(二级页表)   PDPT Page Directory Pointers Table 页目录指针表(三级页表)   PML4T Pag">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/spt.jpg">
+<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ept.jpg">
+<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ram_list.jpg">
+<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/as-mr-ramblock.png">
+<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/memory-map.jpg">
+<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/flat-view.png">
+<meta property="og:updated_time" content="2021-01-09T16:13:13.629Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qemu学习-内存虚拟化">
+<meta name="twitter:description" content="Qemu内存模拟词汇约定   缩写 意义     VA Virtual Address 虚拟地址   PA Physical Address 物理地址   PT Page Table 页表(一级页表)   PDT Page Directory Table 页目录表(二级页表)   PDPT Page Directory Pointers Table 页目录指针表(三级页表)   PML4T Pag">
+<meta name="twitter:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/spt.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/10/Qemu学习—内存虚拟化/">
+
+
+
+
+
+  <title>Qemu学习-内存虚拟化 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/10/Qemu学习—内存虚拟化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Qemu学习-内存虚拟化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-10T00:05:04+08:00">
+                2020-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qemu-KVM学习/" itemprop="url" rel="index">
+                    <span itemprop="name">Qemu&KVM学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/10/Qemu学习—内存虚拟化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/10/Qemu学习—内存虚拟化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  19 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Qemu内存模拟"><a href="#Qemu内存模拟" class="headerlink" title="Qemu内存模拟"></a>Qemu内存模拟</h1><h2 id="词汇约定"><a href="#词汇约定" class="headerlink" title="词汇约定"></a>词汇约定</h2><table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VA</td>
+<td>Virtual Address 虚拟地址</td>
+</tr>
+<tr>
+<td>PA</td>
+<td>Physical Address 物理地址</td>
+</tr>
+<tr>
+<td>PT</td>
+<td>Page Table 页表(一级页表)</td>
+</tr>
+<tr>
+<td>PDT</td>
+<td>Page Directory Table 页目录表(二级页表)</td>
+</tr>
+<tr>
+<td>PDPT</td>
+<td>Page Directory Pointers Table 页目录指针表(三级页表)</td>
+</tr>
+<tr>
+<td>PML4T</td>
+<td>Page Map Level 4 Table 四级页表</td>
+</tr>
+<tr>
+<td>PGD</td>
+<td>Page Global Directory 页全局目录</td>
+</tr>
+<tr>
+<td>PUD</td>
+<td>Page Upper Directory 页上级目录</td>
+</tr>
+<tr>
+<td>PMD</td>
+<td>Page Middle Directory 页中间目录</td>
+</tr>
+<tr>
+<td><strong>GVA</strong></td>
+<td><strong>Guest Virtual Address 客户机虚拟地址</strong></td>
+</tr>
+<tr>
+<td><strong>GPA</strong></td>
+<td><strong>Guest Physical Address 客户机物理地址</strong></td>
+</tr>
+<tr>
+<td><strong>HVA</strong></td>
+<td><strong>Host Virtual Address 宿主机虚拟地址</strong></td>
+</tr>
+<tr>
+<td><strong>HPA</strong></td>
+<td><strong>Host Physical Address 宿主机物理地址</strong></td>
+</tr>
+<tr>
+<td>GFN</td>
+<td>Guest Frame Number 虚拟机的页框号</td>
+</tr>
+<tr>
+<td>PFN</td>
+<td>Host Page Frame Number 宿主机的页框号</td>
+</tr>
+<tr>
+<td>SPT</td>
+<td>Shadow Page Table 影子页表</td>
+</tr>
+</tbody>
+</table>
+<p>我们主要研究的是<code>GVA</code>，<code>GPA</code>，<code>HVA</code>，<code>HPA</code>之间的关系和相互转化。</p>
+<h2 id="Qemu的内存模拟"><a href="#Qemu的内存模拟" class="headerlink" title="Qemu的内存模拟"></a>Qemu的内存模拟</h2><p><code>Qemu</code>利用<code>mmap</code>系统调用，在<code>Qemu</code>进程的虚拟地址空间中申请连续的大小的空间，作为<code>Guest</code>的物理内存，即<strong>内存的申请是在用户空间完成的</strong>。 通过<code>kvm</code>提供的<code>API</code>，<code>Qemu</code>将<code>Guest</code>内存的地址信息传递并注册到<code>kvm</code>中维护，即内存的管理是由内核空间的<code>kvm</code>实现的。</p>
+<p>即：<code>Qemu</code>负责申请客户机物理内存，<code>kvm</code>负责管理客户机物理内存。</p>
+<p>在这样的架构下，内存地址访问有四层映射：</p>
+<blockquote>
+<p><code>GVA</code>=&gt;<code>GPA</code>=&gt;<code>HVA</code>=&gt;<code>HPA</code></p>
+</blockquote>
+<p><code>GVA</code>=&gt;<code>GPA</code>的映射由<code>guest OS</code>负责维护，而<code>HVA</code> =&gt;<code>HPA</code>由<code>host OS</code>负责维护。<br>而内存虚拟化的关键是<code>GPA</code>=&gt;<code>HVA</code>的映射。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">              Guest<span class="string">'s processes</span></span><br><span class="line"><span class="string">           +--------------------+</span></span><br><span class="line"><span class="string">GVA        |                    |</span></span><br><span class="line"><span class="string">           +--------------------+</span></span><br><span class="line"><span class="string">           |                    |</span></span><br><span class="line"><span class="string">           \__   Page Table     \__</span></span><br><span class="line"><span class="string">              \                    \</span></span><br><span class="line"><span class="string">               |                    |  Guest kernel</span></span><br><span class="line"><span class="string">          +----+--------------------+----------------+</span></span><br><span class="line"><span class="string">GHA       |    |                    |                |</span></span><br><span class="line"><span class="string">          +----+--------------------+----------------+</span></span><br><span class="line"><span class="string">          |                                          |</span></span><br><span class="line"><span class="string">          \__                                        \__</span></span><br><span class="line"><span class="string">             \                                          \</span></span><br><span class="line"><span class="string">              |             QEMU process                 |</span></span><br><span class="line"><span class="string">         +----+------------------------------------------+</span></span><br><span class="line"><span class="string">HVA      |    |                                          |</span></span><br><span class="line"><span class="string">         +----+------------------------------------------+</span></span><br><span class="line"><span class="string">         |                                               |</span></span><br><span class="line"><span class="string">          \__                Page Table                   \__</span></span><br><span class="line"><span class="string">             \                                               \</span></span><br><span class="line"><span class="string">              |                                               |</span></span><br><span class="line"><span class="string">         +----+-----------------------------------------------++</span></span><br><span class="line"><span class="string">HPA      |    |                                               ||</span></span><br><span class="line"><span class="string">         +----+-----------------------------------------------++</span></span><br></pre></td></tr></table></figure>
+<p>为了提高从<code>GVA</code>到<code>HPA</code>的转换效率，<code>KVM</code>常用的实现有<code>SPT(Shadow Page Table)</code>和<code>EPT/NPT</code>，前者通过软件维护影子页表直接将<code>GVA</code>转换成<code>HPA</code>，省略中间的映射；后者通过硬件特性实现二级映射(<code>two dimentional paging</code>)，将<code>GPA</code>转换成<code>HPA</code>。</p>
+<h3 id="GVA-gt-GPA"><a href="#GVA-gt-GPA" class="headerlink" title="GVA=&gt;GPA"></a>GVA=&gt;GPA</h3><p>我们先来分析一下<code>GVA</code>=&gt;<code>GPA</code>，这是比较基础的计算机知识，也是写<code>qemu</code>漏洞利用经常用到的地方，例子如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inttypes.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PAGE_SHIFT  12</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PAGE_SIZE   (1 &lt;&lt; PAGE_SHIFT)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PFN_PRESENT (1ull &lt;&lt; 63)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PFN_PFN     ((1ull &lt;&lt; 55) - 1)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> fd;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint32_t</span> page_offset(<span class="keyword">uint32_t</span> addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> addr &amp; ((<span class="number">1</span> &lt;&lt; PAGE_SHIFT) - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint64_t</span> gva_to_gfn(<span class="keyword">void</span> *addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">uint64_t</span> pme, gfn;</span><br><span class="line">    <span class="keyword">size_t</span> offset;</span><br><span class="line">    offset = ((<span class="keyword">uintptr_t</span>)addr &gt;&gt; <span class="number">9</span>) &amp; ~<span class="number">7</span>;</span><br><span class="line">    lseek(fd, offset, SEEK_SET);</span><br><span class="line">    read(fd, &amp;pme, <span class="number">8</span>);</span><br><span class="line">    <span class="keyword">if</span> (!(pme &amp; PFN_PRESENT))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    gfn = pme &amp; PFN_PFN;</span><br><span class="line">    <span class="keyword">return</span> gfn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint64_t</span> gva_to_gpa(<span class="keyword">void</span> *addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">uint64_t</span> gfn = gva_to_gfn(addr);</span><br><span class="line">    assert(gfn != <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">return</span> (gfn &lt;&lt; PAGE_SHIFT) | page_offset((<span class="keyword">uint64_t</span>)addr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint8_t</span> *ptr;</span><br><span class="line">    <span class="keyword">uint64_t</span> ptr_mem;</span><br><span class="line">    </span><br><span class="line">    fd = open(<span class="string">"/proc/self/pagemap"</span>, O_RDONLY);</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">"open"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ptr = <span class="built_in">malloc</span>(<span class="number">256</span>);</span><br><span class="line">    <span class="built_in">strcpy</span>(ptr, <span class="string">"Where am I?"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, ptr);</span><br><span class="line">    ptr_mem = gva_to_gpa(ptr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Your physical address is at 0x%"</span>PRIx64<span class="string">"\n"</span>, ptr_mem);</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//=========================================================================================</span></span><br><span class="line">root@debian:~# ./mmu</span><br><span class="line">Where am I?</span><br><span class="line">Your physical address is at <span class="number">0x78b0d010</span></span><br><span class="line"></span><br><span class="line">(gdb) info proc mappings</span><br><span class="line">process <span class="number">14791</span></span><br><span class="line">Mapped address spaces:</span><br><span class="line"></span><br><span class="line">          Start Addr           End Addr       Size     Offset objfile</span><br><span class="line">      <span class="number">0x7fc314000000</span>     <span class="number">0x7fc314022000</span>    <span class="number">0x22000</span>        <span class="number">0x0</span></span><br><span class="line">      <span class="number">0x7fc314022000</span>     <span class="number">0x7fc318000000</span>  <span class="number">0x3fde000</span>        <span class="number">0x0</span></span><br><span class="line">      <span class="number">0x7fc319dde000</span>     <span class="number">0x7fc31c000000</span>  <span class="number">0x2222000</span>        <span class="number">0x0</span></span><br><span class="line">      <span class="number">0x7fc31c000000</span>     <span class="number">0x7fc39c000000</span> <span class="number">0x80000000</span>        <span class="number">0x0</span></span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">(gdb) x/s <span class="number">0x7fc31c000000</span> + <span class="number">0x78b0d010</span></span><br><span class="line"><span class="number">0x7fc394b0d010</span>:    <span class="string">"Where am I?"</span></span><br></pre></td></tr></table></figure>
+<p><code>gva_to_gpa</code>函数原理下方文章里解释地非常详细，这里不再多赘述：</p>
+<p><a href="https://zhou-yuxin.github.io/articles/2017/Linux 获取虚拟地址对应的物理地址/index.html" target="_blank" rel="noopener">通过/proc/self/pagemap文件</a></p>
+<p><a href="https://bbs.pediy.com/thread-203391.htm" target="_blank" rel="noopener">通过CR3寄存器</a></p>
+<h3 id="GPA-gt-HVA"><a href="#GPA-gt-HVA" class="headerlink" title="GPA=&gt;HVA"></a>GPA=&gt;HVA</h3><p>这个是比较复杂的地方，也是<code>Qemu</code>内存模拟的核心，主要有两种方法，一种是<code>SPT</code>，一种是<code>EPT(Extent Page Table)</code>，前者通过软件维护影子页表，后者通过硬件特性实现二级映射。</p>
+<h4 id="SPT-影子页表"><a href="#SPT-影子页表" class="headerlink" title="SPT(影子页表)"></a>SPT(影子页表)</h4><p><code>KVM</code>通过维护记录<code>GVA=&gt;HPA</code>的<strong>影子页表<code>SPT</code></strong>，减少了地址转换带来的开销，可以<strong>直接将<code>GVA</code>转换为<code>HPA</code></strong>。</p>
+<p>在软件虚拟化的内存转换中，<code>GVA</code>到<code>GPA</code>的转换通过查询<code>CR3</code>寄存器来完成，<code>CR3</code>中保存了<code>Guest</code>的页表基地址，然后载入<code>MMU</code>中进行地址转换。</p>
+<p>在加入了<code>SPT</code>技术后，当<code>Guest</code>访问<code>CR3</code>时，<code>KVM</code>会捕获到这个操作<code>EXIT_REASON_CR_ACCESS</code>，之后<code>KVM</code>会载入特殊的<code>CR3</code>和影子页表，欺骗<code>Guest</code>这就是真实的<code>CR3</code>。之后就和传统的访问内存方式一致，当需要访问物理内存的时候，只会经过一层影子页表的转换。</p>
+<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/spt.jpg" alt="img"></p>
+<p><strong>影子页表由<code>KVM</code>维护，实际上就是一个<code>Guest</code>页表到<code>Host</code> 页表的映射</strong>。<code>KVM</code>会将<code>Guest</code>的页表设置为只读，当<code>Guest OS</code>对页表进行修改时就会触发<code>Page Fault</code>，<code>VM-EXIT</code>到<code>KVM</code>，之后<code>KVM</code>会对<code>GVA</code>对应的页表项进行访问权限检查，结合错误码进行判断：</p>
+<ul>
+<li>如果是<code>Guest OS</code>引起的，则将该异常注入回去，<code>Guest OS</code>将调用自己的缺页处理函数，申请一个<code>Page</code>，并将<code>Page</code>的<code>GPA</code>填充到上级页表项中。</li>
+<li>如果是<code>Guest OS</code>的页表和<code>SPT</code>不一致引起的，则同步<code>SPT</code>，根据<code>Guest</code>页表和<code>mmap</code>映射找到<code>GPA</code>到<code>HVA</code>的映射关系，然后在<code>SPT</code>中增加/更新<code>GVA-HPA</code>表项。</li>
+</ul>
+<p>为了快速检索Guest页表对应的影子页表，KVM为每个客户机维护了一个hash表来进行客户机页表到影子页表之间的映射。<br>对于每一个Guest来说，其页目录和页表都有唯一的GPA，通过页目录/页表的GPA就可以在哈希链表中快速地找到对应的影子页目录/页表。</p>
+<p>当<code>Guest</code>切换进程时，会把带切换进程的页表基址载入到<code>Guest</code>的<code>CR3</code>中，导致<code>VM-EXIT</code>到<code>KVM</code>中，<code>KVM</code>再通过哈希表找到对应的 <code>SPT</code>，然后加载到机器的<code>CR3</code>中。</p>
+<p>优点：影子页表的引入，减少了<code>GVA=&gt;HPA</code>的转换开销。</p>
+<p>缺点：需要为<code>Guest</code>的每个进程都维护一个影子页表，这将带来很大的内存开销。同时影子页表的建立是很耗时的，如果<code>Guest</code>的进程过多，将导致影子页表频繁切换。因此<code>Intel</code>和<code>AMD</code>在此基础上提供了基于硬件的虚拟化技术。</p>
+<h4 id="EPT-NPT"><a href="#EPT-NPT" class="headerlink" title="EPT/NPT"></a>EPT/NPT</h4><p><code>Intel</code>的<code>EPT(Extent Page Table)</code>技术和<code>AMD</code>的<code>NPT(Nest Page Table)</code>技术都对内存虚拟化提供了硬件支持。<br>这两种技术原理类似，都是在硬件层面上实现<code>GVA</code>到<code>HPA</code>之间的转换。<br>下面就以<code>EPT</code>为例分析一下<code>KVM</code>基于硬件辅助的内存虚拟化实现。</p>
+<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ept.jpg" alt="img"></p>
+<p><strong><code>Intel EPT</code>技术引入了<code>EPT(Extended Page Table)</code>和<code>EPTP(EPT base pointer EPT页表基址寄存器)</code>的概念。<code>EPT</code>中维护着<code>GPA</code>到 <code>HPA</code>的映射，而<code>EPTP</code>负责指向<code>EPT</code>基址，类似于<code>CR3</code>指向<code>Guest OS</code>页表基址</strong>。</p>
+<p>在<code>Guest OS</code>运行时，<code>Guest</code>对应的<code>EPT</code>地址被加载到<code>EPTP</code>，而<code>Guest OS</code>当前运行的进程页表基址被加载到<code>CR3</code>。于是在进行地址转换时，首先通过<code>CR3</code>指向的页表实现<code>GVA</code>到<code>GPA</code>的转换，再通过<code>EPTP</code>指向的<code>EPT</code>完成<code>GPA</code>到<code>HPA</code>的转换。当发生<code>EPT Page Fault</code>时，需要<code>VM-EXIT</code>到<code>KVM</code>，更新<code>EPT</code>。</p>
+<ul>
+<li>优点：<code>Guest</code>的缺页在<code>Guest OS</code>内部处理，不会<code>VM-EXIT</code>到<code>KVM</code>中。地址转化基本由硬件(<code>MMU</code>)查页表来完成，大大提升了效率，且只需为<code>Guest</code>维护一份<code>EPT</code>页表，减少内存的开销。</li>
+<li>缺点：两级页表查询，只能寄望于<code>TLB</code>命中。</li>
+</ul>
+<h3 id="Qemu与KVM的分工合作"><a href="#Qemu与KVM的分工合作" class="headerlink" title="Qemu与KVM的分工合作"></a>Qemu与KVM的分工合作</h3><p><code>QEMU</code>和<code>KVM</code>之间是通过<code>KVM</code>提供的<code>ioctl()</code>接口进行交互的。在<code>linux kernel 2.6</code>的<a href="https://elixir.bootlin.com/linux/v2.6.32/source/virt/kvm/kvm_main.c#L2106" target="_blank" rel="noopener"><code>kvm_vm_ioctl()</code></a>函数中，设置虚拟机内存的系统调用为<code>KVM_SET_USER_MEMORY_REGION</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// /virt/kvm/kvm_main.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">long</span> <span class="title">kvm_vm_ioctl</span><span class="params">(struct file *filp,</span></span></span><br><span class="line"><span class="function"><span class="params">               <span class="keyword">unsigned</span> <span class="keyword">int</span> ioctl, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">    <span class="keyword">case</span> KVM_SET_USER_MEMORY_REGION: &#123; <span class="comment">// 在 KVM 中注册用户空间传入的内存信息</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">kvm_userspace_memory_region</span> <span class="title">kvm_userspace_mem</span>;</span></span><br><span class="line"></span><br><span class="line">        r = -EFAULT;</span><br><span class="line">         <span class="comment">// 将传入的数据结构复制到内核空间</span></span><br><span class="line">        <span class="keyword">if</span> (copy_from_user(&amp;kvm_userspace_mem, argp, <span class="keyword">sizeof</span> kvm_userspace_mem))</span><br><span class="line">            <span class="keyword">goto</span> out;</span><br><span class="line"></span><br><span class="line">         <span class="comment">// 实际进行处理的函数</span></span><br><span class="line">        r = kvm_vm_ioctl_set_memory_region(kvm, &amp;kvm_userspace_mem, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (r)</span><br><span class="line">            <span class="keyword">goto</span> out;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参数类型为<code>kvm_userspace_memory_region</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* for KVM_SET_USER_MEMORY_REGION */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kvm_userspace_memory_region</span> &#123;</span></span><br><span class="line">    __u32 slot;            <span class="comment">// slot 编号</span></span><br><span class="line">    __u32 flags;           <span class="comment">// 标志位,例如是否追踪脏页、是否可用等</span></span><br><span class="line">    __u64 guest_phys_addr; <span class="comment">// Guest 物理地址，即 GPA</span></span><br><span class="line">    __u64 memory_size;     <span class="comment">// 内存大小,单位 bytes</span></span><br><span class="line">    __u64 userspace_addr;  <span class="comment">// 从 QEMU 进程地址空间中分配内存的起始地址,即 HVA</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>KVM_SET_USER_MEMORY_REGION</code>这个<code>ioctl</code>主要目的就是设置<code>GPA=&gt;HVA</code>的映射关系，<code>KVM</code>会继续调用<code>kvm_vm_ioctl_set_memory_region()</code>，在内核空间维护并管理<code>Guest</code>的内存。</p>
+<h3 id="核心数据结构"><a href="#核心数据结构" class="headerlink" title="核心数据结构"></a>核心数据结构</h3><h4 id="AddressSpace"><a href="#AddressSpace" class="headerlink" title="AddressSpace"></a>AddressSpace</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/memory.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * AddressSpace: describes a mapping of addresses to #MemoryRegion objects</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">AddressSpace</span> &#123;</span></span><br><span class="line">    <span class="comment">/* All fields are private. */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> <span class="title">rcu</span>;</span></span><br><span class="line">    <span class="keyword">char</span> *name;</span><br><span class="line">    MemoryRegion *root;  <span class="comment">//root级MemoryRegion</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Accessed via RCU.  */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">FlatView</span> *<span class="title">current_map</span>;</span>  <span class="comment">//相对应的FlatView平面展开视图</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ioeventfd_nb;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">MemoryRegionIoeventfd</span> *<span class="title">ioeventfds</span>;</span></span><br><span class="line">    QTAILQ_HEAD(memory_listeners_as, MemoryListener) listeners;</span><br><span class="line">    QTAILQ_ENTRY(AddressSpace) address_spaces_link;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>QEMU</code>用<code>AddressSpace</code>结构体表示<code>Guest</code>中CPU/设备看到的内存，类似于物理机中<strong>地址空间</strong>的概念，但在这里表示的是<code>Guest</code>的一段地址空间，如内存地址空间<code>address_space_memory</code>、I/O 地址空间<code>address_space_io</code>。</p>
+<p>每个<code>AddressSpace</code>一般包含一系列的<code>MemoryRegion</code>：<code>root</code>指针指向根级<code>MemoryRegion</code>，而<code>root</code>可能有自己的若干个<code>subregions</code>，于是形成<strong>树状结构</strong>。这些<code>MemoryRegion</code>通过树连接起来，树的根即为<code>AddressSpace</code>的<code>root</code>域。</p>
+<p><code>AddressSpace</code>有两个静态全局变量<code>address_space_memory</code>和<code>address_space_io</code>，这两个变量的<code>root</code>域分别指向后面要说的<code>system_memory</code>和<code>syetem_io</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// exec.c 可能不同版本的qemu源码位置不一样</span></span><br><span class="line"><span class="keyword">static</span> AddressSpace address_space_memory; <span class="comment">// 内存地址空间</span></span><br><span class="line"><span class="keyword">static</span> AddressSpace address_space_io;     <span class="comment">// I/O 地址空间</span></span><br></pre></td></tr></table></figure>
+<h4 id="MemoryRegion"><a href="#MemoryRegion" class="headerlink" title="MemoryRegion"></a>MemoryRegion</h4><p><code>MemoryRegion</code>表示在<code>Guest Memory Layout</code>中的一段<strong>内存区域</strong>，它是联系<code>GPA</code>和<code>RAMBlocks(描述真实内存)</code>之间的桥梁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/memory.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MemoryRegion</span> &#123;</span></span><br><span class="line">    Object parent_obj;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* All fields are private - violators will be prosecuted */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* The following fields should fit in a cache line */</span></span><br><span class="line">    <span class="keyword">bool</span> romd_mode;</span><br><span class="line">    <span class="keyword">bool</span> ram;  <span class="comment">//表示是否为RAM</span></span><br><span class="line">    <span class="keyword">bool</span> subpage;</span><br><span class="line">    <span class="keyword">bool</span> readonly; <span class="comment">/* For RAM regions */</span></span><br><span class="line">    <span class="keyword">bool</span> nonvolatile;</span><br><span class="line">    <span class="keyword">bool</span> rom_device;</span><br><span class="line">    <span class="keyword">bool</span> flush_coalesced_mmio;</span><br><span class="line">    <span class="keyword">bool</span> global_locking;</span><br><span class="line">    <span class="keyword">uint8_t</span> dirty_log_mask;</span><br><span class="line">    <span class="keyword">bool</span> is_iommu;</span><br><span class="line">    RAMBlock *ram_block; <span class="comment">//指向对应的RAMBlock</span></span><br><span class="line">    Object *owner;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> MemoryRegionOps *ops; <span class="comment">//回调函数集合</span></span><br><span class="line">    <span class="keyword">void</span> *opaque;</span><br><span class="line">    MemoryRegion *container;</span><br><span class="line">    Int128 size; <span class="comment">//该区域内存大小</span></span><br><span class="line">    hwaddr addr;</span><br><span class="line">    <span class="keyword">void</span> (*destructor)(MemoryRegion *mr);</span><br><span class="line">    <span class="keyword">uint64_t</span> align;</span><br><span class="line">    <span class="keyword">bool</span> terminates;</span><br><span class="line">    <span class="keyword">bool</span> ram_device;</span><br><span class="line">    <span class="keyword">bool</span> enabled;</span><br><span class="line">    <span class="keyword">bool</span> warning_printed; <span class="comment">/* For reservations */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> vga_logging_count;</span><br><span class="line">    MemoryRegion *alias;  <span class="comment">//若不为0,则代表自己为alias MemoryRegion,并指向实体的MemoryRegion</span></span><br><span class="line">    hwaddr alias_offset;  <span class="comment">//若为alias,则为实体MemoryRegion中RAMBlock的host指向地址中的offset</span></span><br><span class="line">    <span class="keyword">int32_t</span> priority;</span><br><span class="line">    QTAILQ_HEAD(subregions, MemoryRegion) subregions; <span class="comment">//子区域链表头</span></span><br><span class="line">    QTAILQ_ENTRY(MemoryRegion) subregions_link;       <span class="comment">//子区域链表节点</span></span><br><span class="line">    QTAILQ_HEAD(coalesced_ranges, CoalescedMemoryRange) coalesced;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name; <span class="comment">//此MemoryRegion的name,调试时使用</span></span><br><span class="line">    <span class="keyword">unsigned</span> ioeventfd_nb;</span><br><span class="line">    MemoryRegionIoeventfd *ioeventfds;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其同样有两个全局变量<code>system_memory</code>和<code>system_io</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// exec.c</span></span><br><span class="line"><span class="keyword">static</span> MemoryRegion *system_memory; <span class="comment">// 内存 MemoryRegion，对应 address_space_memory</span></span><br><span class="line"><span class="keyword">static</span> MemoryRegion *system_io;     <span class="comment">// I/O MemoryRegion，对应 address_space_io`</span></span><br></pre></td></tr></table></figure>
+<p><code>MemoryRegion</code>有多种类型，可以表示一段<code>RAM</code>、<code>ROM</code>、<code>MMIO</code>、<code>alias</code>。</p>
+<p>若为<code>alias</code>则表示一个<code>MemoryRegion</code>的部分区域，例如<code>QEMU</code>会为<code>pc.ram</code>这个表示<code>RAM</code>的<code>MemoryRegion</code>添加两个<code>alias</code>：<code>ram-below-4g</code>和<code>ram-above-4g</code>，之后会有代码解释。</p>
+<p>另外，<code>MemoryRegion</code>也可以表示一个<code>container</code>，这就表示它只是其他若干个<code>MemoryRegion</code>的容器。</p>
+<p>那么要如何创建不同类型的<code>MemoryRegion</code>呢？在<code>QEMU</code>中实际上是通过调用不同的初始化函数区分的。根据不同的初始化函数及其功能，可以将<code>MemoryRegion</code>划分为以下三种类型：</p>
+<p><code>root MemoryRegion</code>：</p>
+<p>直接通过<code>memory_region_init</code>初始化，没有自己的内存，用于管理<code>subregion</code>，例如之前说的<code>system_memory</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">memory_region_init</span><span class="params">(MemoryRegion *mr,</span></span></span><br><span class="line"><span class="function"><span class="params">                        Object *owner,</span></span></span><br><span class="line"><span class="function"><span class="params">                        <span class="keyword">const</span> <span class="keyword">char</span> *name,</span></span></span><br><span class="line"><span class="function"><span class="params">                        <span class="keyword">uint64_t</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    object_initialize(mr, <span class="keyword">sizeof</span>(*mr), TYPE_MEMORY_REGION);</span><br><span class="line">    memory_region_do_init(mr, owner, name, size);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">memory_region_do_init</span><span class="params">(MemoryRegion *mr,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  Object *owner,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  <span class="keyword">const</span> <span class="keyword">char</span> *name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  <span class="keyword">uint64_t</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    mr-&gt;size = int128_make64(size);</span><br><span class="line">    <span class="keyword">if</span> (size == UINT64_MAX) &#123;</span><br><span class="line">        mr-&gt;size = int128_2_64();</span><br><span class="line">    &#125;</span><br><span class="line">    mr-&gt;name = g_strdup(name);</span><br><span class="line">    mr-&gt;owner = owner;</span><br><span class="line">    mr-&gt;ram_block = <span class="literal">NULL</span>; <span class="comment">//无自己的RAMBloack,即没有自己的内存</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (name) &#123;</span><br><span class="line">        <span class="keyword">char</span> *escaped_name = memory_region_escape_name(name);</span><br><span class="line">        <span class="keyword">char</span> *name_array = g_strdup_printf(<span class="string">"%s[*]"</span>, escaped_name);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!owner) &#123;</span><br><span class="line">            owner = container_get(qdev_get_machine(), <span class="string">"/unattached"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        object_property_add_child(owner, name_array, OBJECT(mr), &amp;error_abort);</span><br><span class="line">        object_unref(OBJECT(mr));</span><br><span class="line">        g_free(name_array);</span><br><span class="line">        g_free(escaped_name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>实体 MemoryRegion</code>：</p>
+<p>通过<code>memory_region_init_ram</code>初始化，有自己的内存(从<code>qemu</code>进程地址空间中分配)，大小为<code>size</code>，例如<code>ram_memory</code>，<code>pci_memory</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">pc_memory_init</span><span class="params">(MemoryRegion *system_memory,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">const</span> <span class="keyword">char</span> *kernel_filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">const</span> <span class="keyword">char</span> *kernel_cmdline,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">const</span> <span class="keyword">char</span> *initrd_filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">ram_addr_t</span> below_4g_mem_size,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">ram_addr_t</span> above_4g_mem_size,</span></span></span><br><span class="line"><span class="function"><span class="params">                    MemoryRegion *rom_memory,</span></span></span><br><span class="line"><span class="function"><span class="params">                    MemoryRegion **ram_memory)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    MemoryRegion *ram, *option_rom_mr;</span><br><span class="line">    <span class="comment">/* ...*/</span></span><br><span class="line"></span><br><span class="line">    option_rom_mr = g_malloc(<span class="keyword">sizeof</span>(*option_rom_mr));</span><br><span class="line">    <span class="comment">//调用memory_region_init_ram对ram_memory初始化</span></span><br><span class="line">    memory_region_init_ram(option_rom_mr, <span class="literal">NULL</span>, <span class="string">"pc.rom"</span>, PC_ROM_SIZE,</span><br><span class="line">                           &amp;error_fatal);</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">memory_region_init_ram</span><span class="params">(MemoryRegion *mr,</span></span></span><br><span class="line"><span class="function"><span class="params">                            struct Object *owner,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">const</span> <span class="keyword">char</span> *name,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">uint64_t</span> size,</span></span></span><br><span class="line"><span class="function"><span class="params">                            Error **errp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DeviceState *owner_dev;</span><br><span class="line">    Error *err = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    memory_region_init_ram_nomigrate(mr, owner, name, size, &amp;err);</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        error_propagate(errp, err);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* This will assert if owner is neither NULL nor a DeviceState.</span></span><br><span class="line"><span class="comment">     * We only want the owner here for the purposes of defining a</span></span><br><span class="line"><span class="comment">     * unique name for migration. <span class="doctag">TODO:</span> Ideally we should implement</span></span><br><span class="line"><span class="comment">     * a naming scheme for Objects which are not DeviceStates, in</span></span><br><span class="line"><span class="comment">     * which case we can relax this restriction.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    owner_dev = DEVICE(owner);</span><br><span class="line">    vmstate_register_ram(mr, owner_dev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">memory_region_init_ram_nomigrate</span><span class="params">(MemoryRegion *mr,</span></span></span><br><span class="line"><span class="function"><span class="params">                                      Object *owner,</span></span></span><br><span class="line"><span class="function"><span class="params">                                      <span class="keyword">const</span> <span class="keyword">char</span> *name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                      <span class="keyword">uint64_t</span> size,</span></span></span><br><span class="line"><span class="function"><span class="params">                                      Error **errp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    memory_region_init_ram_shared_nomigrate(mr, owner, name, size, <span class="literal">false</span>, errp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">memory_region_init_ram_shared_nomigrate</span><span class="params">(MemoryRegion *mr,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             Object *owner,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">const</span> <span class="keyword">char</span> *name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">uint64_t</span> size,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">bool</span> share,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             Error **errp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Error *err = <span class="literal">NULL</span>;</span><br><span class="line">    memory_region_init(mr, owner, name, size);</span><br><span class="line">    mr-&gt;ram = <span class="literal">true</span>; <span class="comment">//为RAM</span></span><br><span class="line">    mr-&gt;terminates = <span class="literal">true</span>;</span><br><span class="line">    mr-&gt;destructor = memory_region_destructor_ram;</span><br><span class="line">    mr-&gt;ram_block = qemu_ram_alloc(size, share, mr, &amp;err);<span class="comment">//从qemu的进程地址空间中申请此MemoryRegion的RAMBloack结构体内存并将指针填入ram_block,RAMBloack才是记录实际分配的内存地址信息的结构体,后面会分析到。</span></span><br><span class="line">    mr-&gt;dirty_log_mask = tcg_enabled() ? (<span class="number">1</span> &lt;&lt; DIRTY_MEMORY_CODE) : <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        mr-&gt;size = int128_zero();</span><br><span class="line">        object_unparent(OBJECT(mr));</span><br><span class="line">        error_propagate(errp, err);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>alias MemoryRegion</code>：</p>
+<p>通过<code>memory_region_init_alias()</code> 初始化，没有自己的内存，表示<code>实体 MemoryRegion</code>的一部分。通过<code>alias</code>成员指向<code>实体 MemoryRegion</code>，<code>alias_offset</code>为在<code>实体 MemoryRegion</code>中的偏移量，例如<code>ram_below_4g</code>、<code>ram_above_4g</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pc_memory_init</span><span class="params">(PCMachineState *pcms,</span></span></span><br><span class="line"><span class="function"><span class="params">                    MemoryRegion *system_memory,</span></span></span><br><span class="line"><span class="function"><span class="params">                    MemoryRegion *rom_memory,</span></span></span><br><span class="line"><span class="function"><span class="params">                    MemoryRegion **ram_memory)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> linux_boot, i;</span><br><span class="line">    MemoryRegion *ram, *option_rom_mr;</span><br><span class="line">    MemoryRegion *ram_below_4g, *ram_above_4g;</span><br><span class="line">    FWCfgState *fw_cfg;</span><br><span class="line">    MachineState *machine = MACHINE(pcms);</span><br><span class="line">    PCMachineClass *pcmc = PC_MACHINE_GET_CLASS(pcms);</span><br><span class="line"></span><br><span class="line">    assert(machine-&gt;ram_size == pcms-&gt;below_4g_mem_size +</span><br><span class="line">                                pcms-&gt;above_4g_mem_size);</span><br><span class="line"></span><br><span class="line">    linux_boot = (machine-&gt;kernel_filename != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Allocate RAM.  We allocate it as a single memory region and use</span></span><br><span class="line"><span class="comment">     * aliases to address portions of it, mostly for backwards compatibility</span></span><br><span class="line"><span class="comment">     * with older qemus that used qemu_ram_alloc().</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ram = g_malloc(<span class="keyword">sizeof</span>(*ram));</span><br><span class="line">    memory_region_allocate_system_memory(ram, <span class="literal">NULL</span>, <span class="string">"pc.ram"</span>,</span><br><span class="line">                                         machine-&gt;ram_size);</span><br><span class="line">    *ram_memory = ram;</span><br><span class="line">    ram_below_4g = g_malloc(<span class="keyword">sizeof</span>(*ram_below_4g));</span><br><span class="line">    memory_region_init_alias(ram_below_4g, <span class="literal">NULL</span>, <span class="string">"ram-below-4g"</span>, ram,</span><br><span class="line">                             <span class="number">0</span>, pcms-&gt;below_4g_mem_size);</span><br><span class="line">    <span class="comment">/*...*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">memory_region_init_alias</span><span class="params">(MemoryRegion *mr,</span></span></span><br><span class="line"><span class="function"><span class="params">                              Object *owner,</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">const</span> <span class="keyword">char</span> *name,</span></span></span><br><span class="line"><span class="function"><span class="params">                              MemoryRegion *orig,</span></span></span><br><span class="line"><span class="function"><span class="params">                              hwaddr offset,</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">uint64_t</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    memory_region_init(mr, owner, name, size);</span><br><span class="line">    mr-&gt;alias = orig; <span class="comment">//指向实体MemoryRegion</span></span><br><span class="line">    mr-&gt;alias_offset = offset; <span class="comment">//实体MemoryRegion的RAMBlock的host指向的地址中的偏移</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="RAMBlock"><a href="#RAMBlock" class="headerlink" title="RAMBlock"></a>RAMBlock</h4><p><code>MemoryRegion</code>用来描述一段逻辑层面上的内存区域，而<strong>记录实际分配的内存地址信息</strong>的结构体则是<code>RAMBlock</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/ram_addr.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RAMBlock</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> <span class="title">rcu</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">MemoryRegion</span> *<span class="title">mr</span>;</span> <span class="comment">//唯一对应的MemoryRegion</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *host;     <span class="comment">//RAMBlock关联的内存,HVA</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *colo_cache; <span class="comment">/* For colo, VM's ram cache */</span></span><br><span class="line">    <span class="keyword">ram_addr_t</span> offset; <span class="comment">//RAMBlock在VM物理内存中的偏移量,即GPA</span></span><br><span class="line">    <span class="keyword">ram_addr_t</span> used_length;</span><br><span class="line">    <span class="keyword">ram_addr_t</span> max_length;</span><br><span class="line">    <span class="keyword">void</span> (*resized)(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">uint64_t</span> length, <span class="keyword">void</span> *host);</span><br><span class="line">    <span class="keyword">uint32_t</span> flags;</span><br><span class="line">    <span class="comment">/* Protected by iothread lock.  */</span></span><br><span class="line">    <span class="keyword">char</span> idstr[<span class="number">256</span>];   <span class="comment">//RAMBlock的id</span></span><br><span class="line">    <span class="comment">/* RCU-enabled, writes protected by the ramlist lock */</span></span><br><span class="line">    QLIST_ENTRY(RAMBlock) next;  <span class="comment">//指向下一个RAMBlock</span></span><br><span class="line">    QLIST_HEAD(, RAMBlockNotifier) ramblock_notifiers;</span><br><span class="line">    <span class="keyword">int</span> fd;</span><br><span class="line">    <span class="keyword">size_t</span> page_size;</span><br><span class="line">    <span class="comment">/* dirty bitmap used during migration */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *bmap;</span><br><span class="line">    <span class="comment">/* bitmap of pages that haven't been sent even once</span></span><br><span class="line"><span class="comment">     * only maintained and used in postcopy at the moment</span></span><br><span class="line"><span class="comment">     * where it's used to send the dirtymap at the start</span></span><br><span class="line"><span class="comment">     * of the postcopy phase</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *unsentmap;</span><br><span class="line">    <span class="comment">/* bitmap of already received pages in postcopy */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *receivedmap;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>可以看到在<code>RAMBlock</code>中<code>host</code>和<code>offset</code>域分别对应了<code>HVA</code>和<code>GPA</code>，因此也可以说<strong>RAMBlock 中存储了<code>GPA-&gt;HVA</code>的映射关系</strong>，另外每一个<code>RAMBlock</code>都会指向其所属的<code>MemoryRegion</code>。</p>
+<p>全局变量<code>ramlist</code>以单链表的形式管理所有的<code>RAMBlock</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/ramlist.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">RAMList</span> &#123;</span></span><br><span class="line">    QemuMutex mutex;</span><br><span class="line">    RAMBlock *mru_block;</span><br><span class="line">    <span class="comment">/* RCU-enabled, writes protected by the ramlist lock. */</span></span><br><span class="line">    QLIST_HEAD(, RAMBlock) blocks;</span><br><span class="line">    DirtyMemoryBlocks *dirty_memory[DIRTY_MEMORY_NUM];</span><br><span class="line">    <span class="keyword">uint32_t</span> version;</span><br><span class="line">    QLIST_HEAD(, RAMBlockNotifier) ramblock_notifiers;</span><br><span class="line">&#125; RAMList;</span><br><span class="line"><span class="keyword">extern</span> RAMList ram_list;</span><br></pre></td></tr></table></figure>
+<p>每一个新分配的<code>RAMBlock</code>都会被插入到<code>ram_list</code>的头部。如需查找地址所对应的<code>RAMBlock</code>，则需要遍历<code>ram_list</code>，当目标地址落在当前<code>RAMBlock</code>的地址区间时，该<code>RAMBlock</code>即为查找目标。</p>
+<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ram_list.jpg" alt="img"></p>
+<h4 id="关系小结"><a href="#关系小结" class="headerlink" title="关系小结"></a>关系小结</h4><p><code>AddressSpace</code>、<code>MemoryRegion</code>、<code>RAMBlock</code>之间的关系如下所示：</p>
+<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/as-mr-ramblock.png" alt="img"></p>
+<p>可以看到<code>AddressSpace</code>的<code>root</code>域指向根级<code>MemoryRegion</code>，<code>AddressSpace</code>是由<code>root</code>域指向的<code>MemoryRegion</code>及其子树共同表示的。<strong>MemoryRegion作为一个逻辑层面的内存区域，还需借助分布在其中的RAMBlock来存储真实的地址映射关系</strong>。</p>
+<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/memory-map.jpg" alt="img"></p>
+<h4 id="FlatView"><a href="#FlatView" class="headerlink" title="FlatView"></a>FlatView</h4><p><strong>AddressSpace 的<code>root</code>域及其子树共同构成了 Guest 的物理地址空间</strong>，但这些都是在<code>QEMU</code>侧定义的。要传入<code>KVM</code>进行设置时，复杂的树状结构是不利于内核进行处理的，因此需要将其转换为一个<code>平坦</code>的地址模型，也就是一个从零开始、只包含地址信息的数据结构，这在<code>QEMU</code>中通过<code>FlatView</code>来表示。每个<code>AddressSpace</code>都有一个与之对应的<code>FlatView</code>指针<code>current_map</code>，表示其对应的平面展开视图。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/memory.h</span></span><br><span class="line"><span class="comment">/* Flattened global view of current active memory hierarchy.  Kept in sorted</span></span><br><span class="line"><span class="comment"> * order.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FlatView</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> <span class="title">rcu</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> ref;</span><br><span class="line">    FlatRange *ranges;     <span class="comment">//对应的FlatRange数组</span></span><br><span class="line">    <span class="keyword">unsigned</span> nr;           <span class="comment">//FlatRange的数目</span></span><br><span class="line">    <span class="keyword">unsigned</span> nr_allocated; <span class="comment">//当前数组的项数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">AddressSpaceDispatch</span> *<span class="title">dispatch</span>;</span></span><br><span class="line">    MemoryRegion *root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在<code>FlatView</code>中，<code>FlatRange</code>表示在<code>FlatView</code>中的一段内存范围：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// memory.c</span></span><br><span class="line"><span class="comment">/* Range of memory in the global map.  Addresses are absolute. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FlatRange</span> &#123;</span></span><br><span class="line">    MemoryRegion *mr;        <span class="comment">//指向所属的MemoryRegion</span></span><br><span class="line">    hwaddr offset_in_region; <span class="comment">//在全局MemoryRegion中的offset,对应GPA</span></span><br><span class="line">    AddrRange addr;          <span class="comment">//代表的地址区间,对应HVA</span></span><br><span class="line">    <span class="keyword">uint8_t</span> dirty_log_mask;</span><br><span class="line">    <span class="keyword">bool</span> romd_mode;</span><br><span class="line">    <span class="keyword">bool</span> readonly;</span><br><span class="line">    <span class="keyword">bool</span> nonvolatile;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>每个<code>FlatRange</code>对应一段虚拟机物理地址区间，各个<code>FlatRange</code>不会重叠，按照地址的顺序保存在数组中，具体的地址范围由一个 <code>AddrRange</code>结构来描述：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// memory.c</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AddrRange</span> <span class="title">AddrRange</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Note that signed integers are needed for negative offsetting in aliases</span></span><br><span class="line"><span class="comment"> * (large MemoryRegion::alias_offset).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">AddrRange</span> &#123;</span></span><br><span class="line">    Int128 start;</span><br><span class="line">    Int128 size;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="MemoryRegionSection"><a href="#MemoryRegionSection" class="headerlink" title="MemoryRegionSection"></a>MemoryRegionSection</h4><p>在<code>QEMU</code>中，还有几个起到中介作用的结构体，<code>MemoryRegionSection</code>就是其中之一。</p>
+<p>之前介绍的<code>FlatRange</code>代表一个物理地址空间的片段，偏向于描述在<code>Host</code>侧即<code>AddressSpace</code>中的分布，而<code>MemoryRegionSection</code>则代表在<code>Guest</code>侧即<code>MemoryRegion</code>中的片段。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/memory.h</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * MemoryRegionSection: describes a fragment of a #MemoryRegion</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @mr: the region, or %NULL if empty</span></span><br><span class="line"><span class="comment"> * @fv: the flat view of the address space the region is mapped in</span></span><br><span class="line"><span class="comment"> * @offset_within_region: the beginning of the section, relative to @mr's start</span></span><br><span class="line"><span class="comment"> * @size: the size of the section; will not exceed @mr's boundaries</span></span><br><span class="line"><span class="comment"> * @offset_within_address_space: the address of the first byte of the section</span></span><br><span class="line"><span class="comment"> *     relative to the region's address space</span></span><br><span class="line"><span class="comment"> * @readonly: writes to this section are ignored</span></span><br><span class="line"><span class="comment"> * @nonvolatile: this section is non-volatile</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MemoryRegionSection</span> &#123;</span></span><br><span class="line">    MemoryRegion *mr;   <span class="comment">//所属的MemoryRegion</span></span><br><span class="line">    FlatView *fv;</span><br><span class="line">    hwaddr offset_within_region; <span class="comment">//在MemoryRegion内部的offset</span></span><br><span class="line">    Int128 size;</span><br><span class="line">    hwaddr offset_within_address_space; <span class="comment">//在AddressSpace内部的offset</span></span><br><span class="line">    <span class="keyword">bool</span> readonly;</span><br><span class="line">    <span class="keyword">bool</span> nonvolatile;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/flat-view.png" alt="img"></p>
+<ul>
+<li><code>AddressSpace</code>的<code>root</code>指向对应的根级<code>MemoryRegion</code>，<code>current_map</code>指向<code>root</code>通过<code>generate_memory_topology()</code>生成的<code>FlatView</code>。</li>
+<li><code>FlatView</code>中的<code>ranges</code>数组表示该<code>MemoryRegion</code>所表示的<code>Guest</code>地址区间，并按照地址的顺序进行排列。</li>
+<li><code>MemoryRegionSection</code>由<code>ranges</code>数组中的<code>FlatRange</code>对应生成，作为注册到<code>KVM</code>中的基本单位。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/" target="_blank" rel="noopener">https://abelsu7.top/2019/07/07/kvm-memory-virtualization/</a></p>
+<p><a href="https://www.binss.me/blog/qemu-note-of-memory/" target="_blank" rel="noopener">https://www.binss.me/blog/qemu-note-of-memory/</a></p>
+<p>[<a href="https://juniorprincewang.github.io/2018/07/20/qemu%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96/" target="_blank" rel="noopener">https://juniorprincewang.github.io/2018/07/20/qemu%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96/</a></p>
+<p><a href="https://juniorprincewang.github.io/2018/07/20/qemu内存虚拟化/" target="_blank" rel="noopener">https://www.slideshare.net/HwanjuKim/4memory-virtualization-and-management?next_slideshow=1</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/08/10/Qemu学习—内存虚拟化/" title="Qemu学习-内存虚拟化">https://xiaoxiaorenwu.top/2020/08/10/Qemu学习—内存虚拟化/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/Qemu/" rel="tag"><i class="fa fa-tag"></i> Qemu</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/08/Qemu学习—体系结构&参数选项&定时器/" rel="next" title="Qemu学习-体系结构&参数选项&定时器">
+                <i class="fa fa-chevron-left"></i> Qemu学习-体系结构&参数选项&定时器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/12/Qemu学习—QOM模型/" rel="prev" title="Qemu学习-QOM模型">
+                Qemu学习-QOM模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Qemu内存模拟"><span class="nav-number">1.</span> <span class="nav-text">Qemu内存模拟</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#词汇约定"><span class="nav-number">1.1.</span> <span class="nav-text">词汇约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Qemu的内存模拟"><span class="nav-number">1.2.</span> <span class="nav-text">Qemu的内存模拟</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GVA-gt-GPA"><span class="nav-number">1.2.1.</span> <span class="nav-text">GVA=&gt;GPA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GPA-gt-HVA"><span class="nav-number">1.2.2.</span> <span class="nav-text">GPA=&gt;HVA</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SPT-影子页表"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">SPT(影子页表)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EPT-NPT"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">EPT/NPT</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Qemu与KVM的分工合作"><span class="nav-number">1.2.3.</span> <span class="nav-text">Qemu与KVM的分工合作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心数据结构"><span class="nav-number">1.2.4.</span> <span class="nav-text">核心数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AddressSpace"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">AddressSpace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MemoryRegion"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">MemoryRegion</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RAMBlock"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">RAMBlock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关系小结"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">关系小结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FlatView"><span class="nav-number">1.2.4.5.</span> <span class="nav-text">FlatView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MemoryRegionSection"><span class="nav-number">1.2.4.6.</span> <span class="nav-text">MemoryRegionSection</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.3.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="summary,Qemu,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="CPU虚拟化虚拟CPU带来的问题我们都知道x86处理器提供ring0~ring3四个特权级别给操作系统和应用程序来访问硬件，ring0权限最高，ring3权限最低：  操作系统（内核）需要直接访问硬件和内存，因此它的代码需要运行在最高运行级别ring0上，这样它可以使用特权指令，控制中断、修改页表、访问设备等等。  应用程序的代码运行在最低运行级别上ring3上，不能做受控操作。如果要做，比如要访">
+<meta name="keywords" content="summary,Qemu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qemu学习-CPU虚拟化">
+<meta property="og:url" content="http://yoursite.com/2020/08/04/Qemu学习—CPU虚拟化/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="CPU虚拟化虚拟CPU带来的问题我们都知道x86处理器提供ring0~ring3四个特权级别给操作系统和应用程序来访问硬件，ring0权限最高，ring3权限最低：  操作系统（内核）需要直接访问硬件和内存，因此它的代码需要运行在最高运行级别ring0上，这样它可以使用特权指令，控制中断、修改页表、访问设备等等。  应用程序的代码运行在最低运行级别上ring3上，不能做受控操作。如果要做，比如要访">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_6ab6062bb41a3d313f1662ea36a430fc.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_0e37c88fd0f7ac62411d58a7393e6ae5.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_d7e492140071956ce6cef56eb3f74626.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_4dffe4ed429afeee2f783d7916cccdf8.png">
+<meta property="og:image" content="https://images0.cnblogs.com/blog2015/697113/201506/011408208321118.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/01/08/SnRXjoFDfBkbAhU.png">
+<meta property="og:image" content="https://images2015.cnblogs.com/blog/697113/201509/697113-20150913103334731-1698421672.jpg">
+<meta property="og:updated_time" content="2021-01-09T16:12:55.650Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qemu学习-CPU虚拟化">
+<meta name="twitter:description" content="CPU虚拟化虚拟CPU带来的问题我们都知道x86处理器提供ring0~ring3四个特权级别给操作系统和应用程序来访问硬件，ring0权限最高，ring3权限最低：  操作系统（内核）需要直接访问硬件和内存，因此它的代码需要运行在最高运行级别ring0上，这样它可以使用特权指令，控制中断、修改页表、访问设备等等。  应用程序的代码运行在最低运行级别上ring3上，不能做受控操作。如果要做，比如要访">
+<meta name="twitter:image" content="https://md.byr.moe/uploads/upload_6ab6062bb41a3d313f1662ea36a430fc.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/04/Qemu学习—CPU虚拟化/">
+
+
+
+
+
+  <title>Qemu学习-CPU虚拟化 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/04/Qemu学习—CPU虚拟化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Qemu学习-CPU虚拟化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-04T00:05:04+08:00">
+                2020-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qemu-KVM学习/" itemprop="url" rel="index">
+                    <span itemprop="name">Qemu&KVM学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/04/Qemu学习—CPU虚拟化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/04/Qemu学习—CPU虚拟化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="CPU虚拟化"><a href="#CPU虚拟化" class="headerlink" title="CPU虚拟化"></a>CPU虚拟化</h1><h2 id="虚拟CPU带来的问题"><a href="#虚拟CPU带来的问题" class="headerlink" title="虚拟CPU带来的问题"></a>虚拟CPU带来的问题</h2><p>我们都知道<code>x86</code>处理器提供<code>ring0~ring3</code>四个特权级别给操作系统和应用程序来访问硬件，<code>ring0</code>权限最高，<code>ring3</code>权限最低：</p>
+<ul>
+<li>操作系统（内核）需要直接访问硬件和内存，因此它的代码需要运行在最高运行级别<code>ring0</code>上，这样它可以使用特权指令，控制中断、修改页表、访问设备等等。 </li>
+<li>应用程序的代码运行在最低运行级别上<code>ring3</code>上，不能做受控操作。如果要做，比如要访问磁盘，写文件，那就要通过执行系统调用，执行系统调用的时候，CPU的运行级别会发生从<code>ring3</code>到<code>ring0</code>的切换，并跳转到系统调用对应的内核代码位置执行，这样内核就为你完成了设备访问，完成之后再从<code>ring0</code>返回<code>ring3</code>。这个过程也称作用户态和内核态的切换。</li>
+</ul>
+<p><strong>虚拟CPU在这里遇到一个难题，因为<code>Host OS</code>是工作在<code>ring0</code>的，<code>Guest OS</code>就无法也在<code>ring0</code>了，但是<code>Guest OS</code>本身不知道这一点，以前执行访问设备等特权指令，现在还是执行特权指令，但是没有执行权限肯定会出错。</strong></p>
+<p>虚拟机怎么通过<code>VMM/Hypervisor</code>实现<code>Guest CPU</code>对硬件的访问，根据其原理不同有三种实现技术：</p>
+<ol>
+<li>全虚拟化/<code>Full-Virtualization</code></li>
+<li>半虚拟化/<code>Para-Virtualization</code></li>
+<li>硬件辅助的全虚拟化 </li>
+</ol>
+<h2 id="基于二进制翻译的全虚拟化"><a href="#基于二进制翻译的全虚拟化" class="headerlink" title="基于二进制翻译的全虚拟化"></a>基于二进制翻译的全虚拟化</h2><p>客户操作系统运行在<code>ring1</code>，它在执行特权指令时，会触发CPU异常(<code>Exception</code>)，然后<code>VMM</code>捕获这个异常，在异常里面做翻译，模拟，最后返回到客户操作系统内，客户操作系统认为自己的特权指令工作正常，继续运行。但是这个性能损耗非常的大，简单的一条指令，本来执行完结束，现在却要通过复杂的异常处理过程。</p>
+<p>异常<code>Exception</code>(内中断)，中断<code>Interrupt</code>(外中断)，陷阱<code>Trap</code>(软中断)的区别：</p>
+<p><img src="https://md.byr.moe/uploads/upload_6ab6062bb41a3d313f1662ea36a430fc.png" alt=""></p>
+<p>结构图，这里的<code>VMM</code>可以理解为<code>kvm</code>：</p>
+<p><img src="https://md.byr.moe/uploads/upload_0e37c88fd0f7ac62411d58a7393e6ae5.png" alt=""></p>
+<p><code>Guest OS</code> =&gt; <code>Hardware Exception</code> =&gt; <code>VMM exception handler function(handle+emulate privileged ins)</code> =&gt; <code>Guest OS</code>：</p>
+<p><img src="https://md.byr.moe/uploads/upload_d7e492140071956ce6cef56eb3f74626.png" alt=""></p>
+<h2 id="半虚拟化"><a href="#半虚拟化" class="headerlink" title="半虚拟化"></a>半虚拟化</h2><p>半虚拟化的思想是：修改操作系统内核，替换掉不能虚拟化的指令，通过超级调用(<code>hypercall</code>)直接和底层的虚拟化层<code>Hypervisor</code>来通讯，<code>Hypervisor</code>同时也提供了超级调用接口来满足其他关键内核操作，比如内存管理、中断和时间保持。</p>
+<p>这种做法省去了全虚拟化中的捕获和模拟，大大提高了效率。所以像<code>Xen</code>这种半虚拟化技术，客户机操作系统都是有一个专门的定制内核版本，和<code>x86</code>、<code>mips</code>、<code>arm</code>这些内核版本等价。这样以来，就不会有捕获异常、翻译、模拟的过程了，性能损耗非常低。这就是<code>Xen</code>这种半虚拟化架构的优势。这也是为什么<code>Xen</code>只支持虚拟化<code>Linux</code>，无法虚拟化<code>windows</code>原因，因为微软不改代码。</p>
+<p><img src="https://md.byr.moe/uploads/upload_4dffe4ed429afeee2f783d7916cccdf8.png" alt=""></p>
+<h2 id="硬件辅助的全虚拟化"><a href="#硬件辅助的全虚拟化" class="headerlink" title="硬件辅助的全虚拟化"></a>硬件辅助的全虚拟化</h2><p>2005年后，<code>CPU</code>厂商<code>Intel</code>和<code>AMD</code>开始支持虚拟化了。<code>Intel</code>引入了<code>Intel-VT(Virtualization Technology)</code>技术。 这种<code>CPU</code>，有<code>VMX root operation</code>和<code>VMX non-root operation</code>两种模式，两种模式都支持<code>ring0~ring3</code>共4个运行级别。这样，<code>VMM</code>可以运行在<code>VMX root operation</code>模式下，<code>Guest OS</code>运行在<code>VMX non-root operation</code>模式下。</p>
+<p><img src="https://images0.cnblogs.com/blog2015/697113/201506/011408208321118.jpg" alt="img"></p>
+<p>而且两种操作模式可以互相转换。运行在<code>VMX root operation</code>模式下的<code>VMM</code>通过显式调用<code>VMLAUNCH</code>或<code>VMRESUME</code>指令切换到<code>VMX non-root operation</code>模式，硬件自动加载<code>Guest OS</code>的上下文，于是<code>Guest OS</code>获得运行，这种转换称为<strong><code>VM entry</code></strong>。<code>Guest OS</code>运行过程中遇到需要<code>VMM</code>处理的事件，例如外部中断或缺页异常，或者主动调用<code>VMCALL</code>指令调用<code>VMM</code>的服务的时候(与系统调用类似)，硬件自动挂起 <code>Guest OS</code>，切换到<code>VMX root operation</code>模式，恢复<code>VMM</code>的运行，这种转换称为<strong><code>VM exit</code></strong>。<code>VMX root operation</code>模式下软件的行为与在没有<code>VT-x</code>技术的处理器上的行为基本一致；而<code>VMX non-root operation</code>模式则有很大不同，最主要的区别是此时运行某些指令或遇到某些事件时，发生<code>VM exit</code>。</p>
+<p>也就说，硬件这层就做了些区分，这样全虚拟化下，那些靠<strong>捕获异常-翻译-模拟</strong>的实现就不需要了。而且CPU厂商，支持虚拟化的力度越来越大，靠硬件辅助的全虚拟化技术的性能逐渐逼近半虚拟化，再加上全虚拟化不需要修改客户操作系统这一优势，全虚拟化技术应该是未来的发展趋势。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>利用二进制翻译的全虚拟化</th>
+<th><strong>硬件辅助虚拟化</strong></th>
+<th style="text-align:center"><strong>操作系统协助</strong>/半虚拟化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>实现技术</strong></td>
+<td>BT和直接执行</td>
+<td>遇到特权指令转到<code>root</code>模式执行</td>
+<td style="text-align:center">Hypercall</td>
+</tr>
+<tr>
+<td><strong>客户操作系统修改</strong>/<strong>兼容性</strong></td>
+<td>无需修改客户操作系统，最佳兼容性</td>
+<td>无需修改客户操作系统，最佳兼容性</td>
+<td style="text-align:center">客户操作系统需要修改来支持hypercall，因此它不能运行在物理硬件本身或其他的hypervisor上，兼容性差，不支持Windows</td>
+</tr>
+<tr>
+<td><strong>性能</strong></td>
+<td>差</td>
+<td>全虚拟化下，CPU需要在两种模式之间切换，带来性能开销；但是，其性能在逐渐逼近半虚拟化。</td>
+<td style="text-align:center">好。半虚拟化下CPU性能开销几乎为0，虚机的性能接近于物理机。</td>
+</tr>
+<tr>
+<td><strong>应用厂商</strong></td>
+<td>VMware Workstation/QEMU/Virtual PC</td>
+<td>VMware ESXi/Microsoft Hyper-V/Xen 3.0/KVM</td>
+<td style="text-align:center">Xen</td>
+</tr>
+</tbody>
+</table>
+<h2 id="KVM的CPU虚拟化"><a href="#KVM的CPU虚拟化" class="headerlink" title="KVM的CPU虚拟化"></a>KVM的CPU虚拟化</h2><h3 id="vCPU概述"><a href="#vCPU概述" class="headerlink" title="vCPU概述"></a>vCPU概述</h3><p><code>qemu-kvm</code>通过对<code>/dev/kvm</code>的一系列<code>ioctl</code>命令来控制虚拟机和监视虚拟机的状态，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> kvmfd = open(<span class="string">"/dev/kvm"</span>, O_RDWR|O_LARGEFILE);</span><br><span class="line">ret = ioctl(kvmfd, KVM_GET_API_VERSION, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">int</span> vmfd = ioctl(kvmfd, KVM_CREATE_VM, <span class="number">0</span>);   </span><br><span class="line"><span class="keyword">int</span> vcpufd = ioctl(vmfd, KVM_CREATE_VCPU, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>一个<code>KVM</code>虚拟机即一个Linux<code>qemu-kvm</code>进程，与其他Linux进程一样被Linux进程调度器调度。</p>
+<p><code>KVM</code>虚拟机包括虚拟内存、虚拟CPU和虚机 I/O设备，其中，内存和<code>CPU</code>的虚拟化由<code>KVM</code>内核模块负责实现，I/O设备的虚拟化由<code>Qwmu</code>负责实现。</p>
+<p><code>KVM</code>户机系统的内存是<code>qemu-kvm</code>进程的地址空间的一部分。</p>
+<p><code>KVM</code>虚拟机的<code>vCPU</code>作为线程运行在<code>qemu-kvm</code>进程的上下文中。</p>
+<p><code>vCPU</code>、<code>Qemu</code>进程、Linux进程调度和物理CPU之间的逻辑关系：</p>
+<p><img src="https://i.loli.net/2021/01/08/SnRXjoFDfBkbAhU.png" alt=""></p>
+<p>通过上面的学习已经得知<code>kvm</code>属于硬件辅助的全虚拟化，由于支持虚拟化的<code>CPU</code>中都增加了新的功能。以<code>Intel-VT</code>技术为例，它增加了两种运行模式：<code>VMX root</code>模式和<code>VMX non-root</code>模式。通常来讲，<code>Host OS</code>和<code>VMM</code>运行在<code>VMX root</code>模式中，<code>Guest OS</code>及其应用运行在 <code>VMX non-root</code>模式中。因为两个模式都由各自的<code>ring0~ring3</code>，因此，客户机可以运行在它所需要的<code>ring</code>中(OS运行在<code>ring0</code>，应用运行在<code>ring3</code>中)，<code>VMM</code>也运行在其需要的<code>ring</code>中(对<code>KVM</code>来说，<code>QEMU</code>运行在<code>ring3</code>，<code>KVM</code>运行在<code>ring0</code>)。<code>CPU</code>在两种模式之间的切换称为<code>VMX</code>切换。<strong>从<code>root mode</code>进入<code>non-root mode</code>，称为<code>VM entry</code>；从<code>non-root mode</code>进入<code>root mode</code>，称为<code>VM exit</code>。可见，<code>CPU</code>受控制地在两种模式之间切换，轮流执行<code>VMM code</code>和<code>Guest OS code</code></strong>。</p>
+<p>对<code>KVM</code>虚拟机来说，运行在<code>root mode</code>下的<code>VMM</code>在需要执行<code>Guest OS</code>指令时执行<strong><code>VMLAUNCH/VMRESUME</code>指令</strong>将<code>CPU</code>转换到<code>non-root mode</code>，开始执行客户机代码，即<code>VM entry</code>过程；在<code>Guest OS</code>需要退出<code>non-root mode</code>时(主动调用<strong><code>VMCALL</code>指令</strong>或者遇到外中断或者遇到缺页等异常)，<code>CPU</code>自动切换到<code>root mode</code>，即<code>VM exit</code>过程。<strong>可见，<code>KVM</code> 客户机代码是受<code>VMM</code>控制直接运行在物理<code>CPU</code>上的。<code>Qemu</code>只是通过<code>KVM</code>控制虚机的代码被<code>CPU</code>执行，但是它们本身并不执行其代码。也就是说，<code>CPU</code>并没有真正的被虚拟化成虚拟的<code>CPU</code>给客户机使用。</strong></p>
+<p>几个概念：</p>
+<ul>
+<li><code>socket</code>：颗，插入<code>CPU</code>的个数。</li>
+<li><code>core</code>：核，每个<code>CPU</code>中的物理内核。</li>
+<li><code>thread</code>：超线程，通常来说，一个<code>CPU core</code>只提供一个<code>thread</code>，这时客户机就只看到一个<code>CPU</code>；但是，超线程技术实现了<code>CPU</code>核的虚拟化，一个核被虚拟化出多个逻辑<code>CPU</code>，可以同时运行多个线程。</li>
+</ul>
+<p>所以一个<code>kvm</code>虚拟机的<code>vCPU</code>数目为<code>thread*core*socket</code>，例如<code>-smp 5,sockets=5,cores=1,threads=1</code>，所以<code>vCPU</code>数目为<code>5</code>，<code>vCPU</code>作为 <code>QEMU</code>线程被<code>Linux</code>作为普通的线程/轻量级进程调度到物理的<code>CPU</code>核上。(关于<code>-smp</code>：<a href="https://zhensheng.im/2015/11/22/qemu-smp%E5%8F%82%E6%95%B0%E8%A7%A3%E9%87%8A%E5%8F%8A%E5%9C%A8libvirt%E4%B8%AD%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%A4%9Acpu-%E5%A4%9A%E6%A0%B8%E5%BF%83.meow.html" target="_blank" rel="noopener">-smp用法</a></p>
+<h3 id="Guest模式"><a href="#Guest模式" class="headerlink" title="Guest模式"></a>Guest模式</h3><p>一个普通的<code>Linux</code>内核有两种执行模式：内核模式和用户模式。为了支持带有虚拟化功能的<code>CPU</code>，<code>KVM</code>向<code>Linux</code>内核增加了第三种模式即客户机模式<code>Guest</code>，该模式对应于<code>CPU</code>的<code>VMMX non-root mode</code>。</p>
+<p><code>KVM</code>内核模块作为<code>User mode</code>和<code>Guest mode</code>之间的桥梁：</p>
+<ul>
+<li><code>User mode</code>中的<code>Qemu-kvm</code>会通过<code>ioctl</code>命令来运行虚拟机。</li>
+<li><code>KVM</code>收到该请求后，它先做一些准备工作，比如将<code>vCPU</code>上下文加载到<code>VMCS(virtual machine control structure)</code>等，然后驱动 <code>CPU</code>进入<code>VMX non-root</code>模式，开始执行客户机代码。</li>
+</ul>
+<p>三种模式的分工为：</p>
+<ul>
+<li><code>Guest</code>模式：执行客户机系统非<code>I/O</code>代码，并在需要的时候驱动<code>CPU</code>退出该模式。</li>
+<li><code>Kernel</code>模式：负责将<code>CPU</code>切换到<code>Guest mode</code>执行<code>Guest OS</code>代码，并在<code>CPU</code>退出<code>Guest mode</code>时回到<code>Kenerl</code>模式，将客户机的<code>I/O</code>请求转发给<code>User</code>模式让<code>Qemu</code>完成。</li>
+<li><code>User</code>模式：用<code>ioctl(/dev/kvm)</code>与<code>kvm</code>交互，代替客户机系统执行<code>I/O</code>操作。</li>
+</ul>
+<p><img src="https://images2015.cnblogs.com/blog/697113/201509/697113-20150913103334731-1698421672.jpg" alt="img"></p>
+<p><code>Qemu-KVM</code>相比原生<code>Qemu</code>的改动：</p>
+<ul>
+<li>原生的<code>Qemu</code>通过指令翻译实现<code>CPU</code>的完全虚拟化，但是修改后的<code>Qemu-KVM</code>会调用<code>ioctl</code>命令来调用<code>KVM</code>模块。</li>
+<li>原生的<code>Qemu</code>是单线程实现，<code>Qemu-KVM</code>是多线程实现。</li>
+</ul>
+<p>主机<code>Linux</code>将一个虚拟视作一个<code>Qemu</code>进程，该进程包括下面几种线程：</p>
+<ul>
+<li><code>I/O</code>线程用于管理模拟设备。</li>
+<li><code>vCPU</code>线程用于运行<code>Guest</code>代码。</li>
+<li>其它线程，比如处理<code>event loop</code>，<code>offloaded tasks</code>等的线程。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/sammyliu/p/4543597.html" target="_blank" rel="noopener">https://www.cnblogs.com/sammyliu/p/4543597.html</a></p>
+<p><a href="https://www.slideshare.net/HwanjuKim/3cpu-virtualization-and-scheduling" target="_blank" rel="noopener">https://www.slideshare.net/HwanjuKim/3cpu-virtualization-and-scheduling</a></p>
+<p><a href="https://www.cnblogs.com/popsuper1982/p/3815398.html" target="_blank" rel="noopener">https://www.cnblogs.com/popsuper1982/p/3815398.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/08/04/Qemu学习—CPU虚拟化/" title="Qemu学习-CPU虚拟化">https://xiaoxiaorenwu.top/2020/08/04/Qemu学习—CPU虚拟化/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/Qemu/" rel="tag"><i class="fa fa-tag"></i> Qemu</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/01/Qemu学习—虚拟化初探/" rel="next" title="Qemu学习-虚拟化初探">
+                <i class="fa fa-chevron-left"></i> Qemu学习-虚拟化初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/06/Qemu学习—IO虚拟化/" rel="prev" title="Qemu学习-I/O虚拟化">
+                Qemu学习-I/O虚拟化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU虚拟化"><span class="nav-number">1.</span> <span class="nav-text">CPU虚拟化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟CPU带来的问题"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟CPU带来的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于二进制翻译的全虚拟化"><span class="nav-number">1.2.</span> <span class="nav-text">基于二进制翻译的全虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#半虚拟化"><span class="nav-number">1.3.</span> <span class="nav-text">半虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件辅助的全虚拟化"><span class="nav-number">1.4.</span> <span class="nav-text">硬件辅助的全虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KVM的CPU虚拟化"><span class="nav-number">1.5.</span> <span class="nav-text">KVM的CPU虚拟化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vCPU概述"><span class="nav-number">1.5.1.</span> <span class="nav-text">vCPU概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Guest模式"><span class="nav-number">1.5.2.</span> <span class="nav-text">Guest模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.6.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

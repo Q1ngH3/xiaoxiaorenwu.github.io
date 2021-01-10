@@ -192,8 +192,8 @@ th {
 }
 body {
   position: relative;
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 14px;
+  font-family: 'STZhongsong', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
   line-height: 2;
   color: #555;
   background: #eee;
@@ -210,7 +210,7 @@ body {
 }
 @media (min-width: 1600px) {
   body {
-    font-size: 16px;
+    font-size: 19px;
   }
 }
 h1,
@@ -223,7 +223,7 @@ h6 {
   padding: 0;
   font-weight: bold;
   line-height: 1.5;
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Roboto Slab', 'STZhongsong', "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 h2,
 h3,
@@ -500,7 +500,7 @@ pre,
 }
 pre,
 code {
-  font-family: consolas, Menlo, "PingFang SC", "Microsoft YaHei", monospace;
+  font-family: 'consolas', consolas, Menlo, "PingFang SC", "Microsoft YaHei", monospace;
 }
 code {
   padding: 2px 4px;
@@ -1134,7 +1134,7 @@ pre .javascript .function {
   line-height: 36px;
   font-size: 20px;
   font-weight: normal;
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'STZhongsong', "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 .site-subtitle {
   margin-top: 10px;
@@ -1223,7 +1223,7 @@ pre .javascript .function {
   opacity: 0;
 }
 .post-body {
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'STZhongsong', "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 @media (max-width: 767px) {
   .post-body {
@@ -1241,7 +1241,7 @@ pre .javascript .function {
 .post-body .figure .caption {
   margin: -20px auto 15px;
   text-align: center;
-  font-size: 14px;
+  font-size: 17px;
   color: #999;
   font-weight: bold;
   line-height: 1;
@@ -1501,7 +1501,7 @@ pre .javascript .function {
 .posts-expand .post-meta {
   margin: 3px 0 60px 0;
   color: #999;
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'STZhongsong', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 12px;
   text-align: center;
 }
@@ -2034,7 +2034,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #41b0ff;
+  background: #d9ffda;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3200,7 +3200,6 @@ pre .javascript .function {
   border-radius: initial;
 }
 #posts > article + article .post-block {
-  margin-top: 20px;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12), 0 -1px 0.5px 0 rgba(0,0,0,0.09);
   border-radius: initial;
 }
@@ -3253,7 +3252,7 @@ pre .javascript .function {
   line-height: inherit;
 }
 .posts-expand .post-title {
-  font-size: 1.7em;
+  font-size: 2em;
 }
 .post-body h1 {
   font-size: 1.6em;
@@ -3333,7 +3332,7 @@ pre .javascript .function {
   }
 }
 body {
-  background: url("https://source.unsplash.com/random/1600x900");
+  background: url("https://source.unsplash.com/random/1920x1080");
   background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
@@ -3358,9 +3357,7 @@ body {
 .post {
   margin-top: 0px;
   margin-bottom: 60px;
-  padding: 25px;
-  -webkit-box-shadow: 0 0 5px rgba(202,203,203,0.5);
-  -moz-box-shadow: 0 0 5px rgba(202,203,204,0.5);
+  border: 25px solid rgba(255,255,255,0.7);
 }
 #sidebar {
   background: rgba(255,255,255,0);
@@ -3434,13 +3431,14 @@ body {
 .post-toc {
   width: calc(100% + 17px);
 }
-.posts-expand article:only-of-type h1 {
-  font-size: 37px;
+.posts-expand article:only-of-type h2 {
+  font-size: 25px;
 }
-.post-body h2 {
+.post-body h1 {
   border: 1px solid #ddd;
   border-radius: 2px;
   font-weight: bold;
+  font-size: 30px;
   height: 48px;
   line-height: 40px;
   margin: 20px -42.3px 15px -48px;
@@ -3450,12 +3448,12 @@ body {
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.06), 0 1px 5px 0 rgba(0,0,0,0.12);
 }
 @media (min-width: 768px) and (max-width: 991px) {
-  .main .post-body h2 {
+  .main .post-body h1 {
     margin: 20px -23px 15px -28px;
   }
 }
 @media (max-width: 767px) {
-  .main .post-body h2 {
+  .main .post-body h1 {
     margin: 20px -15px 15px -18px;
   }
 }

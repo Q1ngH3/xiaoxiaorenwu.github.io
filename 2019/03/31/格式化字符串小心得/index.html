@@ -52,6 +52,44 @@
 
 
 
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
 
 
 
@@ -84,18 +122,18 @@
 
 
 
-<meta name="description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
+<meta name="description" content="私人空间，谢绝访问">
 <meta name="keywords" content="summary">
 <meta property="og:type" content="article">
 <meta property="og:title" content="格式化字符串小心得">
 <meta property="og:url" content="http://yoursite.com/2019/03/31/格式化字符串小心得/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
+<meta property="og:description" content="私人空间，谢绝访问">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-09T04:03:05.001Z">
+<meta property="og:updated_time" content="2021-01-09T16:21:53.665Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="格式化字符串小心得">
-<meta name="twitter:description" content="格式化字符串的一些总结和心得： 虽然做的题目不多，但是还是有一点感悟，小总结一下。 格式化字符串漏洞可以实现的事情：  读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，k为fun_got这个字符串所在位置的偏移，还要注意x86和x86_64的偏移计算方法的差别。 写（">
+<meta name="twitter:description" content="私人空间，谢绝访问">
 
 
 
@@ -352,8 +390,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
-                    <span itemprop="name">PWN基础</span>
+                  <a href="/categories/私人空间/" itemprop="url" rel="index">
+                    <span itemprop="name">私人空间</span>
                   </a>
                 </span>
 
@@ -398,7 +436,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  595
+                  9
                 </span>
               
 
@@ -414,7 +452,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  2 min
+                  1 min
                 </span>
               
             </div>
@@ -435,39 +473,15 @@
       
 
       
-        <h3 id="格式化字符串的一些总结和心得："><a href="#格式化字符串的一些总结和心得：" class="headerlink" title="格式化字符串的一些总结和心得："></a>格式化字符串的一些总结和心得：</h3><ul>
-<li>虽然做的题目不多，但是还是有一点感悟，小总结一下。</li>
-<li>格式化字符串漏洞可以实现的事情：</li>
-<li><ol>
-<li>读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要<code>ELF</code>功能来获取<code>got</code>表地址，payload一般为<code>‘%k$s’+p32(fun_got)</code>，k为<code>fun_got</code>这个字符串所在位置的偏移，还要注意<code>x86</code>和<code>x86_64</code>的偏移计算方法的差别。</li>
-<li>写（篡改）：<ol>
-<li>篡改某一个函数的got表内容，这个函数选择很重要，可能决定了exp的复杂程度：<ol>
-<li>当程序没有循环时，尽量选择<code>printf()</code>之后的函数，实在不行只能同时改两个地址，一个选择的函数的地址，一个<code>fini_arry</code>首元素的内容为<code>start</code>的地址，使程序重新运行。</li>
-<li>当程序有循环时就无需那么麻烦。</li>
-</ol>
-</li>
-<li>看程序中有无<code>system(&#39;/bin/sh&#39;)</code>:<ol>
-<li>有的话难度较低，将printf之后的一个函数的got表改成<code>system(&#39;/bin/sh&#39;)</code>的地址即可，再想办使这个函数被调用。</li>
-<li>没有的话得先用读的功能泄露<code>Libc</code>版本，然后获取system函数的地址，这时候所选择函数必须是类似这种：<code>puts(buf)</code>，<code>printf(buf)</code>这种，并且buf必须可输入，这样才可将buf改为<code>‘/bin/sh’</code>并调用<code>system(&#39;/bin/sh&#39;)</code>。</li>
-</ol>
-</li>
-<li>特殊情况：<ol>
-<li>改写某一数据使其符合<code>if</code>语句条件从而调用<code>if</code>之后的<code>system(&#39;/bin/sh&#39;)</code>。</li>
-<li>改写<code>printf</code>函数的调用函数（不是main函数）的返回地址，使其返回到<code>system(&#39;/bin/sh&#39;)</code>上。这里比较特殊，需要调用函数不太复杂，其中没有很多变量，才能使得其<code>bp</code>能在偏移中找到，然后才能确定<code>offset</code>。进而用读的方式获取返回地址，然后篡改。</li>
-</ol>
-</li>
-<li>利用形式：<ol>
-<li><code>x86</code>：单个改写可用<code>fmtstr_payload=(k,{fun_got:sys_addr})</code>，较简单。</li>
-<li><code>x86_64</code>：因为地址中带有<code>‘\x00’</code>所以直接用<code>%k$lln</code>改写时不能将<code>p64(fun_got)</code>放到<code>‘%k$lln’</code>前面，否则会截断，只能将其放在后面。或者采用<code>$hn</code>的方法改写尾部。</li>
-<li>注意两个对齐：格式化字符串字节数与地址对齐，输出长度与改写数据对齐。</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-</ul>
-
+        <div id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <div class="hbe-input-container">
+  <input type="password" id="hbePass" placeholder="">
+    <label for="hbePass">私人空间，谢绝访问</label>
+    <div class="bottom-line"></div>
+  </div>
+  <script id="hbeData" type="hbeData" data-hmacdigest="2833772a29cd16dd0f1050c7b8dfab253283bf75cd712565badb7ed2f53032c0">42436dcc0935ea2f60703479aa05ea898951493a48bcbec9fc2ad9a399be4027500886e1cf705760c7d34370fbcc79d8eeb196dbbb90a5073904acadeb87318202b60a29cffa456806d051268d1b10d6da1bccf8f828252cbaaf7ce538580140e7cfb7d99d56aa84ff86a0e24b5bf744108971964cb08c79367d5eedb55029c803187c3864f4e9c7fa944a60880bbc1163791ad1a19c52cd7a3ab98ee999989c4a2e0f5b4f53b2fd3e515b2a497c03397774b2c2db80863f096e48a61744e889e5523981d4fe2a3e0fa84b7a19b1cb5a09faace46b4995c2ce71ef59ba65b0df39431a738037e3513b51bb2c1e91645cf0924aba0f84c2443792a7c9c782167aad6c47b63bb337e0580ba0c82d5b11c0ab209156628dba6a677419cb13c27fa3223e876152714a6434718f49e149e43f4753c13389388f31ec87fcda013e6219b1eda8de6a755df8c12434f45a1b734f4219c56b57967a4b5e53d873c53452c935f7231f21f83231869c027744cca5fb5a1afff12982e265103aaf0492eacaf9df6b579689d47575b88d9aec6b1f556230e058b2dcbfeb7474b884e918fa0177ed0215ddf820294057443017c89fa0bc1e772bcb69bec582d3a9f9de1f5c81975c292d479e5b0eea95ad7a233dcce247f656c3c40f5589185640f007ca498907d8864f233dc2c54b78694d4db0329f0194d2004a721accbce48264ce3b59541c5022a0406564b760a6b86745683daa2c9d3db9a83e9b7aa8a820d4184c37ae878df2f1c379eb755aa2294527fb48ea55ad9ad27b14a6f32c5c9312118f6897f724634852474b0360a4bcd25cb0783bb1fdd1cc86f92a1aa0984627b6fde5dc98f5f4324b7a43e47f485126af4d1438443d535ca49ab38cf355b693d6372b649b6dcaddfb9d91895bea7ebb3ade55fd0b18e32dd22dec7288bb01f5ae0076ca39928a6bc6df4ab923e95e0d2c0a17aa6711d7b4f324dc04decf46dfc02619bfc3fc8717465b0033a11d2a74ad72436f8f50d4158e581410324326a86f8d088c583c91ab53f85d358194fdf96a05e10d935ce40cba6723eaae90a85e7affa580845686b95cc44f1d1a5fde61596050af36ec9ea2db071f1ce86a59aad6cc4af546a1ad94bc8ae6f5f9fe14c6d7033965b23d1772e585542efa74c779bc13d6ad9ad889c553d181baea4dd9f9346b5249122f13467b3d140bf3af8273cd2bbfc67d8f0d4edab592dd97c5588a2d1cfca32925502759cac84e4de6933ca62736c8ea993522818cbbfca69e3163919b075dca3f45d291beee05b4e59707cdfda270381df42b66f07c2c7528bbfc0de014e5939de64c15680acf5c0ca5de696cf726a43735f479cff77694fec9d5707819c39a9a89c3d42e9ae97c977cb13289eed2681e2fe55e04ff127313288aa2c707aab725a6ce1c56c8ba6834baf0bf82079fbe48caf3160e6e7332d80ef444ca19b34627dd2f178b29ad5444478c593886cde3115317280d8c24ce5a7f9cc46eb58b5251cf9a2b1f0eedf61af3b2d97e01992025ee8b5d3da8cd066ace07f17cab6a44fbae6ec88f016677af65259483ae2cc577aaa02b5a74f09c041e71bd2c81b190c3764fc0b3e8bd7245e8dbc7344d70ede16519d32247b142e30e61743ec616748090d58ee043ab6e5883bfbaa46f322ee1026fb166469ba865123bc2a08d354ad23e7ba129b4797fa805c7ac8d4d92cf8f873bf065fad82985b21d230f24418b4a850f33eb8b461b57dc0fcab64bd660974e2f4e48c393d1b8c7da832183f6130ebc7b5ee15c1450d370b572fe92b0694018c55f15cc28915b12b0231d413f1aef2f6847f98b5669a52863a1ff4978fd26b10ea107052de61d5bf6819e0b23209583b790ac15b498db7ac6ee6a816458f4b09fc7228b1ab968e3edb07a5eb9b6bc07af56626e47e828f5f9393cbc228666e72601c447d72f131929e41ebe489bc98bc5d30e3fe5f7674f61552bc2fd981e886b73ea3b6ab1b0b57942b03c65d3631da9214abdaf1708a68b0b5cdf3fc2dea101b5e7b5497be01a2a959ff61d4a636388442c6b748e68fa2f5521d4ece089985ada3913a78c288658a441886396a132e8e685eb1ee789d47ba64ae7f0dda4d153a21a394764d6e44dd5fe5f34f2d322e59064d6348994fd2a3eac5b10094174681dd009536e055ed038c708bd5c1396a7dfd39507bc551000d6e01492f12fa000be975a5c4f8d6a38ef968b92048be9e1730e73ab7929eb2780c2a261838a09e0d3ba8500d6b80ef8c6be1638835daa50d2b9b1e8623488edc1d2ba73119ca96a69f7a6ba3c17b2253cdf4cf05f4c0fe695c6341d7cb0f8c9b26c8cae872b191ee6e14be4fd3612821d8d5f67ccd01ebee75ce3583cbc2b8fb51fa8fa4049baca1e3da7925526de5f5d1ffaed047d3cc5b9761ead8ded1f2fe59d8ca7a8b1f5e72a4eabb7b801edee7c7ef5a86cf208ba309bd574f0180474b2cf43e4eec67b7c06c03b2f9a450df887a46123af594a102482e41735eecd7f9ef1a5597034a74adfb2749af54abb7baf51e87240734c52482c18ab48f060a6daf2ca59264293fcbd07feba7b3af661522e93d4523b1e8819cf2accdcdaa7015ba09d559f95da025454f82c1465cc1635ee86b61a952c2b259b6cde39636ac68da54632be0a2e12ab8128ec02330aee5102a179405ccbfdbc580d7dc9c0f8a6f5a9cf509858811bc3c162017d8be279dc627c4679897a7e2872ae8ff0d4fff1397effd3756df39d4ca15e8a0afb49225bb38f2bdab668353cbdbfea59938154c787cf68307120ddeb25fa09a7e0f38b7d4a1bd6c8675b84997381ac74dda289f9e4545db9509f2236798cc825150a455934b95d6e8684a80e8ceddb80ca693a7f6f1c98c4f6bb76098fd033caacbe5b1e3e115fe83e11a11cd044303496e946655175cbaff52ef320ee03fddd8f70a98876a3f131cdfa6a288620413da626670af2babb6b5bd1cff6aad40b480df46ec33983e9f58ab1859380747ae1d4e416ea67e139f637d5a45b2276c285e1707d038c2282f39e789bd2050bb4176afcca9757c73ccd00764e90b43d123dc71f38519d74d0cfec5a90eed22afb14cce3349ca6ea975b0965ff0200f07e3ce6baa0198e594a5bfe6a9fb4020e9e204c557d149bbbcbe0d5ed4702a9ef842fb1f51549d426c5b02904a5ae57a789c8ae15557e701257da2330aec9f0928b283e2a8da0d6bdf2dceabe80f84da7cea7cc01f240b13f3e6702e3f5ad7a48723bfee6cc01491646dbaf2af77179d7d2e196b4918d16518416f84c7196d21e5e0ba494c80cdb7a71046540ae62455d702c4f4dac379cdc898432e247e468d749a478809bbe0a135c8da845a57cbcb9f2648b888756acc1c63aab7d34d0bec4388d108bb8ad829da2fa27d6c3b8fba35961eba3f3e1c555149f6884868d688ce8f3b1a180c1a34dd718c856bfec1ec8024485b3e094097233f1ca1fc69624c49b4f2b88b443ec1ca01aad97a220d5071a3627ec43367ab9f37c6654975bc42fd622895cc76ca327aba54621b99245574905e880108beccaabf833b377010ffcac2732c31b367e3b8b5f59cd225c1bf4a64ee8245b64f9a3b971e7bf31d023a5464aa723d019a78c57eb50b384471840a5c93cd0cceffd6deccbeecac5dd070813734a556a4ade70b760e0f8d23a2f8d704792959d4363e13fde46dcc7e9f56d515169c026ff277bc253b6746bee21594490a0ee3c8cc3f8b1b745df953992ace5a5e18c5630dd966ae95e634b22fc6522b8f487395f9a6f19c3767717085916a8ce7745fb813c8a5287bc6d7771db165776e999cddf423626e848a91ae607621dc83d1d6e4b21b73a2714d746ca6eff91c90a7e531e000fa7d8639b44d0dabf073bdf8515843e5dd9bde1a564f489eb945480df184cd8126909ea38200250ee96b8a1b3b426f81d6c0be517916e10ce8b8ef03525d61720923cd81a3602efde5a362253f4a20427aaa5d6590a7f3962241ca63ab120e0db0b968617a585e0d8123d4e3e7504d279a72f052ae8bfa321d62a421ab47e628ef78f1c3bd376fb4e1a36335a0bb1aaa233748d05cac41e4ffef95cc729d5f4b3bd2297c2df5cc2c8802f7f9796d89458a12a62122f83b707849754397d777d853e0ccf88d48dcbf1ef53f6ed08dd58dfb10ddc9bed75cfbe1c0a806e5825dc615b8d28c730768b3859a3d5af77cb47a70dba9442b2fe059fe80bdd6d5f0b557da51a7a53acbc70737a2dd3ff4621019a097d</script>
+</div>
+<script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">
       
     </div>
     
@@ -611,24 +625,15 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
             
               <p class="site-author-name" itemprop="name"></p>
-              <p class="site-description motion-element" itemprop="description">《---这里记录我的学习和生活---》</p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -638,7 +643,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -649,7 +654,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -660,7 +665,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -741,22 +746,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化字符串的一些总结和心得："><span class="nav-number">1.</span> <span class="nav-text">格式化字符串的一些总结和心得：</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

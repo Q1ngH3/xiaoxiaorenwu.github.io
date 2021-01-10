@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="summary,Qemu,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Qemu的体系架构概述QEMU是一个主机上的VMM(virtual machine monitor)，通过动态二进制转换来模拟CPU，并提供一系列的硬件模型。KVM(Kernel-Based Virtual Machine)是基于内核的虚拟机，实现对CPU和内存的虚拟化。KVM需要处理器硬件本身支持虚拟化扩展，如intel VT和AMD AMD-V技术。同时它是Linux内核的一个可加载模块，KV">
+<meta name="keywords" content="summary,Qemu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qemu学习-体系结构&amp;参数选项&amp;定时器">
+<meta property="og:url" content="http://yoursite.com/2020/08/08/Qemu学习—体系结构&参数选项&定时器/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="Qemu的体系架构概述QEMU是一个主机上的VMM(virtual machine monitor)，通过动态二进制转换来模拟CPU，并提供一系列的硬件模型。KVM(Kernel-Based Virtual Machine)是基于内核的虚拟机，实现对CPU和内存的虚拟化。KVM需要处理器硬件本身支持虚拟化扩展，如intel VT和AMD AMD-V技术。同时它是Linux内核的一个可加载模块，KV">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811115719848.png">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122300653.png">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122312739.png">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122324627.png">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122334537.png">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122246132.png">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811123158082.png">
+<meta property="og:updated_time" content="2021-01-09T16:13:08.688Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qemu学习-体系结构&amp;参数选项&amp;定时器">
+<meta name="twitter:description" content="Qemu的体系架构概述QEMU是一个主机上的VMM(virtual machine monitor)，通过动态二进制转换来模拟CPU，并提供一系列的硬件模型。KVM(Kernel-Based Virtual Machine)是基于内核的虚拟机，实现对CPU和内存的虚拟化。KVM需要处理器硬件本身支持虚拟化扩展，如intel VT和AMD AMD-V技术。同时它是Linux内核的一个可加载模块，KV">
+<meta name="twitter:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811115719848.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/08/Qemu学习—体系结构&参数选项&定时器/">
+
+
+
+
+
+  <title>Qemu学习-体系结构&参数选项&定时器 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/08/Qemu学习—体系结构&参数选项&定时器/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Qemu学习-体系结构&参数选项&定时器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-08T00:05:04+08:00">
+                2020-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qemu-KVM学习/" itemprop="url" rel="index">
+                    <span itemprop="name">Qemu&KVM学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/08/Qemu学习—体系结构&参数选项&定时器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/08/Qemu学习—体系结构&参数选项&定时器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  9.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  44 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Qemu的体系架构"><a href="#Qemu的体系架构" class="headerlink" title="Qemu的体系架构"></a>Qemu的体系架构</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><code>QEMU</code>是一个主机上的<code>VMM(virtual machine monitor)</code>，通过动态二进制转换来模拟CPU，并提供一系列的硬件模型。<br><code>KVM(Kernel-Based Virtual Machine)</code>是基于内核的虚拟机，实现对CPU和内存的虚拟化。<code>KVM</code>需要处理器硬件本身支持虚拟化扩展，如<code>intel VT</code>和<code>AMD AMD-V</code>技术。同时它是Linux内核的一个可加载模块，<code>KVM</code>从<code>Linux 2.6.20</code>以后已被作为内核组件。<br>从存在形式来看，它包括两个内核模块：<code>kvm.ko</code>用于实现核心虚拟化功能和<code>kvm_intel.ko(或 kvm_amd.ko)</code>处理器强相关的模块。 本质上，<code>KVM</code>是管理虚拟硬件设备的驱动，该驱动使用字符设备<code>/dev/kvm</code>（由<code>KVM</code>本身创建）作为管理接口，主要负责<code>vCPU</code>的创建，虚拟内存的分配，<code>vCPU</code>寄存器的读写以及<code>vCPU</code>的运行。</p>
+<p>有了<code>KVM</code>以后，<code>guest os</code>的CPU指令不用再经过<code>QEMU</code>来转译便可直接运行，大大提高了运行速度。但<code>KVM</code>的<code>kvm.ko</code>本身只提供了CPU和内存的虚拟化，所以它必须结合<code>QEMU</code>才能构成一个完整的虚拟化技术。</p>
+<p><code>QEMU-KVM</code> ：<code>KVM</code>运行在内核空间，<code>QEMU</code>运行在用户空间，实际模拟创建、管理各种虚拟硬件，<code>QEMU</code>将<code>KVM</code>整合了进来，通过<code>ioctl</code> 调用<code>/dev/kvm</code> ，从而将CPU指令的部分交给内核模块来做，<code>KVM</code>实现了<code>CPU</code>和内存的虚拟化，但<code>KVM</code>不能虚拟其他硬件设备，因此<code>QEMU</code>还有模拟IO设备（磁盘，网卡，显卡等）的作用，<code>KVM</code>加上<code>QEMU</code>后就是完整意义上的服务器虚拟化。 由于<code>QEMU</code>纯模拟IO设备的效率不高，一般采用半虚拟化的<code>VIRTIO</code>来虚拟IO设备。</p>
+<p><code>kvm</code>加速的伪代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">kvmfd = open(<span class="string">"/dev/kvm"</span>)</span><br><span class="line">ioctl(kvmfd,KVM_CREATE_VM,<span class="number">0</span>)</span><br><span class="line">ioctl(kvmfd,KVM_CREATE_VCPU,<span class="number">0</span>)</span><br><span class="line"><span class="keyword">for</span> (;;) &#123;</span><br><span class="line">	ioctl(KVM_RUN)</span><br><span class="line">	<span class="keyword">switch</span> (exit_reason) &#123;</span><br><span class="line">		<span class="keyword">case</span> KVM_EXIT_IO: </span><br><span class="line">		<span class="keyword">case</span> KVM_EXIT_MMIO: </span><br><span class="line">		<span class="keyword">case</span> KVM_EXIT_IRQ_WINDOW_OPEN:</span><br><span class="line">		<span class="keyword">case</span> KVM_EXIT_SHUTDOWN:</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了使用<code>KVM</code>执行虚拟机代码，<code>QEMU</code>进程打开<code>/dev/kvm</code>并发出<code>ioctl(KVM_RUN)</code>。 <code>KVM</code>内核模块使用现代<code>Intel</code>和<code>AMD CPU</code>上的硬件虚拟化扩展来直接执行虚拟机代码。 当<code>guest</code>虚拟机访问硬件设备寄存器，或是暂停虚拟机CPU或是执行其他特殊操作时，<code>KVM</code>将退出并将控制权转给<code>QEMU</code>。 此时，<code>QEMU</code>可以模拟操作的预期输出，或者只是客户CPU在暂停的情况下等待下一个客户机中断。</p>
+<p>具体分工为：<code>KVM</code>负责对CPU和内存模拟，<code>QEMU</code>负责对IO设备模拟并对各种虚拟设备的创建和调度进行管理。</p>
+<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p><code>QEMU</code>是一个模拟器，它能够动态模拟特定架构的CPU指令，如<code>X86</code>，<code>PPC</code>，<code>ARM</code>等等。<code>QEMU</code>模拟的架构叫目标架构，运行<code>QEMU</code>的系统架构叫主机架构，<code>QEMU</code>中有一个模块叫做微型代码生成器(<code>TCG</code>)，它用来将目标代码翻译成主机代码。</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811115719848.png" alt="image-20200811115719848"></p>
+<p>我们也可以将运行在虚拟CPU上的代码叫做客户机代码，<code>QEMU</code>的主要功能就是不断提取客户机代码并且转化成主机指定架构的代码。整个翻译任务分为两个部分：第一个部分是将做<strong>目标代码(TB)</strong>转化成<strong>TCG中间代码</strong>，然后再将<strong>TCG中间代码</strong>转化成<strong>主机代码</strong>。</p>
+<h3 id="核心代码位置"><a href="#核心代码位置" class="headerlink" title="核心代码位置"></a>核心代码位置</h3><p>主要比较重要的c文件有：<code>/vl.c</code>，<code>/cpus.c</code>，<code>/exec-all.c</code>，<code>/exec.c</code>，<code>/cpu-exec.c</code></p>
+<p><code>QEMU</code>的<code>main</code>函数定义在<code>/vl.c</code>中，它也是执行的起点，这个函数的功能主要是建立一个虚拟的硬件环境，它通过参数的解析，将初始化内存，需要的模拟的设备初始化，CPU参数，初始化<code>KVM</code>等等。接着程序就跳转到其他的执行分支文件如：<code>/cpus.c</code>，<code>/exec-all.c</code>，<code>/exec.c</code>，<code>/cpu-exec.c</code>。</p>
+<p>所有的硬件设备都在<code>/hw/</code>目录下面，所有的设备都有独自的文件，包括总线，串口，网卡，鼠标等等。它们通过设备模块串在一起，在<code>vl.c</code>中的<code>machine _init</code>中初始化。</p>
+<p>现在<code>QEMU</code>模拟的CPU架构有：<code>Alpha</code>，<code>ARM</code>，<code>Cris</code>，<code>i386</code>，<code>M68K</code>，<code>PPC</code>，<code>Sparc</code>，<code>Mips</code>，<code>MicroBlaze</code>，<code>S390X</code>，<code>SH4</code>等。</p>
+<p>在<code>QEMU</code>中使用<code>./configure</code>可以配置运行的架构，这个脚本会自动读取本机真实机器的CPU架构，并且编译的时候就编译对应架构的代码。对于不同的<code>QEMU</code>做的事情都不同，所以不同架构下的代码在不同的目录下面。<code>/target-arch/</code>目录就对应了相应架构的代码，如<code>/target-i386/</code>就对应了<code>x86</code>系列的代码部分。虽然不同架构做法不同，但是都是为了实现将对应客户机CPU架构的<code>TBs</code>转化成<code>TCG</code>的中间代码，这个就是<code>TCG</code>的前半部分。</p>
+<p>使用<code>TCG</code>代码生成宿主机的代码位于<code>/tcg/</code>里，在这个目录里面也对应了不同的架构，分别在不同的子目录里面，如<code>i386</code>就在<code>/tcg/i386</code>中，整个生成宿主机代码的过程也可以当做<code>TCG</code>的后半部分。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/vl.c:                      <span class="comment">//最主要的模拟循环，虚拟机机器环境初始化，和CPU的执行。</span></span><br><span class="line">/target-arch/translate.c    <span class="comment">//将客户机代码转化成不同架构的TCG操作码。</span></span><br><span class="line">/tcg/tcg.c                  <span class="comment">//主要的TCG代码。</span></span><br><span class="line">/tcg/arch/tcg-target.c      <span class="comment">//将TCG代码转化生成宿主机代码</span></span><br><span class="line">/cpu-exec.c     <span class="comment">//其中的cpu-exec()函数主要寻找下一个TB（翻译代码块），如果没找到就请求得到下一个TB，并且操作生成的代码块。</span></span><br></pre></td></tr></table></figure>
+<h3 id="TCG"><a href="#TCG" class="headerlink" title="TCG"></a>TCG</h3><p><code>TCG</code>说白了就是一个解释器，或者说是编译器，将客服机的代码翻译为<code>TCG</code>中间代码(前端)，再将<code>TCG</code>中间代码翻译为宿主机代码(后端)：</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122300653.png" alt="image-20200811122300653"></p>
+<p>客户机代码部分：</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122312739.png" alt="image-20200811122312739"></p>
+<p><code>TCG</code>中间代码部分：</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122324627.png" alt="image-20200811122324627"></p>
+<p>宿主机代码部分：</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122334537.png" alt="image-20200811122334537"></p>
+<p>当在我们需要的时候<code>TCG</code>才会动态的转变代码，这个想法的目的是用更多的时间去执行我们生成的代码。当新的代码从<code>TB</code>中生成以后， 将会被保存到一个<code>code cache</code>中，因为很多相同的<code>TB</code>会被反复的进行操作，所以这样类似于内存的<code>cache</code>，能够提高使用效率，而<code>code cache</code>的刷新使用<code>LRU</code>算法。</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122246132.png" alt="image-20200811122246132"></p>
+<p><code>Chaining of TBs</code>：</p>
+<blockquote>
+<p>Returning from the code cache to the static code (QEMU code) and jumping back into the code cache is generally slow. To solve this QEMU chains every TB to the next TB. So after the execution of one TB the execution directly jumps to the next TB without returning to the static code. The chaining of block happens when the Tb returns to the static code. Thus when TB1 returns (as there was no chaining) to static code the next TB, TB2, is found, generated and executed. When TB2 returns it is immediately chained to TB1. This makes sure that next time when TB1 is executed TB2 follows it without returning to the static code. Figure 7.8 (a-c) in the following page illustrates chaining of TBs.</p>
+</blockquote>
+<p>从<code>code cache</code>返回到<code>static code(Qemu的代码)</code>中和从<code>static code</code>代码进入<code>code cache</code>中是很费时间的，为了解决这个问题，<code>Qemu</code>将<code>TB</code>连接成了一条<code>chain</code>，所以执行完一块<code>TB</code>之后会直接跳到下一个<code>TB</code>继续执行而不会返回到<code>static code</code>中。</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811123158082.png" alt="image-20200811123158082"></p>
+<p>具体代码分析，这里代码全部选自<code>Qemu Detailed Study Chapter-7</code>，版本应该比较久远了，我和现在的代码对比了下，有部分差别但是核心应该是没变的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">main_loop(...)&#123;/vl.c&#125;:</span><br><span class="line"><span class="comment">//函数main_loop初始化qemu_main_loop_start(),然后进入无限循环cpu_exec_all(),这个是QEMU的一个主要循环,在里面会不断的判断一些条件,如虚拟机的关机断电之类,在下文的Main loop部分详解</span></span><br><span class="line"></span><br><span class="line">qemu_main_loop_start(...)&#123;/cpus.c&#125;:</span><br><span class="line"><span class="comment">//函数设置系统变量qemu_system_ready = 1并且重启所有的线程并且等待一个条件变量.</span></span><br><span class="line"></span><br><span class="line">cpu_exec_all(...)&#123;/cpus.c&#125;:</span><br><span class="line"><span class="comment">//它是cpu循环，QEMU能够启动256个cpu核，但是这些核将会分时运行，然后执行qemu_cpu_exec().</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">CPUState</span>&#123;</span>/target-xyz/cpu.h&#125;:</span><br><span class="line"><span class="comment">//它是CPU状态结构体，关于cpu的各种状态，不同架构下面还有不同。</span></span><br><span class="line"></span><br><span class="line">cpu_exec(...)&#123;/cpu-exec.c&#125;:</span><br><span class="line"><span class="comment">//这个函数是主要的执行循环,这里第一次翻译之前说道德TB,TB被初始化为(TranslationBlock *tb),然后不停的执行异常处理。其中嵌套了两个无限循环find tb_find_fast()和tcg_qemu_tb_exec().</span></span><br><span class="line"></span><br><span class="line">cantb_find_fast()  <span class="comment">//为客户机初始化查询下一个TB，并且生成主机代码。</span></span><br><span class="line"></span><br><span class="line">tcg_qemu_tb_exec() <span class="comment">//执行生成的主机代码 </span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TranslationBlock</span> &#123;</span>/exec-all.h&#125;:</span><br><span class="line"><span class="comment">//结构体TranslationBlock包含下面的成员：PC, CS_BASE, Flags(表明TB), tc_ptr(指向这个TB翻译代码的指针), tb_next_offset[2], tb_jmp_offset[2](接下去的Tb), *jmp_next[2], *jmp_first (之前的TB).</span></span><br><span class="line"></span><br><span class="line">tb_find_fast(...)&#123;/cpu-exec.c&#125;:</span><br><span class="line"><span class="comment">//函数通过调用获得程序指针计数器,然后传到一个哈希函数从tb_jmp_cache[](一个哈希表)得到TB的所以,所以使用tb_jmp_cache可以找到下一个TB。如果没有找到下一个TB,则使用tb_find_slow。</span></span><br><span class="line"></span><br><span class="line">tb_find_slow(...)&#123;/cpu-exec.c&#125;:</span><br><span class="line"><span class="comment">//这个是在快速查找失败以后试图去访问物理内存，寻找TB。</span></span><br><span class="line"></span><br><span class="line">tb_gen_code(...)&#123;/exec.c&#125;:</span><br><span class="line"><span class="comment">//开始分配一个新的TB，TB的PC是刚刚从CPUstate里面通过using get_page_addr_code()找到的</span></span><br><span class="line"></span><br><span class="line">phys_pc = get_page_addr_code(env, pc);</span><br><span class="line"></span><br><span class="line">tb = tb_alloc(pc);</span><br><span class="line"><span class="comment">//ph当调用cpu_gen_code()以后,接着会调用tb_link_page(),它将增加一个新的TB,并且指向它的物理页表。</span></span><br><span class="line"></span><br><span class="line">cpu_gen_code(...)&#123;translate-all.c&#125;:</span><br><span class="line"><span class="comment">//函数初始化真正的代码生成，在这个函数里面有下面的函数调用：</span></span><br><span class="line"></span><br><span class="line">gen_intermediate_code()&#123;/target-arch/translate.c&#125;-&gt;gen_intermediate_code_internal()&#123;/target-arch/translate.c &#125;-&gt;disas_insn()&#123;/target-arch/translate.c&#125;</span><br><span class="line"></span><br><span class="line">disas_insn()&#123;/target-arch/translate.c&#125;</span><br><span class="line"><span class="comment">//函数disas_insn()真正的实现将客户机代码翻译成TCG代码,它通过一长串的switch case，将不同的指令做不同的翻译,最后调用tcg_gen_code。</span></span><br><span class="line"></span><br><span class="line">tcg_gen_code(...)&#123;/tcg/tcg.c&#125;:</span><br><span class="line"><span class="comment">//这个函数将TCG的代码转化成主机代码,这个就不细细说明了,和前面类似。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> tcg_qemu_tb_exec(...)&#123;/tcg/tcg.g&#125;:</span></span><br><span class="line"><span class="comment">//通过上面的步骤,当TB生成以后就通过这个函数进行执行.</span></span><br><span class="line"></span><br><span class="line">next_tb = tcg_qemu_tb_exec(tc_ptr) :</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">uint8_t</span> code_gen_prologue[];</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> tcg_qemu_tb_exec(tb_ptr) ((long REGPARM(*)(void *)) code_gen_prologue)(tb_ptr)</span></span><br></pre></td></tr></table></figure>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>从一个软件的功能的角度来看，<code>qemu</code>主要分为两大部分：</p>
+<ul>
+<li><p>硬件设备模拟(CPU、内存、外设等)</p>
+</li>
+<li><p>对虚拟机的运维和管理，包括<code>monitor</code>和<code>QMP(QEMU monitor protocol)</code>，主要是接收管理命令并处理，包括查询状态、动态添加删除设备、虚拟机迁移等</p>
+</li>
+</ul>
+<p><code>qemu</code>的源码都是为了这两个功能而服务的。</p>
+<h3 id="选项子系统"><a href="#选项子系统" class="headerlink" title="选项子系统"></a>选项子系统</h3><p><code>QEMU</code>的设备模拟是从<code>QEMU</code>的选项解析开始的，<code>QEMU</code>的选项定义了<code>QEMU</code>要模拟的虚拟机的形态，比如虚拟机支持的CPU类型、有多少内存、虚拟机上有哪些外设等。<code>QEMU</code>支持的选项多达上百个，因此采用硬编码的方法来处理并不合适，需要把他们有效的组织和管理起来。<br> 选项解析的第一步是查询从命令行中传入的选项是否是<code>QEMU</code>支持的选项，这需要从<code>QEMU</code>支持的所有的选项集合中去匹配该选项，并给出该选项的id或索引，以在switch语句中去定位选项的处理流程。在<code>QEMU</code>中所有的选项保存在<code>QEMUOption qemu_options[]</code>数组中。保存每个具体选项的结构体为<code>QEMUOption</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">QEMUOption</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">int</span> flags;</span><br><span class="line">    <span class="keyword">int</span> index;</span><br><span class="line">    <span class="keyword">uint32_t</span> arch_mask;</span><br><span class="line">&#125; QEMUOption;</span><br></pre></td></tr></table></figure>
+<p>识别了选项之后，后面就是要解析选项了。<code>QEMU</code>是大型软件，它运行过程中的很多行为都是跟选项相关的，因此很多选项并不是解析的时候马上都会用到，所以需要保存起来，在需要用到的时候再来查询该选项。<code>QEMU</code>的选项有非常多，其中很多选项都有很多子选项，因此有很多选项是相关的，作用于同一类设备或同一个子系统的。<code>QEMU</code>在保存解析出的选项的时候是分类来保存的。<code>QEMU</code>与解析后的选项保存相关的数据结构有4个不同的结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QemuOptsList</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *implied_opt_name;</span><br><span class="line">    <span class="keyword">bool</span> merge_lists;  <span class="comment">/* Merge multiple uses of option into a single list? */</span></span><br><span class="line">    QTAILQ_HEAD(, QemuOpts) head;</span><br><span class="line">    QemuOptDesc desc[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QemuOpts</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *id;</span><br><span class="line">    QemuOptsList *<span class="built_in">list</span>;</span><br><span class="line">    Location loc;</span><br><span class="line">    QTAILQ_HEAD(QemuOptHead, QemuOpt) head;</span><br><span class="line">    QTAILQ_ENTRY(QemuOpts) next;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QemuOpt</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">char</span> *str;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> QemuOptDesc *desc;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="keyword">bool</span> boolean;</span><br><span class="line">        <span class="keyword">uint64_t</span> uint;</span><br><span class="line">    &#125; value;</span><br><span class="line"></span><br><span class="line">    QemuOpts     *opts;</span><br><span class="line">    QTAILQ_ENTRY(QemuOpt) next;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">QemuOptDesc</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">enum</span> QemuOptType type;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *help;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *def_value_str;</span><br><span class="line">&#125; QemuOptDesc</span><br></pre></td></tr></table></figure>
+<p><code>QemuOptsList</code>结构体用来保存某一类的选项，<code>QEMU</code>把选项分成了很多类，比如<code>-drive</code>选项，很多存储相关的选项及子选项保存在<code>drive</code>大选项中；再比如<code>-device</code>选项，有很多不同种类的子选项，它也是一类选项。<code>QEMU</code>中维护了一个<code>QemuOptsList</code>的数组，该数组中的每个成员都代表了解析出的一类选项，即<code>QEMU</code>是按照<code>QemuOptsList</code>来分类的。并不是所有的选项都按分类的方式保存在<code>QemuOptsList</code>中了，有些简单的只有一个选择的选项，就没必要分类的保存在数组中了，直接保存在一个变量中就行了，比如<code>-pidfile</code>选项，指定存储<code>qemu</code>进程<code>pid</code>号的文件，直接把文件名参数保存在<code>pid_file</code>变量中就行了。</p>
+<p><code>QemuOptsList</code>中保存的大选项中有很多子选项，这些子选项保存在<code>QemuOpts</code>结构体中，一个<code>QemuOpts</code>保存了一个大选项相关的所有子选项，每个子选项都是一个<code>QemuOpt</code>结构，因此<code>QemuOpts</code>里面实际保存是<code>QemuOpt</code>结构的链表。<br><code>QemuOpt</code>结构保存的是一个个具体的子选项，以key、value对的方式保存，key是子选项的名称，value是命令行参数指定的子选项的值。</p>
+<p>从<code>QemuOptsList</code>结构体的定义可以看出<code>QemuOptsList</code>中保存的也是<code>QemuOpts</code>结构体的链表，就是说一个大选项可能有多个<code>QemuOpts</code>，但是<code>QemuOpts</code>已经保存了所有的子选项了，为什么会有多个<code>QemuOpts</code>结构体？这是因为有些<code>QEMU</code>选项在命令行中不会使用一次，有可能一个选项使用多次，即一个大选项可能有多个同时存在的实例。比如<code>-device</code>选项是用来创建虚拟机里面的外设的，你可以用来创建一个字符设备，也可以用来创建一个网络设备等，所以<code>qemu</code>命令行可以可能同时使用多次<code>-device</code>选项以创建多个不同的设备，每个设备都指定有各自的子选项，多个<code>QemuOpts</code>是用来保存同一类选项的不同实例的。</p>
+<p><code>QemuOptDesc</code>保存的是选项的帮助信息或描述信息。</p>
+<p><code>qemu_opts_parse_noisily()</code>函数解析某一个大选项，他先创建一个<code>QemuOpts</code>，然后从参数中中解析出每个子选项key、value对，并为每个key、value对创建<code>QemuOpt</code>。<code>qemu_opt_set()/opt_set()</code>函数用于在<code>QemuOpts</code>中新添加一个<code>QemuOpt</code>结构的key、value对。<br><code>QEMU</code>的选项解析会调用解析函数解析每个命令行参数，并把解析出的选项保存在<code>QemuOptsList</code>数组中，一些不需要保存在数组中的选项保存在相关的变量中。</p>
+<h3 id="QOM"><a href="#QOM" class="headerlink" title="QOM"></a>QOM</h3><p>详见<code>QEMU学习--QOM</code>篇章。</p>
+<h3 id="Main-loop-主事件循环"><a href="#Main-loop-主事件循环" class="headerlink" title="Main loop(主事件循环)"></a>Main loop(主事件循环)</h3><p><code>QEMU</code>中的主事件循环是为<code>QEMU</code>在设备模拟过程中的各个任务遵循的执行模型或者执行流。在一般持续的C程序中(比如单片机的程序)，在进行一定的初始化后都会进入一个while循环，while循环不断的检测执行条件，当条件满足时就执行循环体里面的任务。<code>QEMU</code>的主事件循环就是这个while主循环，与while主循环的区别是，while主循环是一个非常原始和粗放的方式，而<code>QEMU</code>的主事件循环要先进的多。</p>
+<p><code>QEMU</code>的主循环不能采用原始的方式，必须经过精巧的涉及。这是因为<code>QEMU</code>对性能的要求很高且<code>QEMU</code>的主循环中要处理非常多的事件，执行非常多的任务，为了协调这些任务的执行，必须采用非常精巧的方式来执行主事件循环。<code>QEMU</code>的主事件循环是在<code>glib</code>库提供的<code>gmainloop</code>主事件循环机制的基础改造而来。</p>
+<ul>
+<li>Glib事件循环机制提供了一套事件分发接口，使用这套接口注册事件源（source）和对应的回调，可以开发基于事件触发的应用。Glib的核心是poll机制，通过poll检查用户注册的事件源，并执行对应的回调，用户不需要关注其具体实现，只需要按照要求注册对应的事件源和回调</li>
+<li>Glib事件循环机制管理所有注册的事件源，主要类型有：<code>fd</code>，<code>pipe</code>，<code>socket</code>和<code>timer</code>。不同事件源可以在一个线程中处理，也可以在不同线程中处理，这取决于事件源所在的上下文(<code>GMainContext</code>)，一个上下文只能运行在一个线程中，所以如果想要事件源在不同线程中并发被处理，可以将其放在不同的上下文。</li>
+</ul>
+<p>Glib对一个事件源的处理分为4个阶段：初始化，准备，poll，和调度。用户可以在这4个处理阶段为每个事件源注册自己的回调处理函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// vl.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main_loop</span><span class="params">(<span class="keyword">void</span>)</span><span class="comment">//在main函数里被调用</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_PROFILER</span></span><br><span class="line">    <span class="keyword">int64_t</span> ti;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="keyword">while</span> (!main_loop_should_exit()) &#123;<span class="comment">//判断是否应该退出QEMU</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_PROFILER</span></span><br><span class="line">        ti = profile_getclock();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        main_loop_wait(<span class="literal">false</span>);<span class="comment">//主循环的主要处理过程</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_PROFILER</span></span><br><span class="line">        dev_time += profile_getclock() - ti;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main_loop_wait</span><span class="params">(<span class="keyword">int</span> nonblocking)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">    <span class="keyword">uint32_t</span> timeout = UINT32_MAX;</span><br><span class="line">    <span class="keyword">int64_t</span> timeout_ns;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nonblocking) &#123;</span><br><span class="line">        timeout = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* poll any events */</span></span><br><span class="line">    g_array_set_size(gpollfds, <span class="number">0</span>); <span class="comment">/* reset for new iteration */</span></span><br><span class="line">    <span class="comment">/* <span class="doctag">XXX:</span> separate device handlers from system ones */</span></span><br><span class="line">    slirp_pollfds_fill(gpollfds, &amp;timeout);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (timeout == UINT32_MAX) &#123;</span><br><span class="line">        timeout_ns = <span class="number">-1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        timeout_ns = (<span class="keyword">uint64_t</span>)timeout * (<span class="keyword">int64_t</span>)(SCALE_MS);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    timeout_ns = qemu_soonest_timeout(timeout_ns,</span><br><span class="line">                                      timerlistgroup_deadline_ns(</span><br><span class="line">                                          &amp;main_loop_tlg));</span><br><span class="line"></span><br><span class="line">    ret = os_host_main_loop_wait(timeout_ns); <span class="comment">//核心逻辑</span></span><br><span class="line">    slirp_pollfds_poll(gpollfds, (ret &lt; <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* CPU thread can infinitely wait for event after</span></span><br><span class="line"><span class="comment">       missing the warp */</span></span><br><span class="line">    qemu_start_warp_timer();</span><br><span class="line">    qemu_clock_run_all_timers();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>QEMU</code>的主事件循环的主要处理过程是<code>main_loop_wait()</code>，它执行以下任务： </p>
+<p> 　　1. 等待文件描述符变得可读或可写。 文件描述符起着至关重要的作用，因为<code>fd</code>、<code>socket</code>、<code>pipe</code>各种其他资源都是文件描述符。 可以使用<code>qemu_set_fd_handler()</code>添加文件描述符。<br> 　　2. 运行过期的计时器。 可以使用<code>qemu_mod_timer()</code>添加计时器。<br> 　　3. 运行下半部分(<code>BHs</code>)，就像定时器立即到期一样。<code>BH</code>用于避免重入和溢出调用堆栈。 可以使用<code>qemu_bh_schedule()</code>添加<code>BH</code>。<br> 　　当文件描述符准备就绪、计时器到期、<code>BH</code>被调度时，事件循环将调用响应事件的回调。 回调有两个关于其环境的简单规则： </p>
+<ul>
+<li>没有其他核心代码同时执行，因此不需要同步。 回调相对于其他核心代码按顺序和原子方式执行。 在任何给定时间只有一个控制线程执行核心代码。 </li>
+<li>不应执行阻塞系统调用或长时间运行的计算。 由于事件循环在继续其他事件之前等待回调返回，因此避免在回调中花费无限量的时间是很重要的。 违反此规则会导致guest虚拟机暂停并且监视器无响应。</li>
+</ul>
+<h3 id="monitor-QMP"><a href="#monitor-QMP" class="headerlink" title="monitor/QMP"></a>monitor/QMP</h3><p>用来实现虚拟机管理的模块，对于入门开发者来说，这部分内容知道怎么使用即可，代码方面我没去深究。</p>
+<p><code>monitor</code>的使用很简单，在<code>qemu</code>启动的命令行中不加<code>-nographic</code>时会弹出一个<code>UI</code>窗口，那个窗口就是<code>monitor</code>，我们可以与<code>qemu</code>交互来管理设备和查看设备状态，数据备份，访问<code>Guest OS</code>等操作，想重定向到标准输入终端加选项<code>-monitor stdio</code>即可，想重定向到网络的话，<code>-monitor telnet:localhost:9000,server</code>。</p>
+<p><code>QMP(QEMU monitor protocol)</code>，在很多情况下，我们希望在外部将控制命令输入到<code>QEMU monitor</code>中，但是原有的机制太麻烦（需要重定向等绕圈子的操作），<code>QEMU</code>为我们提供了一个叫<code>QMP</code>的东西。<code>QMP</code>全称<code>QEMU monitor protocol</code>顾名思义就是用于<code>QEMU monitor</code>的协议啦。<code>QMP</code>以<code>JSON</code>格式传输命令与返回信息，许多基于<code>QEMU</code>的应用都使用了这个功能，比如著名的虚拟化中间件<code>libvirt</code>，它在对<code>QEMU</code>虚拟机做操作时，就是使用的<code>QMP</code>，可以通过<code>telnet</code>或者<code>qmp-shell</code>等方式使用<code>QMP</code>。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://vmsplice.net/~stefan/qemu-code-overview.pdf" target="_blank" rel="noopener">https://vmsplice.net/~stefan/qemu-code-overview.pdf</a></p>
+<p><a href="https://juniorprincewang.github.io/2018/11/15/QEMU学习/" target="_blank" rel="noopener">https://juniorprincewang.github.io/2018/11/15/QEMU%E5%AD%A6%E4%B9%A0/</a></p>
+<p><a href="https://blog.csdn.net/yearn520/article/details/6602182?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.edu_weight&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.edu_weight" target="_blank" rel="noopener">https://blog.csdn.net/yearn520/article/details/6602182?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.edu_weight&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.edu_weight</a></p>
+<p><a href="https://lists.gnu.org/archive/html/qemu-devel/2011-04/pdfhC5rVdz7U8.pdf" target="_blank" rel="noopener">https://lists.gnu.org/archive/html/qemu-devel/2011-04/pdfhC5rVdz7U8.pdf</a></p>
+<p><a href="https://rickylss.github.io/qemu/2019/06/25/qemu-monitor/" target="_blank" rel="noopener">https://rickylss.github.io/qemu/2019/06/25/qemu-monitor/</a></p>
+<p><a href="https://blog.csdn.net/woai110120130/" target="_blank" rel="noopener">https://blog.csdn.net/woai110120130/</a></p>
+<h1 id="Qemu的选项参数"><a href="#Qemu的选项参数" class="headerlink" title="Qemu的选项参数"></a>Qemu的选项参数</h1><p>复杂的命令行选项是<code>Qemu</code>的最大缺点之一，毕竟除了几个常用的选项外，没人会记得这么多偏门的选项，所以现查手册是比较快速的方法，这里把所有的选项记录下来(<code>QEMU emulator version 2.3.93</code>)，供查阅方便，想自己生成的话，直接用<code>./qemu-system-x86_64 --help</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br></pre></td><td class="code"><pre><span class="line">QEMU emulator version 2.3.93, Copyright (c) 2003-2008 Fabrice Bellard</span><br><span class="line">usage: qemu-system-x86_64 [options] [disk_image]</span><br><span class="line"></span><br><span class="line"><span class="string">'disk_image'</span> is a raw hard disk image <span class="keyword">for</span> IDE hard disk 0</span><br><span class="line"></span><br><span class="line">Standard options:</span><br><span class="line">-h or -<span class="built_in">help</span>     display this <span class="built_in">help</span> and <span class="built_in">exit</span></span><br><span class="line">-version        display version information and <span class="built_in">exit</span></span><br><span class="line">-machine [<span class="built_in">type</span>=]name[,prop[=value][,...]]</span><br><span class="line">                selects emulated machine (<span class="string">'-machine help'</span> <span class="keyword">for</span> list)</span><br><span class="line">                property accel=accel1[:accel2[:...]] selects accelerator</span><br><span class="line">                supported accelerators are kvm, xen, tcg (default: tcg)</span><br><span class="line">                kernel_irqchip=on|off controls accelerated irqchip support</span><br><span class="line">                vmport=on|off|auto controls emulation of vmport (default: auto)</span><br><span class="line">                kvm_shadow_mem=size of KVM shadow MMU</span><br><span class="line">                dump-guest-core=on|off include guest memory <span class="keyword">in</span> a core dump (default=on)</span><br><span class="line">                mem-merge=on|off controls memory merge support (default: on)</span><br><span class="line">                iommu=on|off controls emulated Intel IOMMU (VT<span class="_">-d</span>) support (default=off)</span><br><span class="line">                aes-key-wrap=on|off controls support <span class="keyword">for</span> AES key wrapping (default=on)</span><br><span class="line">                dea-key-wrap=on|off controls support <span class="keyword">for</span> DEA key wrapping (default=on)</span><br><span class="line">                suppress-vmdesc=on|off disables self-describing migration (default=off)</span><br><span class="line">-cpu cpu        select CPU (<span class="string">'-cpu help'</span> <span class="keyword">for</span> list)</span><br><span class="line">-smp [cpus=]n[,maxcpus=cpus][,cores=cores][,threads=threads][,sockets=sockets]</span><br><span class="line">                <span class="built_in">set</span> the number of CPUs to <span class="string">'n'</span> [default=1]</span><br><span class="line">                maxcpus= maximum number of total cpus, including</span><br><span class="line">                offline CPUs <span class="keyword">for</span> hotplug, etc</span><br><span class="line">                cores= number of CPU cores on one socket</span><br><span class="line">                threads= number of threads on one CPU core</span><br><span class="line">                sockets= number of discrete sockets <span class="keyword">in</span> the system</span><br><span class="line">-numa node[,mem=size][,cpus=cpu[-cpu]][,nodeid=node]</span><br><span class="line">-numa node[,memdev=id][,cpus=cpu[-cpu]][,nodeid=node]</span><br><span class="line">-add-fd fd=fd,<span class="built_in">set</span>=<span class="built_in">set</span>[,opaque=opaque]</span><br><span class="line">                Add <span class="string">'fd'</span> to fd <span class="string">'set'</span></span><br><span class="line">-<span class="built_in">set</span> group.id.arg=value</span><br><span class="line">                <span class="built_in">set</span> &lt;arg&gt; parameter <span class="keyword">for</span> item &lt;id&gt; of <span class="built_in">type</span> &lt;group&gt;</span><br><span class="line">                i.e. -<span class="built_in">set</span> drive.<span class="variable">$id</span>.file=/path/to/image</span><br><span class="line">-global driver.property=value</span><br><span class="line">-global driver=driver,property=property,value=value</span><br><span class="line">                <span class="built_in">set</span> a global default <span class="keyword">for</span> a driver property</span><br><span class="line">-boot [order=drives][,once=drives][,menu=on|off]</span><br><span class="line">      [,splash=sp_name][,splash-time=sp_time][,reboot-timeout=rb_time][,strict=on|off]</span><br><span class="line">                <span class="string">'drives'</span>: floppy (a), hard disk (c), CD-ROM (d), network (n)</span><br><span class="line">                <span class="string">'sp_name'</span>: the file<span class="string">'s name that would be passed to bios as logo picture, if menu=on</span></span><br><span class="line"><span class="string">                '</span>sp_time<span class="string">': the period that splash picture last if menu=on, unit is ms</span></span><br><span class="line"><span class="string">                '</span>rb_timeout<span class="string">': the timeout before guest reboot when boot failed, unit is ms</span></span><br><span class="line"><span class="string">-m[emory] [size=]megs[,slots=n,maxmem=size]</span></span><br><span class="line"><span class="string">                configure guest RAM</span></span><br><span class="line"><span class="string">                size: initial amount of guest memory</span></span><br><span class="line"><span class="string">                slots: number of hotplug slots (default: none)</span></span><br><span class="line"><span class="string">                maxmem: maximum amount of guest memory (default: none)</span></span><br><span class="line"><span class="string">NOTE: Some architectures might enforce a specific granularity</span></span><br><span class="line"><span class="string">-mem-path FILE  provide backing storage for guest RAM</span></span><br><span class="line"><span class="string">-mem-prealloc   preallocate guest memory (use with -mem-path)</span></span><br><span class="line"><span class="string">-k language     use keyboard layout (for example '</span>fr<span class="string">' for French)</span></span><br><span class="line"><span class="string">-audio-help     print list of audio drivers and their options</span></span><br><span class="line"><span class="string">-soundhw c1,... enable audio support</span></span><br><span class="line"><span class="string">                and only specified sound cards (comma separated list)</span></span><br><span class="line"><span class="string">                use '</span>-soundhw <span class="built_in">help</span><span class="string">' to get the list of supported cards</span></span><br><span class="line"><span class="string">                use '</span>-soundhw all<span class="string">' to enable all of them</span></span><br><span class="line"><span class="string">-balloon none   disable balloon device</span></span><br><span class="line"><span class="string">-balloon virtio[,addr=str]</span></span><br><span class="line"><span class="string">                enable virtio balloon device (default)</span></span><br><span class="line"><span class="string">-device driver[,prop[=value][,...]]</span></span><br><span class="line"><span class="string">                add device (based on driver)</span></span><br><span class="line"><span class="string">                prop=value,... sets driver properties</span></span><br><span class="line"><span class="string">                use '</span>-device <span class="built_in">help</span><span class="string">' to print all possible drivers</span></span><br><span class="line"><span class="string">                use '</span>-device driver,<span class="built_in">help</span><span class="string">' to print all possible properties</span></span><br><span class="line"><span class="string">-name string1[,process=string2][,debug-threads=on|off]</span></span><br><span class="line"><span class="string">                set the name of the guest</span></span><br><span class="line"><span class="string">                string1 sets the window title and string2 the process name (on Linux)</span></span><br><span class="line"><span class="string">                When debug-threads is enabled, individual threads are given a separate name (on Linux)</span></span><br><span class="line"><span class="string">                NOTE: The thread names are for debugging and not a stable API.</span></span><br><span class="line"><span class="string">-uuid %08x-%04x-%04x-%04x-%012x</span></span><br><span class="line"><span class="string">                specify machine UUID</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Block device options:</span></span><br><span class="line"><span class="string">-fda/-fdb file  use '</span>file<span class="string">' as floppy disk 0/1 image</span></span><br><span class="line"><span class="string">-hda/-hdb file  use '</span>file<span class="string">' as IDE hard disk 0/1 image</span></span><br><span class="line"><span class="string">-hdc/-hdd file  use '</span>file<span class="string">' as IDE hard disk 2/3 image</span></span><br><span class="line"><span class="string">-cdrom file     use '</span>file<span class="string">' as IDE cdrom image (cdrom is ide1 master)</span></span><br><span class="line"><span class="string">-drive [file=file][,if=type][,bus=n][,unit=m][,media=d][,index=i]</span></span><br><span class="line"><span class="string">       [,cyls=c,heads=h,secs=s[,trans=t]][,snapshot=on|off]</span></span><br><span class="line"><span class="string">       [,cache=writethrough|writeback|none|directsync|unsafe][,format=f]</span></span><br><span class="line"><span class="string">       [,serial=s][,addr=A][,rerror=ignore|stop|report]</span></span><br><span class="line"><span class="string">       [,werror=ignore|stop|report|enospc][,id=name][,aio=threads|native]</span></span><br><span class="line"><span class="string">       [,readonly=on|off][,copy-on-read=on|off]</span></span><br><span class="line"><span class="string">       [,discard=ignore|unmap][,detect-zeroes=on|off|unmap]</span></span><br><span class="line"><span class="string">       [[,bps=b]|[[,bps_rd=r][,bps_wr=w]]]</span></span><br><span class="line"><span class="string">       [[,iops=i]|[[,iops_rd=r][,iops_wr=w]]]</span></span><br><span class="line"><span class="string">       [[,bps_max=bm]|[[,bps_rd_max=rm][,bps_wr_max=wm]]]</span></span><br><span class="line"><span class="string">       [[,iops_max=im]|[[,iops_rd_max=irm][,iops_wr_max=iwm]]]</span></span><br><span class="line"><span class="string">       [[,iops_size=is]]</span></span><br><span class="line"><span class="string">       [[,group=g]]</span></span><br><span class="line"><span class="string">                use '</span>file<span class="string">' as a drive image</span></span><br><span class="line"><span class="string">-mtdblock file  use '</span>file<span class="string">' as on-board Flash memory image</span></span><br><span class="line"><span class="string">-sd file        use '</span>file<span class="string">' as SecureDigital card image</span></span><br><span class="line"><span class="string">-pflash file    use '</span>file<span class="string">' as a parallel flash image</span></span><br><span class="line"><span class="string">-snapshot       write to temporary files instead of disk image files</span></span><br><span class="line"><span class="string">-hdachs c,h,s[,t]</span></span><br><span class="line"><span class="string">                force hard disk 0 physical geometry and the optional BIOS</span></span><br><span class="line"><span class="string">                translation (t=none or lba) (usually QEMU can guess them)</span></span><br><span class="line"><span class="string">-fsdev fsdriver,id=id[,path=path,][security_model=&#123;mapped-xattr|mapped-file|passthrough|none&#125;]</span></span><br><span class="line"><span class="string"> [,writeout=immediate][,readonly][,socket=socket|sock_fd=sock_fd]</span></span><br><span class="line"><span class="string">-virtfs local,path=path,mount_tag=tag,security_model=[mapped-xattr|mapped-file|passthrough|none]</span></span><br><span class="line"><span class="string">        [,writeout=immediate][,readonly][,socket=socket|sock_fd=sock_fd]</span></span><br><span class="line"><span class="string">-virtfs_synth Create synthetic file system image</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">USB options:</span></span><br><span class="line"><span class="string">-usb            enable the USB driver (will be the default soon)</span></span><br><span class="line"><span class="string">-usbdevice name add the host or guest USB device '</span>name<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Display options:</span></span><br><span class="line"><span class="string">-display sdl[,frame=on|off][,alt_grab=on|off][,ctrl_grab=on|off]</span></span><br><span class="line"><span class="string">            [,window_close=on|off]|curses|none|</span></span><br><span class="line"><span class="string">            gtk[,grab_on_hover=on|off]|</span></span><br><span class="line"><span class="string">            vnc=&lt;display&gt;[,&lt;optargs&gt;]</span></span><br><span class="line"><span class="string">                select display type</span></span><br><span class="line"><span class="string">-nographic      disable graphical output and redirect serial I/Os to console</span></span><br><span class="line"><span class="string">-curses         use a curses/ncurses interface instead of SDL</span></span><br><span class="line"><span class="string">-no-frame       open SDL window without a frame and window decorations</span></span><br><span class="line"><span class="string">-alt-grab       use Ctrl-Alt-Shift to grab mouse (instead of Ctrl-Alt)</span></span><br><span class="line"><span class="string">-ctrl-grab      use Right-Ctrl to grab mouse (instead of Ctrl-Alt)</span></span><br><span class="line"><span class="string">-no-quit        disable SDL window close capability</span></span><br><span class="line"><span class="string">-sdl            enable SDL</span></span><br><span class="line"><span class="string">-spice [port=port][,tls-port=secured-port][,x509-dir=&lt;dir&gt;]</span></span><br><span class="line"><span class="string">       [,x509-key-file=&lt;file&gt;][,x509-key-password=&lt;file&gt;]</span></span><br><span class="line"><span class="string">       [,x509-cert-file=&lt;file&gt;][,x509-cacert-file=&lt;file&gt;]</span></span><br><span class="line"><span class="string">       [,x509-dh-key-file=&lt;file&gt;][,addr=addr][,ipv4|ipv6|unix]</span></span><br><span class="line"><span class="string">       [,tls-ciphers=&lt;list&gt;]</span></span><br><span class="line"><span class="string">       [,tls-channel=[main|display|cursor|inputs|record|playback]]</span></span><br><span class="line"><span class="string">       [,plaintext-channel=[main|display|cursor|inputs|record|playback]]</span></span><br><span class="line"><span class="string">       [,sasl][,password=&lt;secret&gt;][,disable-ticketing]</span></span><br><span class="line"><span class="string">       [,image-compression=[auto_glz|auto_lz|quic|glz|lz|off]]</span></span><br><span class="line"><span class="string">       [,jpeg-wan-compression=[auto|never|always]]</span></span><br><span class="line"><span class="string">       [,zlib-glz-wan-compression=[auto|never|always]]</span></span><br><span class="line"><span class="string">       [,streaming-video=[off|all|filter]][,disable-copy-paste]</span></span><br><span class="line"><span class="string">       [,disable-agent-file-xfer][,agent-mouse=[on|off]]</span></span><br><span class="line"><span class="string">       [,playback-compression=[on|off]][,seamless-migration=[on|off]]</span></span><br><span class="line"><span class="string">   enable spice</span></span><br><span class="line"><span class="string">   at least one of &#123;port, tls-port&#125; is mandatory</span></span><br><span class="line"><span class="string">-portrait       rotate graphical output 90 deg left (only PXA LCD)</span></span><br><span class="line"><span class="string">-rotate &lt;deg&gt;   rotate graphical output some deg left (only PXA LCD)</span></span><br><span class="line"><span class="string">-vga [std|cirrus|vmware|qxl|xenfb|tcx|cg3|virtio|none]</span></span><br><span class="line"><span class="string">                select video card type</span></span><br><span class="line"><span class="string">-full-screen    start in full screen</span></span><br><span class="line"><span class="string">-vnc display    start a VNC server on display</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">i386 target only:</span></span><br><span class="line"><span class="string">-win2k-hack     use it when installing Windows 2000 to avoid a disk full bug</span></span><br><span class="line"><span class="string">-no-fd-bootchk  disable boot signature checking for floppy disks</span></span><br><span class="line"><span class="string">-no-acpi        disable ACPI</span></span><br><span class="line"><span class="string">-no-hpet        disable HPET</span></span><br><span class="line"><span class="string">-acpitable [sig=str][,rev=n][,oem_id=str][,oem_table_id=str][,oem_rev=n][,asl_compiler_id=str][,asl_compiler_rev=n][,&#123;data|file&#125;=file1[:file2]...]</span></span><br><span class="line"><span class="string">                ACPI table description</span></span><br><span class="line"><span class="string">-smbios file=binary</span></span><br><span class="line"><span class="string">                load SMBIOS entry from binary file</span></span><br><span class="line"><span class="string">-smbios type=0[,vendor=str][,version=str][,date=str][,release=%d.%d]</span></span><br><span class="line"><span class="string">              [,uefi=on|off]</span></span><br><span class="line"><span class="string">                specify SMBIOS type 0 fields</span></span><br><span class="line"><span class="string">-smbios type=1[,manufacturer=str][,product=str][,version=str][,serial=str]</span></span><br><span class="line"><span class="string">              [,uuid=uuid][,sku=str][,family=str]</span></span><br><span class="line"><span class="string">                specify SMBIOS type 1 fields</span></span><br><span class="line"><span class="string">-smbios type=2[,manufacturer=str][,product=str][,version=str][,serial=str]</span></span><br><span class="line"><span class="string">              [,asset=str][,location=str]</span></span><br><span class="line"><span class="string">                specify SMBIOS type 2 fields</span></span><br><span class="line"><span class="string">-smbios type=3[,manufacturer=str][,version=str][,serial=str][,asset=str]</span></span><br><span class="line"><span class="string">              [,sku=str]</span></span><br><span class="line"><span class="string">                specify SMBIOS type 3 fields</span></span><br><span class="line"><span class="string">-smbios type=4[,sock_pfx=str][,manufacturer=str][,version=str][,serial=str]</span></span><br><span class="line"><span class="string">              [,asset=str][,part=str]</span></span><br><span class="line"><span class="string">                specify SMBIOS type 4 fields</span></span><br><span class="line"><span class="string">-smbios type=17[,loc_pfx=str][,bank=str][,manufacturer=str][,serial=str]</span></span><br><span class="line"><span class="string">               [,asset=str][,part=str][,speed=%d]</span></span><br><span class="line"><span class="string">                specify SMBIOS type 17 fields</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Network options:</span></span><br><span class="line"><span class="string">-netdev user,id=str[,net=addr[/mask]][,host=addr][,restrict=on|off]</span></span><br><span class="line"><span class="string">         [,hostname=host][,dhcpstart=addr][,dns=addr][,dnssearch=domain][,tftp=dir]</span></span><br><span class="line"><span class="string">         [,bootfile=f][,hostfwd=rule][,guestfwd=rule][,smb=dir[,smbserver=addr]]</span></span><br><span class="line"><span class="string">                configure a user mode network backend with ID '</span>str<span class="string">',</span></span><br><span class="line"><span class="string">                its DHCP server and optional services</span></span><br><span class="line"><span class="string">-netdev tap,id=str[,fd=h][,fds=x:y:...:z][,ifname=name][,script=file][,downscript=dfile]</span></span><br><span class="line"><span class="string">         [,helper=helper][,sndbuf=nbytes][,vnet_hdr=on|off][,vhost=on|off]</span></span><br><span class="line"><span class="string">         [,vhostfd=h][,vhostfds=x:y:...:z][,vhostforce=on|off][,queues=n]</span></span><br><span class="line"><span class="string">                configure a host TAP network backend with ID '</span>str<span class="string">'</span></span><br><span class="line"><span class="string">                use network scripts '</span>file<span class="string">' (default=/etc/qemu-ifup)</span></span><br><span class="line"><span class="string">                to configure it and '</span>dfile<span class="string">' (default=/etc/qemu-ifdown)</span></span><br><span class="line"><span class="string">                to deconfigure it</span></span><br><span class="line"><span class="string">                use '</span>[down]script=no<span class="string">' to disable script execution</span></span><br><span class="line"><span class="string">                use network helper '</span>helper<span class="string">' (default=/usr/local/libexec/qemu-bridge-helper) to</span></span><br><span class="line"><span class="string">                configure it</span></span><br><span class="line"><span class="string">                use '</span>fd=h<span class="string">' to connect to an already opened TAP interface</span></span><br><span class="line"><span class="string">                use '</span>fds=x:y:...:z<span class="string">' to connect to already opened multiqueue capable TAP interfaces</span></span><br><span class="line"><span class="string">                use '</span>sndbuf=nbytes<span class="string">' to limit the size of the send buffer (the</span></span><br><span class="line"><span class="string">                default is disabled '</span>sndbuf=0<span class="string">' to enable flow control set '</span>sndbuf=1048576<span class="string">')</span></span><br><span class="line"><span class="string">                use vnet_hdr=off to avoid enabling the IFF_VNET_HDR tap flag</span></span><br><span class="line"><span class="string">                use vnet_hdr=on to make the lack of IFF_VNET_HDR support an error condition</span></span><br><span class="line"><span class="string">                use vhost=on to enable experimental in kernel accelerator</span></span><br><span class="line"><span class="string">                    (only has effect for virtio guests which use MSIX)</span></span><br><span class="line"><span class="string">                use vhostforce=on to force vhost on for non-MSIX virtio guests</span></span><br><span class="line"><span class="string">                use '</span>vhostfd=h<span class="string">' to connect to an already opened vhost net device</span></span><br><span class="line"><span class="string">                use '</span>vhostfds=x:y:...:z to connect to multiple already opened vhost net devices</span><br><span class="line">                use <span class="string">'queues=n'</span> to specify the number of queues to be created <span class="keyword">for</span> multiqueue TAP</span><br><span class="line">-netdev bridge,id=str[,br=bridge][,helper=helper]</span><br><span class="line">                configure a host TAP network backend with ID <span class="string">'str'</span> that is</span><br><span class="line">                connected to a bridge (default=br0)</span><br><span class="line">                using the program <span class="string">'helper (default=/usr/local/libexec/qemu-bridge-helper)</span></span><br><span class="line"><span class="string">-netdev l2tpv3,id=str,src=srcaddr,dst=dstaddr[,srcport=srcport][,dstport=dstport]</span></span><br><span class="line"><span class="string">         [,rxsession=rxsession],txsession=txsession[,ipv6=on/off][,udp=on/off]</span></span><br><span class="line"><span class="string">         [,cookie64=on/off][,counter][,pincounter][,txcookie=txcookie]</span></span><br><span class="line"><span class="string">         [,rxcookie=rxcookie][,offset=offset]</span></span><br><span class="line"><span class="string">                configure a network backend with ID '</span>str<span class="string">' connected to</span></span><br><span class="line"><span class="string">                an Ethernet over L2TPv3 pseudowire.</span></span><br><span class="line"><span class="string">                Linux kernel 3.3+ as well as most routers can talk</span></span><br><span class="line"><span class="string">                L2TPv3. This transport allows connecting a VM to a VM,</span></span><br><span class="line"><span class="string">                VM to a router and even VM to Host. It is a nearly-universal</span></span><br><span class="line"><span class="string">                standard (RFC3391). Note - this implementation uses static</span></span><br><span class="line"><span class="string">                pre-configured tunnels (same as the Linux kernel).</span></span><br><span class="line"><span class="string">                use '</span>src=<span class="string">' to specify source address</span></span><br><span class="line"><span class="string">                use '</span>dst=<span class="string">' to specify destination address</span></span><br><span class="line"><span class="string">                use '</span>udp=on<span class="string">' to specify udp encapsulation</span></span><br><span class="line"><span class="string">                use '</span>srcport=<span class="string">' to specify source udp port</span></span><br><span class="line"><span class="string">                use '</span>dstport=<span class="string">' to specify destination udp port</span></span><br><span class="line"><span class="string">                use '</span>ipv6=on<span class="string">' to force v6</span></span><br><span class="line"><span class="string">                L2TPv3 uses cookies to prevent misconfiguration as</span></span><br><span class="line"><span class="string">                well as a weak security measure</span></span><br><span class="line"><span class="string">                use '</span>rxcookie=0x012345678<span class="string">' to specify a rxcookie</span></span><br><span class="line"><span class="string">                use '</span>txcookie=0x012345678<span class="string">' to specify a txcookie</span></span><br><span class="line"><span class="string">                use '</span>cookie64=on<span class="string">' to set cookie size to 64 bit, otherwise 32</span></span><br><span class="line"><span class="string">                use '</span>counter=off<span class="string">' to force a '</span>cut-down<span class="string">' L2TPv3 with no counter</span></span><br><span class="line"><span class="string">                use '</span>pincounter=on<span class="string">' to work around broken counter handling in peer</span></span><br><span class="line"><span class="string">                use '</span>offset=X<span class="string">' to add an extra offset between header and data</span></span><br><span class="line"><span class="string">-netdev socket,id=str[,fd=h][,listen=[host]:port][,connect=host:port]</span></span><br><span class="line"><span class="string">                configure a network backend to connect to another network</span></span><br><span class="line"><span class="string">                using a socket connection</span></span><br><span class="line"><span class="string">-netdev socket,id=str[,fd=h][,mcast=maddr:port[,localaddr=addr]]</span></span><br><span class="line"><span class="string">                configure a network backend to connect to a multicast maddr and port</span></span><br><span class="line"><span class="string">                use '</span>localaddr=addr<span class="string">' to specify the host address to send packets from</span></span><br><span class="line"><span class="string">-netdev socket,id=str[,fd=h][,udp=host:port][,localaddr=host:port]</span></span><br><span class="line"><span class="string">                configure a network backend to connect to another network</span></span><br><span class="line"><span class="string">                using an UDP tunnel</span></span><br><span class="line"><span class="string">-netdev vhost-user,id=str,chardev=dev[,vhostforce=on|off]</span></span><br><span class="line"><span class="string">                configure a vhost-user network, backed by a chardev '</span>dev<span class="string">'</span></span><br><span class="line"><span class="string">-netdev hubport,id=str,hubid=n</span></span><br><span class="line"><span class="string">                configure a hub port on QEMU VLAN '</span>n<span class="string">'</span></span><br><span class="line"><span class="string">-net nic[,vlan=n][,macaddr=mac][,model=type][,name=str][,addr=str][,vectors=v]</span></span><br><span class="line"><span class="string">                old way to create a new NIC and connect it to VLAN '</span>n<span class="string">'</span></span><br><span class="line"><span class="string">                (use the '</span>-device devtype,netdev=str<span class="string">' option if possible instead)</span></span><br><span class="line"><span class="string">-net dump[,vlan=n][,file=f][,len=n]</span></span><br><span class="line"><span class="string">                dump traffic on vlan '</span>n<span class="string">' to file '</span>f<span class="string">' (max n bytes per packet)</span></span><br><span class="line"><span class="string">-net none       use it alone to have zero network devices. If no -net option</span></span><br><span class="line"><span class="string">                is provided, the default is '</span>-net nic -net user<span class="string">'</span></span><br><span class="line"><span class="string">-net [user|tap|bridge|socket][,vlan=n][,option][,option][,...]</span></span><br><span class="line"><span class="string">                old way to initialize a host network interface</span></span><br><span class="line"><span class="string">                (use the -netdev option if possible instead)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Character device options:</span></span><br><span class="line"><span class="string">-chardev null,id=id[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev socket,id=id[,host=host],port=port[,to=to][,ipv4][,ipv6][,nodelay][,reconnect=seconds]</span></span><br><span class="line"><span class="string">         [,server][,nowait][,telnet][,reconnect=seconds][,mux=on|off] (tcp)</span></span><br><span class="line"><span class="string">-chardev socket,id=id,path=path[,server][,nowait][,telnet][,reconnect=seconds][,mux=on|off] (unix)</span></span><br><span class="line"><span class="string">-chardev udp,id=id[,host=host],port=port[,localaddr=localaddr]</span></span><br><span class="line"><span class="string">         [,localport=localport][,ipv4][,ipv6][,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev msmouse,id=id[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev vc,id=id[[,width=width][,height=height]][[,cols=cols][,rows=rows]]</span></span><br><span class="line"><span class="string">         [,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev ringbuf,id=id[,size=size]</span></span><br><span class="line"><span class="string">-chardev file,id=id,path=path[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev pipe,id=id,path=path[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev pty,id=id[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev stdio,id=id[,mux=on|off][,signal=on|off]</span></span><br><span class="line"><span class="string">-chardev serial,id=id,path=path[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev tty,id=id,path=path[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev parallel,id=id,path=path[,mux=on|off]</span></span><br><span class="line"><span class="string">-chardev parport,id=id,path=path[,mux=on|off]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Device URL Syntax:</span></span><br><span class="line"><span class="string">-iscsi [user=user][,password=password]</span></span><br><span class="line"><span class="string">       [,header-digest=CRC32C|CR32C-NONE|NONE-CRC32C|NONE</span></span><br><span class="line"><span class="string">       [,initiator-name=initiator-iqn][,id=target-iqn]</span></span><br><span class="line"><span class="string">       [,timeout=timeout]</span></span><br><span class="line"><span class="string">                iSCSI session parameters</span></span><br><span class="line"><span class="string">Bluetooth(R) options:</span></span><br><span class="line"><span class="string">-bt hci,null    dumb bluetooth HCI - doesn'</span>t respond to commands</span><br><span class="line">-bt hci,host[:id]</span><br><span class="line">                use host<span class="string">'s HCI with the given name</span></span><br><span class="line"><span class="string">-bt hci[,vlan=n]</span></span><br><span class="line"><span class="string">                emulate a standard HCI in virtual scatternet '</span>n<span class="string">'</span></span><br><span class="line"><span class="string">-bt vhci[,vlan=n]</span></span><br><span class="line"><span class="string">                add host computer to virtual scatternet '</span>n<span class="string">' using VHCI</span></span><br><span class="line"><span class="string">-bt device:dev[,vlan=n]</span></span><br><span class="line"><span class="string">                emulate a bluetooth device '</span>dev<span class="string">' in scatternet '</span>n<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">TPM device options:</span></span><br><span class="line"><span class="string">-tpmdev passthrough,id=id[,path=path][,cancel-path=path]</span></span><br><span class="line"><span class="string">                use path to provide path to a character device; default is /dev/tpm0</span></span><br><span class="line"><span class="string">                use cancel-path to provide path to TPM'</span>s cancel sysfs entry; <span class="keyword">if</span></span><br><span class="line">                not provided it will be searched <span class="keyword">for</span> <span class="keyword">in</span> /sys/class/misc/tpm?/device</span><br><span class="line"></span><br><span class="line">Linux/Multiboot boot specific:</span><br><span class="line">-kernel bzImage use <span class="string">'bzImage'</span> as kernel image</span><br><span class="line">-append cmdline use <span class="string">'cmdline'</span> as kernel <span class="built_in">command</span> line</span><br><span class="line">-initrd file    use <span class="string">'file'</span> as initial ram disk</span><br><span class="line">-dtb    file    use <span class="string">'file'</span> as device tree image</span><br><span class="line"></span><br><span class="line">Debug/Expert options:</span><br><span class="line">-fw_cfg [name=]&lt;name&gt;,file=&lt;file&gt;</span><br><span class="line">                add named fw_cfg entry from file</span><br><span class="line">-serial dev     redirect the serial port to char device <span class="string">'dev'</span></span><br><span class="line">-parallel dev   redirect the parallel port to char device <span class="string">'dev'</span></span><br><span class="line">-monitor dev    redirect the monitor to char device <span class="string">'dev'</span></span><br><span class="line">-qmp dev        like -monitor but opens <span class="keyword">in</span> <span class="string">'control'</span> mode</span><br><span class="line">-qmp-pretty dev like -qmp but uses pretty JSON formatting</span><br><span class="line">-mon [chardev=]name[,mode=readline|control][,default]</span><br><span class="line">-debugcon dev   redirect the debug console to char device <span class="string">'dev'</span></span><br><span class="line">-pidfile file   write PID to <span class="string">'file'</span></span><br><span class="line">-singlestep     always run <span class="keyword">in</span> singlestep mode</span><br><span class="line">-S              freeze CPU at startup (use <span class="string">'c'</span> to start execution)</span><br><span class="line">-realtime [mlock=on|off]</span><br><span class="line">                run qemu with realtime features</span><br><span class="line">                mlock=on|off controls mlock support (default: on)</span><br><span class="line">-gdb dev        <span class="built_in">wait</span> <span class="keyword">for</span> gdb connection on <span class="string">'dev'</span></span><br><span class="line">-s              shorthand <span class="keyword">for</span> -gdb tcp::1234</span><br><span class="line">-d item1,...    <span class="built_in">enable</span> logging of specified items (use <span class="string">'-d help'</span> <span class="keyword">for</span> a list of <span class="built_in">log</span> items)</span><br><span class="line">-D logfile      output <span class="built_in">log</span> to logfile (default stderr)</span><br><span class="line">-L path         <span class="built_in">set</span> the directory <span class="keyword">for</span> the BIOS, VGA BIOS and keymaps</span><br><span class="line">-bios file      <span class="built_in">set</span> the filename <span class="keyword">for</span> the BIOS</span><br><span class="line">-<span class="built_in">enable</span>-kvm     <span class="built_in">enable</span> KVM full virtualization support</span><br><span class="line">-xen-domid id   specify xen guest domain id</span><br><span class="line">-xen-create     create domain using xen hypercalls, bypassing xend</span><br><span class="line">                warning: should not be used when xend is <span class="keyword">in</span> use</span><br><span class="line">-xen-attach     attach to existing xen domain</span><br><span class="line">                xend will use this when starting QEMU</span><br><span class="line">-no-reboot      <span class="built_in">exit</span> instead of rebooting</span><br><span class="line">-no-shutdown    stop before shutdown</span><br><span class="line">-loadvm [tag|id]</span><br><span class="line">                start right away with a saved state (loadvm <span class="keyword">in</span> monitor)</span><br><span class="line">-daemonize      daemonize QEMU after initializing</span><br><span class="line">-option-rom rom load a file, rom, into the option ROM space</span><br><span class="line">-rtc [base=utc|localtime|date][,clock=host|rt|vm][,driftfix=none|slew]</span><br><span class="line">                <span class="built_in">set</span> the RTC base and clock, <span class="built_in">enable</span> drift fix <span class="keyword">for</span> clock ticks (x86 only)</span><br><span class="line">-icount [<span class="built_in">shift</span>=N|auto][,align=on|off][,sleep=no]</span><br><span class="line">                <span class="built_in">enable</span> virtual instruction counter with 2^N clock ticks per</span><br><span class="line">                instruction, <span class="built_in">enable</span> aligning the host and virtual clocks</span><br><span class="line">                or <span class="built_in">disable</span> real time cpu sleeping</span><br><span class="line">-watchdog model</span><br><span class="line">                <span class="built_in">enable</span> virtual hardware watchdog [default=none]</span><br><span class="line">-watchdog-action reset|shutdown|poweroff|pause|debug|none</span><br><span class="line">                action when watchdog fires [default=reset]</span><br><span class="line">-echr chr       <span class="built_in">set</span> terminal escape character instead of ctrl<span class="_">-a</span></span><br><span class="line">-virtioconsole c</span><br><span class="line">                <span class="built_in">set</span> virtio console</span><br><span class="line">-show-cursor    show cursor</span><br><span class="line">-tb-size n      <span class="built_in">set</span> TB size</span><br><span class="line">-incoming tcp:[host]:port[,to=maxport][,ipv4][,ipv6]</span><br><span class="line">-incoming rdma:host:port[,ipv4][,ipv6]</span><br><span class="line">-incoming unix:socketpath</span><br><span class="line">                prepare <span class="keyword">for</span> incoming migration, listen on</span><br><span class="line">                specified protocol and socket address</span><br><span class="line">-incoming fd:fd</span><br><span class="line">-incoming <span class="built_in">exec</span>:cmdline</span><br><span class="line">                accept incoming migration on given file descriptor</span><br><span class="line">                or from given external <span class="built_in">command</span></span><br><span class="line">-incoming defer</span><br><span class="line">                <span class="built_in">wait</span> <span class="keyword">for</span> the URI to be specified via migrate_incoming</span><br><span class="line">-nodefaults     don<span class="string">'t create default devices</span></span><br><span class="line"><span class="string">-chroot dir     chroot to dir just before starting the VM</span></span><br><span class="line"><span class="string">-runas user     change to user id user just before starting the VM</span></span><br><span class="line"><span class="string">-sandbox &lt;arg&gt;  Enable seccomp mode 2 system call filter (default '</span>off<span class="string">').</span></span><br><span class="line"><span class="string">-readconfig &lt;file&gt;</span></span><br><span class="line"><span class="string">-writeconfig &lt;file&gt;</span></span><br><span class="line"><span class="string">                read/write config file</span></span><br><span class="line"><span class="string">-nodefconfig</span></span><br><span class="line"><span class="string">                do not load default config files at startup</span></span><br><span class="line"><span class="string">-no-user-config</span></span><br><span class="line"><span class="string">                do not load user-provided config files at startup</span></span><br><span class="line"><span class="string">-trace [events=&lt;file&gt;][,file=&lt;file&gt;]</span></span><br><span class="line"><span class="string">                specify tracing options</span></span><br><span class="line"><span class="string">-enable-fips    enable FIPS 140-2 compliance</span></span><br><span class="line"><span class="string">-msg timestamp[=on|off]</span></span><br><span class="line"><span class="string">                change the format of messages</span></span><br><span class="line"><span class="string">                on|off controls leading timestamps (default:on)</span></span><br><span class="line"><span class="string">-dump-vmstate &lt;file&gt;</span></span><br><span class="line"><span class="string">                Output vmstate information in JSON format to file.</span></span><br><span class="line"><span class="string">                Use the scripts/vmstate-static-checker.py file to</span></span><br><span class="line"><span class="string">                check for possible regressions in migration code</span></span><br><span class="line"><span class="string">                by comparing two such vmstate dumps.Generic object creation</span></span><br><span class="line"><span class="string">-object TYPENAME[,PROP1=VALUE1,...]</span></span><br><span class="line"><span class="string">                create a new object of type TYPENAME setting properties</span></span><br><span class="line"><span class="string">                in the order they are specified.  Note that the '</span>id<span class="string">'</span></span><br><span class="line"><span class="string">                property must be set.  These objects are placed in the</span></span><br><span class="line"><span class="string">                '</span>/objects<span class="string">' path.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">During emulation, the following keys are useful:</span></span><br><span class="line"><span class="string">ctrl-alt-f      toggle full screen</span></span><br><span class="line"><span class="string">ctrl-alt-n      switch to virtual console '</span>n<span class="string">'</span></span><br><span class="line"><span class="string">ctrl-alt        toggle mouse and keyboard grab</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">When using -nographic, press '</span>ctrl<span class="_">-a</span> h<span class="string">' to get some help.</span></span><br></pre></td></tr></table></figure>
+<h1 id="Qemu的定时器"><a href="#Qemu的定时器" class="headerlink" title="Qemu的定时器"></a>Qemu的定时器</h1><p><code>qemu</code>中所有的与时间相关的模块都由<code>timer.h</code>和<code>qemu-timer.c</code>文件实现，时钟的功能主要有二：记录时间和处理定时任务。</p>
+<h2 id="基本数据结构"><a href="#基本数据结构" class="headerlink" title="基本数据结构"></a>基本数据结构</h2><p><code>QEMUClock Type</code></p>
+<p><code>qemuclock</code>一共有四种类型，分别是：<code>QEMU_CLOCK_REALTIME</code>、<code>QEMU_CLOCK_VIRTUAL</code>、<code>QEMU_CLOCK_HOST</code>和<code>QEMU_CLOCK_VIRTUAL_RT</code>：</p>
+<ul>
+<li><code>QEMU_CLOCK_REALTIME</code>不受虚拟系统的影响，随时间流逝而累加计数</li>
+<li><code>QEMU_CLOCK_VIRTUAL</code>虚拟时钟，记录虚拟系统的时间滴答</li>
+<li><code>QEMU_CLOCK_HOST</code>这个类似墙上时钟，修改宿主机系统时间会改变这个时间</li>
+<li><code>QEMU_CLOCK_VIRTUAL_RT</code>在非<code>icount</code>模式下和<code>QEMU_CLOCK_VIRTUAL</code>，在<code>icount</code>模式下于<code>QEMU_CLOCK_VIRTUAL</code>不同的是在虚拟CPU休眠的时候该值也会累加</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//timer.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;</span><br><span class="line">    QEMU_CLOCK_REALTIME = <span class="number">0</span>,</span><br><span class="line">    QEMU_CLOCK_VIRTUAL = <span class="number">1</span>,</span><br><span class="line">    QEMU_CLOCK_HOST = <span class="number">2</span>,</span><br><span class="line">    QEMU_CLOCK_VIRTUAL_RT = <span class="number">3</span>,</span><br><span class="line">    QEMU_CLOCK_MAX</span><br><span class="line">&#125; QEMUClockType;</span><br></pre></td></tr></table></figure>
+<p><code>QEMUClock Struct</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">QEMUClock</span> &#123;</span></span><br><span class="line">    <span class="comment">/* We rely on BQL to protect the timerlists */</span></span><br><span class="line">    QLIST_HEAD(, QEMUTimerList) timerlists;<span class="comment">//QEMUTimerList用于存放定时器链表,注意定时器为每个滴答都会回调</span></span><br><span class="line"></span><br><span class="line">    NotifierList reset_notifiers;<span class="comment">//用于时钟被重置时调用</span></span><br><span class="line">    <span class="keyword">int64_t</span> last;<span class="comment">//最后一次查询时间</span></span><br><span class="line"></span><br><span class="line">    QEMUClockType type;<span class="comment">//时钟类型</span></span><br><span class="line">    <span class="keyword">bool</span> enabled;<span class="comment">//表示时钟是否被禁止</span></span><br><span class="line">&#125; QEMUClock;</span><br></pre></td></tr></table></figure>
+<p><code>QEMUTimer Struct</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QEMUTimer</span> &#123;</span></span><br><span class="line">    <span class="keyword">int64_t</span> expire_time;        <span class="comment">/* in nanoseconds */</span>  <span class="comment">//到期时间,绝对时间,单位ns</span></span><br><span class="line">    QEMUTimerList *timer_list; <span class="comment">//所属的QEMUTimerList</span></span><br><span class="line">    QEMUTimerCB *cb; <span class="comment">//定时器的到期回调函数</span></span><br><span class="line">    <span class="keyword">void</span> *opaque;    <span class="comment">//回调函数的参数</span></span><br><span class="line">    QEMUTimer *next; <span class="comment">//下一个定时器</span></span><br><span class="line">    <span class="keyword">int</span> attributes;</span><br><span class="line">    <span class="keyword">int</span> scale;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>QEMUTimerList Struct</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* A QEMUTimerList is a list of timers attached to a clock. More</span></span><br><span class="line"><span class="comment"> * than one QEMUTimerList can be attached to each clock, for instance</span></span><br><span class="line"><span class="comment"> * used by different AioContexts / threads. Each clock also has</span></span><br><span class="line"><span class="comment"> * a list of the QEMUTimerLists associated with it, in order that</span></span><br><span class="line"><span class="comment"> * reenabling the clock can call all the notifiers.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QEMUTimerList</span> &#123;</span></span><br><span class="line">    QEMUClock *clock; <span class="comment">//所属的QEMUClock</span></span><br><span class="line">    QemuMutex active_timers_lock; <span class="comment">//用于修改active_timers链表的锁</span></span><br><span class="line">    QEMUTimer *active_timers; <span class="comment">//timer链表</span></span><br><span class="line">    QLIST_ENTRY(QEMUTimerList) <span class="built_in">list</span>;</span><br><span class="line">    QEMUTimerListNotifyCB *notify_cb; <span class="comment">//该队列有定时器到期后的回调函数</span></span><br><span class="line">    <span class="keyword">void</span> *notify_opaque; <span class="comment">//回调函数的参数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* lightweight method to mark the end of timerlist's running */</span></span><br><span class="line">    QemuEvent timers_done_ev;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="初始化流程"><a href="#初始化流程" class="headerlink" title="初始化流程"></a>初始化流程</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// util/qemu-timer.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init_clocks</span><span class="params">(QEMUTimerListNotifyCB *notify_cb)</span> <span class="comment">//初始化函数入口</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    QEMUClockType type;</span><br><span class="line">    <span class="keyword">for</span> (type = <span class="number">0</span>; type &lt; QEMU_CLOCK_MAX; type++) &#123; <span class="comment">//#define QEMU_CLOCK_MAX 4</span></span><br><span class="line">        qemu_clock_init(type, notify_cb); <span class="comment">//初始化4个时钟</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_PRCTL_PR_SET_TIMERSLACK</span></span><br><span class="line">    prctl(PR_SET_TIMERSLACK, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>); <span class="comment">//设置线程的定时器计数器为1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续分析：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// util/qemu-timer.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">qemu_clock_init</span><span class="params">(QEMUClockType type, QEMUTimerListNotifyCB *notify_cb)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    QEMUClock *clock = qemu_clock_ptr(type);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Assert that the clock of type TYPE has not been initialized yet. */</span></span><br><span class="line">    assert(main_loop_tlg.tl[type] == <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    clock-&gt;type = type;</span><br><span class="line">    clock-&gt;enabled = (type == QEMU_CLOCK_VIRTUAL ? <span class="literal">false</span> : <span class="literal">true</span>);</span><br><span class="line">    clock-&gt;last = INT64_MIN;</span><br><span class="line">    QLIST_INIT(&amp;clock-&gt;timerlists);</span><br><span class="line">    notifier_list_init(&amp;clock-&gt;reset_notifiers);</span><br><span class="line">    main_loop_tlg.tl[type] = timerlist_new(type, notify_cb, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//四个时钟使用类型作为索引放在qemu_clocks数组中</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * qemu_clock_ptr:</span></span><br><span class="line"><span class="comment"> * @type: type of clock</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Translate a clock type into a pointer to QEMUClock object.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns: a pointer to the QEMUClock object</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> QEMUClock *<span class="title">qemu_clock_ptr</span><span class="params">(QEMUClockType type)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;qemu_clocks[type];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用于初始化时钟的定时器链表()</span></span><br><span class="line"><span class="function">QEMUTimerList *<span class="title">timerlist_new</span><span class="params">(QEMUClockType type,</span></span></span><br><span class="line"><span class="function"><span class="params">                             QEMUTimerListNotifyCB *cb,</span></span></span><br><span class="line"><span class="function"><span class="params">                             <span class="keyword">void</span> *opaque)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    QEMUTimerList *timer_list;</span><br><span class="line">    QEMUClock *clock = qemu_clock_ptr(type);</span><br><span class="line"></span><br><span class="line">    timer_list = g_malloc0(<span class="keyword">sizeof</span>(QEMUTimerList));</span><br><span class="line">    qemu_event_init(&amp;timer_list-&gt;timers_done_ev, <span class="literal">true</span>);</span><br><span class="line">    timer_list-&gt;clock = clock;</span><br><span class="line">    timer_list-&gt;notify_cb = cb;</span><br><span class="line">    timer_list-&gt;notify_opaque = opaque;</span><br><span class="line">    qemu_mutex_init(&amp;timer_list-&gt;active_timers_lock);</span><br><span class="line">    QLIST_INSERT_HEAD(&amp;clock-&gt;timerlists, timer_list, <span class="built_in">list</span>);</span><br><span class="line">    <span class="keyword">return</span> timer_list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>timerlist_new</code>函数其实就是把一个定时器回调函数注册到了这个时钟的<code>timer</code>队列里面，由此可见主线程的定时器回调函数为<code>qemu_timer-&gt;notify_cb</code>，参数为<code>qemu_timer-&gt;notify_opaque</code>。另外主线程的定时器不但可以从定时器结构<code>QEMUClock.timer_list</code>中索引，还可以从<code>main_loop_tlg</code>中索引。<br>这样定时器就初始化工作完成了。</p>
+<h2 id="计时方法"><a href="#计时方法" class="headerlink" title="计时方法"></a>计时方法</h2><p><code>qemu_clock_get_ns</code>是用来获取时钟上的时间的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int64_t</span> qemu_clock_get_ns(QEMUClockType type)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int64_t</span> now, last;</span><br><span class="line">    QEMUClock *clock = qemu_clock_ptr(type);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">    <span class="keyword">case</span> QEMU_CLOCK_REALTIME:</span><br><span class="line">        <span class="keyword">return</span> get_clock();</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">case</span> QEMU_CLOCK_VIRTUAL:</span><br><span class="line">        <span class="keyword">if</span> (use_icount) &#123;</span><br><span class="line">            <span class="keyword">return</span> cpu_get_icount();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> cpu_get_clock();</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">case</span> QEMU_CLOCK_HOST:</span><br><span class="line">        now = REPLAY_CLOCK(REPLAY_CLOCK_HOST, get_clock_realtime());</span><br><span class="line">        last = clock-&gt;last;</span><br><span class="line">        clock-&gt;last = now;</span><br><span class="line">        <span class="keyword">if</span> (now &lt; last || now &gt; (last + get_max_clock_jump())) &#123;</span><br><span class="line">            notifier_list_notify(&amp;clock-&gt;reset_notifiers, &amp;now);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> now;</span><br><span class="line">    <span class="keyword">case</span> QEMU_CLOCK_VIRTUAL_RT:</span><br><span class="line">        <span class="keyword">return</span> REPLAY_CLOCK(REPLAY_CLOCK_VIRTUAL_RT, cpu_get_clock());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于每种时钟使用不同时间获取函数，先来看<code>QEMU_CLOCK_REALTIME</code>， 这是一个不受<code>vCPU</code>影响的累加计数器，<code>get_clock</code>其实是使用<code>clock_gettime(CLOCK_MONOTONIC, &amp;ts)</code>实现的，所以是获取的主机开机后经过的相对时间。</p>
+<p><code>QEMU_CLOCK_VIRTUAL</code>是从<code>vCPU</code>获取的时间或者<code>icount</code>。<br><code>QEMU_CLOCK_HOST</code>使用<code>timeofday</code>函数获取的真实时间，这是一个绝对时间。<br><code>QEMU_CLOCK_VIRTUAL_RT</code>则获取<code>vCPU</code>时间。</p>
+<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/woai110120130/article/details/99689645" target="_blank" rel="noopener">https://blog.csdn.net/woai110120130/article/details/99689645</a></p>
+<p><a href="https://rickylss.github.io/qemu/2019/05/20/qemu-timer/" target="_blank" rel="noopener">https://rickylss.github.io/qemu/2019/05/20/qemu-timer/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/08/08/Qemu学习—体系结构&参数选项&定时器/" title="Qemu学习-体系结构&参数选项&定时器">https://xiaoxiaorenwu.top/2020/08/08/Qemu学习—体系结构&参数选项&定时器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/Qemu/" rel="tag"><i class="fa fa-tag"></i> Qemu</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/06/Qemu学习—IO虚拟化/" rel="next" title="Qemu学习-I/O虚拟化">
+                <i class="fa fa-chevron-left"></i> Qemu学习-I/O虚拟化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/10/Qemu学习—内存虚拟化/" rel="prev" title="Qemu学习-内存虚拟化">
+                Qemu学习-内存虚拟化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Qemu的体系架构"><span class="nav-number">1.</span> <span class="nav-text">Qemu的体系架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码结构"><span class="nav-number">1.2.</span> <span class="nav-text">代码结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心代码位置"><span class="nav-number">1.2.1.</span> <span class="nav-text">核心代码位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCG"><span class="nav-number">1.2.2.</span> <span class="nav-text">TCG</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">1.3.</span> <span class="nav-text">功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选项子系统"><span class="nav-number">1.3.1.</span> <span class="nav-text">选项子系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QOM"><span class="nav-number">1.3.2.</span> <span class="nav-text">QOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Main-loop-主事件循环"><span class="nav-number">1.3.3.</span> <span class="nav-text">Main loop(主事件循环)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#monitor-QMP"><span class="nav-number">1.3.4.</span> <span class="nav-text">monitor/QMP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.4.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Qemu的选项参数"><span class="nav-number">2.</span> <span class="nav-text">Qemu的选项参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Qemu的定时器"><span class="nav-number">3.</span> <span class="nav-text">Qemu的定时器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据结构"><span class="nav-number">3.1.</span> <span class="nav-text">基本数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化流程"><span class="nav-number">3.2.</span> <span class="nav-text">初始化流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计时方法"><span class="nav-number">3.3.</span> <span class="nav-text">计时方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考-1"><span class="nav-number">3.4.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

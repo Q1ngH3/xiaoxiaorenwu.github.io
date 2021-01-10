@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/014.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/014.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="summary,Qemu,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="QOM模型Qemu自己提供了一套面向对象编程模型：QOM(QEMU Object Module)，可以把其想像为与C++的面向对象编程类似。 whyQemu中几乎所有的硬件，无论是cpu，总线，内存还是各类device，都是用这套方法实现的，其重要性可见一斑，那么我们为什么要使用QOM呢？一是因为Qemu是一款多架构硬件仿真软件，所以我们需要模拟出不同架构的cpu，这些cpu无疑会有不少共通的地方">
+<meta name="keywords" content="summary,Qemu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qemu学习-QOM模型">
+<meta property="og:url" content="http://yoursite.com/2020/08/12/Qemu学习—QOM模型/index.html">
+<meta property="og:site_name" content="xiaoxiaorenwu">
+<meta property="og:description" content="QOM模型Qemu自己提供了一套面向对象编程模型：QOM(QEMU Object Module)，可以把其想像为与C++的面向对象编程类似。 whyQemu中几乎所有的硬件，无论是cpu，总线，内存还是各类device，都是用这套方法实现的，其重要性可见一斑，那么我们为什么要使用QOM呢？一是因为Qemu是一款多架构硬件仿真软件，所以我们需要模拟出不同架构的cpu，这些cpu无疑会有不少共通的地方">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200808111831263.png">
+<meta property="og:updated_time" content="2021-01-09T16:13:37.445Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qemu学习-QOM模型">
+<meta name="twitter:description" content="QOM模型Qemu自己提供了一套面向对象编程模型：QOM(QEMU Object Module)，可以把其想像为与C++的面向对象编程类似。 whyQemu中几乎所有的硬件，无论是cpu，总线，内存还是各类device，都是用这套方法实现的，其重要性可见一斑，那么我们为什么要使用QOM呢？一是因为Qemu是一款多架构硬件仿真软件，所以我们需要模拟出不同架构的cpu，这些cpu无疑会有不少共通的地方">
+<meta name="twitter:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200808111831263.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","width":350,"display":"hide","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/12/Qemu学习—QOM模型/">
+
+
+
+
+
+  <title>Qemu学习-QOM模型 | xiaoxiaorenwu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaoxiaorenwu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">生活的艰辛，三分来自压力，七分来自攀比，我想做个小人物</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/12/Qemu学习—QOM模型/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Qemu学习-QOM模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-12T00:05:04+08:00">
+                2020-08-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qemu-KVM学习/" itemprop="url" rel="index">
+                    <span itemprop="name">Qemu&KVM学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/12/Qemu学习—QOM模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/12/Qemu学习—QOM模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  6.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  29 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="QOM模型"><a href="#QOM模型" class="headerlink" title="QOM模型"></a>QOM模型</h1><p><code>Qemu</code>自己提供了一套面向对象编程模型：<code>QOM(QEMU Object Module)</code>，可以把其想像为与<code>C++</code>的面向对象编程类似。</p>
+<h2 id="why"><a href="#why" class="headerlink" title="why"></a>why</h2><p><code>Qemu</code>中几乎所有的硬件，无论是<code>cpu</code>，总线，内存还是各类<code>device</code>，都是用这套方法实现的，其重要性可见一斑，那么我们为什么要使用<code>QOM</code>呢？一是因为<code>Qemu</code>是一款多架构硬件仿真软件，所以我们需要模拟出不同架构的<code>cpu</code>，这些<code>cpu</code>无疑会有不少共通的地方，也会有很多不同的地方，使用面向对象的方法无疑对模拟这些<code>cpu</code>模型带来极大的便利，类比到各类<code>device</code>也是一个道理，二是因为<code>qemu</code>模拟的是一个完整的计算机，所以只模拟设备是不够的，还需要实现设备间的互通和信息交互，所以为了方便模拟一个<code>device</code>会通过<code>bus</code>与其他的<code>device</code>相连接，一个<code>device</code>上可以通过不同的<code>bus</code>端口连接到其他的<code>device</code>，而其他的<code>device</code>也可以进一步通过<code>bus</code>与其他的设备连接，同时一个<code>bus</code>上也可以连接多个<code>device</code>等情形，使用面向对象的<code>QOM</code>模型是快捷方便的。</p>
+<h2 id="how"><a href="#how" class="headerlink" title="how"></a>how</h2><h3 id="基础结构体"><a href="#基础结构体" class="headerlink" title="基础结构体"></a>基础结构体</h3><p>那么我们如何在<code>qemu</code>中添加一个我们自定义的<code>device</code>呢？官方给出的例子位于<a href="https://github.com/qemu/qemu/blob/master/hw/misc/pci-testdev.c" target="_blank" rel="noopener"><code>hw/misc/pci-testdev.c</code></a>和<a href="https://github.com/qemu/qemu/blob/master/hw/misc/edu.c" target="_blank" rel="noopener"><code>hw/misc/edu.c</code></a></p>
+<p>四个重要的数据结构：</p>
+<ul>
+<li><p><code>TypeInfo</code>：是用户用来定义一个<code>Type</code>的工具型的数据结构。</p>
+</li>
+<li><p><code>TypeImpl</code>：对数据类型的抽象数据结构，<code>TypeInfo</code>的属性与<code>TypeImpl</code>的属性对应。</p>
+</li>
+<li><p><code>ObjectClass</code>：是所有类对象的基类，仅仅保存了一个整数<code>type</code> 。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qom/object.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ObjectClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    Type type;</span><br><span class="line">    GSList *interfaces;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *object_cast_cache[OBJECT_CLASS_CAST_CACHE];</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *class_cast_cache[OBJECT_CLASS_CAST_CACHE];</span><br><span class="line"></span><br><span class="line">    ObjectUnparent *unparent;</span><br><span class="line"></span><br><span class="line">    GHashTable *properties;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Object</code>：是所有对象的基类<code>Base Object</code>，第一个成员变量为指向<code>ObjectClass</code>的指针。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qom/object.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Object</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    ObjectClass *<span class="class"><span class="keyword">class</span>;</span></span><br><span class="line">    ObjectFree *<span class="built_in">free</span>;</span><br><span class="line">    GHashTable *properties;</span><br><span class="line">    <span class="keyword">uint32_t</span> ref;</span><br><span class="line">    Object *parent;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><code>QOM</code> 创建新类型时需要指定其对象类<code>OjectClass</code>和对象<code>Object</code>，这两者通过<code>TypeInfo</code> 结构体指定，基本结构定义在 <a href="https://github.com/qemu/qemu/blob/master/include/qom/object.h" target="_blank" rel="noopener"><code>include/qom/object.h</code></a>，文件中的注释超级详细，不仅有对数据结构的字段说明和<code>QOM</code>模型的用法，还有很多简单的例子，<code>TypeImpl</code>定义在 <a href="https://github.com/qemu/qemu/blob/master/qom/object.c" target="_blank" rel="noopener"><code>qom/object.c</code></a>中，但是莫得注释。。。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qom/object.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span> *<span class="title">Type</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TypeInfo</span> <span class="title">TypeInfo</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TypeInfo</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name; <span class="comment">//自定义的type的名字</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *parent;<span class="comment">//父类type的名字</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">size_t</span> instance_size;<span class="comment">//object的size</span></span><br><span class="line">    <span class="keyword">void</span> (*instance_init)(Object *obj);<span class="comment">//初始化object的函数</span></span><br><span class="line">    <span class="keyword">void</span> (*instance_post_init)(Object *obj);</span><br><span class="line">    <span class="keyword">void</span> (*instance_finalize)(Object *obj);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> abstract;</span><br><span class="line">    <span class="keyword">size_t</span> class_size; <span class="comment">//object class的size</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> (*class_init)(ObjectClass *klass, <span class="keyword">void</span> *data); <span class="comment">//初始化object class的函数</span></span><br><span class="line">    <span class="keyword">void</span> (*class_base_init)(ObjectClass *klass, <span class="keyword">void</span> *data);</span><br><span class="line">    <span class="keyword">void</span> *class_data;</span><br><span class="line"></span><br><span class="line">    InterfaceInfo *interfaces;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//各字段的具体解释</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * TypeInfo:</span></span><br><span class="line"><span class="comment"> * @name: The name of the type.</span></span><br><span class="line"><span class="comment"> * @parent: The name of the parent type.</span></span><br><span class="line"><span class="comment"> * @instance_size: The size of the object (derivative of #Object).  If</span></span><br><span class="line"><span class="comment"> *   @instance_size is 0, then the size of the object will be the size of the</span></span><br><span class="line"><span class="comment"> *   parent object.</span></span><br><span class="line"><span class="comment"> * @instance_init: This function is called to initialize an object.  The parent</span></span><br><span class="line"><span class="comment"> *   class will have already been initialized so the type is only responsible</span></span><br><span class="line"><span class="comment"> *   for initializing its own members.</span></span><br><span class="line"><span class="comment"> * @instance_post_init: This function is called to finish initialization of</span></span><br><span class="line"><span class="comment"> *   an object, after all @instance_init functions were called.</span></span><br><span class="line"><span class="comment"> * @instance_finalize: This function is called during object destruction.  This</span></span><br><span class="line"><span class="comment"> *   is called before the parent @instance_finalize function has been called.</span></span><br><span class="line"><span class="comment"> *   An object should only free the members that are unique to its type in this</span></span><br><span class="line"><span class="comment"> *   function.</span></span><br><span class="line"><span class="comment"> * @abstract: If this field is true, then the class is considered abstract and</span></span><br><span class="line"><span class="comment"> *   cannot be directly instantiated.</span></span><br><span class="line"><span class="comment"> * @class_size: The size of the class object (derivative of #ObjectClass)</span></span><br><span class="line"><span class="comment"> *   for this object.  If @class_size is 0, then the size of the class will be</span></span><br><span class="line"><span class="comment"> *   assumed to be the size of the parent class.  This allows a type to avoid</span></span><br><span class="line"><span class="comment"> *   implementing an explicit class type if they are not adding additional</span></span><br><span class="line"><span class="comment"> *   virtual functions.</span></span><br><span class="line"><span class="comment"> * @class_init: This function is called after all parent class initialization</span></span><br><span class="line"><span class="comment"> *   has occurred to allow a class to set its default virtual method pointers.</span></span><br><span class="line"><span class="comment"> *   This is also the function to use to override virtual methods from a parent</span></span><br><span class="line"><span class="comment"> *   class.</span></span><br><span class="line"><span class="comment"> * @class_base_init: This function is called for all base classes after all</span></span><br><span class="line"><span class="comment"> *   parent class initialization has occurred, but before the class itself</span></span><br><span class="line"><span class="comment"> *   is initialized.  This is the function to use to undo the effects of</span></span><br><span class="line"><span class="comment"> *   memcpy from the parent class to the descendants.</span></span><br><span class="line"><span class="comment"> * @class_finalize: This function is called during class destruction and is</span></span><br><span class="line"><span class="comment"> *   meant to release and dynamic parameters allocated by @class_init.</span></span><br><span class="line"><span class="comment"> * @class_data: Data to pass to the @class_init, @class_base_init and</span></span><br><span class="line"><span class="comment"> *   @class_finalize functions.  This can be useful when building dynamic</span></span><br><span class="line"><span class="comment"> *   classes.</span></span><br><span class="line"><span class="comment"> * @interfaces: The list of interfaces associated with this type.  This</span></span><br><span class="line"><span class="comment"> *   should point to a static array that's terminated with a zero filled</span></span><br><span class="line"><span class="comment"> *   element.</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//qom/object.c</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span> <span class="title">TypeImpl</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">size_t</span> class_size;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">size_t</span> instance_size;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> (*class_init)(ObjectClass *klass, <span class="keyword">void</span> *data);</span><br><span class="line">    <span class="keyword">void</span> (*class_base_init)(ObjectClass *klass, <span class="keyword">void</span> *data);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> *class_data;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> (*instance_init)(Object *obj);</span><br><span class="line">    <span class="keyword">void</span> (*instance_post_init)(Object *obj);</span><br><span class="line">    <span class="keyword">void</span> (*instance_finalize)(Object *obj);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> abstract;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *parent;</span><br><span class="line">    TypeImpl *parent_type;</span><br><span class="line"></span><br><span class="line">    ObjectClass *<span class="class"><span class="keyword">class</span>;</span> <span class="comment">//初始化Class!!!</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> num_interfaces;</span><br><span class="line">    InterfaceImpl interfaces[MAX_INTERFACES];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>自定义一个设备主要分为四个流程：</p>
+<ol>
+<li>将<code>TypeInfo</code>注册为<code>TypeImpl</code></li>
+<li>初始化<code>Class</code></li>
+<li>实例化<code>Object</code></li>
+<li>添加<code>Property</code></li>
+</ol>
+<h3 id="将TypeInfo注册为TypeImpl"><a href="#将TypeInfo注册为TypeImpl" class="headerlink" title="将TypeInfo注册为TypeImpl"></a>将<code>TypeInfo</code>注册为<code>TypeImpl</code></h3><p>用户定义了一个<code>TypeInfo</code>，然后调用 <code>type_register(TypeInfo)</code> 或者 <code>type_register_static(TypeInfo)</code> 函数，就会生成相应的<code>TypeImpl</code>实例，将这个<code>TypeInfo</code>注册到全局的<code>TypeImpl</code>的<code>hash</code>表中。<br><code>TypeInfo</code>的属性与<code>TypeImpl</code>的属性对应，实际上<code>qemu</code>就是通过用户提供的<code>TypeInfo</code>创建的<code>TypeImpl</code>的对象。</p>
+<p>拿<a href="https://github.com/qemu/qemu/blob/master/include/qom/object.h" target="_blank" rel="noopener"><code>include/qom/object.h</code></a>中第一阶段的例子来看：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qom/object.h </span></span><br><span class="line"> * &lt;example&gt;</span><br><span class="line"> *   &lt;title&gt;Creating a minimal type&lt;/title&gt;</span><br><span class="line"> *   &lt;programlisting&gt;</span><br><span class="line"> * <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"qdev.h"</span></span></span><br><span class="line"> *</span><br><span class="line"> * <span class="meta">#<span class="meta-keyword">define</span> TYPE_MY_DEVICE <span class="meta-string">"my-device"</span></span></span><br><span class="line"> *</span><br><span class="line"> * <span class="comment">// No new virtual functions: we can reuse the typedef for the</span></span><br><span class="line"> * <span class="comment">// superclass.</span></span><br><span class="line"> * <span class="keyword">typedef</span> DeviceClass MyDeviceClass;</span><br><span class="line"> * <span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">MyDevice</span> </span></span><br><span class="line"><span class="class"> * &#123;</span></span><br><span class="line"> *     DeviceState parent; <span class="comment">//父对象必须是该对象数据结构的第一个属性,以便实现父对象向子对象的cast,DeviceState继承自Object,后续会详细解释</span></span><br><span class="line"> *</span><br><span class="line"> *     <span class="keyword">int</span> reg0, reg1, reg2;</span><br><span class="line"> * &#125; MyDevice;</span><br><span class="line"> *</span><br><span class="line"> * <span class="keyword">static</span> <span class="keyword">const</span> TypeInfo my_device_info = &#123; <span class="comment">//用户自定义一个TypeInfo</span></span><br><span class="line"> *     .name = TYPE_MY_DEVICE,</span><br><span class="line"> *     .parent = TYPE_DEVICE,</span><br><span class="line"> *     .instance_size = <span class="keyword">sizeof</span>(MyDevice),  <span class="comment">//Object的size必须注明,以便系统为Object分配内存</span></span><br><span class="line"> * &#125;;</span><br><span class="line"> *</span><br><span class="line"> * <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">my_device_register_types</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"> * </span>&#123;</span><br><span class="line"> *     type_register_static(&amp;my_device_info); <span class="comment">//用type_register_static生成相应的TypeImpl实例</span></span><br><span class="line"> * &#125;</span><br><span class="line"> *</span><br><span class="line"> * type_init(my_device_register_types)<span class="comment">//通过type_init宏注册Type</span></span><br><span class="line"> *   &lt;/programlisting&gt;</span><br><span class="line"> * &lt;/example&gt;</span><br></pre></td></tr></table></figure>
+<p>在<code>my_device_info</code>中得字段<code>name</code>定义了我们将来启动此设备时候传参<code>-device</code>后面跟的值。</p>
+<p><code>type_init</code>宏位于<code>include/qemu/module.h</code>，其发生在<code>qemu</code>的<code>main</code>函数之前。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qemu/module.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> type_init(function) module_init(function, MODULE_INIT_QOM)</span></span><br></pre></td></tr></table></figure>
+<p>这一过程的目的就是分配并创建<code>TypeImpl</code>结构，使用<code>TypeInfo</code>数据赋值，之后插入到一个<code>hash</code>表之中，这个<code>hash</code>表以<code>ti-&gt;name</code>，也就是<code>info-&gt;name</code>为key，value就是根据<code>TypeInfo</code>生成的<code>TypeImpl</code>。<br>在<code>qemu</code>启动阶段<code>vl.c:main()</code>，<code>pci_testdev_register_types()</code>函数将会在<code>module_call_init(MODULE_INIT_QOM)</code>中执行，通过遍历<code>qom</code>队列中的<code>module entry</code>。</p>
+<h3 id="初始化Class"><a href="#初始化Class" class="headerlink" title="初始化Class"></a>初始化<code>Class</code></h3><p>之后的分析主要根据<a href="https://github.com/qemu/qemu/blob/master/hw/misc/pci-testdev.c" target="_blank" rel="noopener"><code>hw/misc/pci-testdev.c</code></a>来分析，其中模拟了一个<code>pci-test</code>设备：</p>
+<h4 id="继承链："><a href="#继承链：" class="headerlink" title="继承链："></a>继承链：</h4><p>首先我们要知道<code>ObjectClass</code>是所有类的基类，对于<code>pci</code>设备来说，<code>ObjectClass</code>有以下继承链：</p>
+<p><code>PCIDeviceClass</code>=&gt;<code>DeviceClass</code>=&gt;<code>ObjectClass</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qom/object.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ObjectClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    Type type;</span><br><span class="line">    GSList *interfaces;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *object_cast_cache[OBJECT_CLASS_CAST_CACHE];</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *class_cast_cache[OBJECT_CLASS_CAST_CACHE];</span><br><span class="line"></span><br><span class="line">    ObjectUnparent *unparent;</span><br><span class="line"></span><br><span class="line">    GHashTable *properties;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/hw/xtensa/qdev-core.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">DeviceClass</span> &#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    ObjectClass parent_class;<span class="comment">//存储父类型的内容</span></span><br><span class="line">    <span class="comment">/*&lt; public &gt;*/</span></span><br><span class="line"></span><br><span class="line">    DECLARE_BITMAP(categories, DEVICE_CATEGORY_MAX);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *fw_name;<span class="comment">//firware名称</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *desc;</span><br><span class="line">    Property *props;<span class="comment">//属性，在qemu中，每个设备都有各自的属性，以链表的形式保存在设备的根结构Object的properties字段中。但是每个设备有哪些属性，是在设备的类型中定义的，即这里的properties字段定义设备有哪些属性，设备类型的继承链上每个子类型都有可能定义一些属性，在设备初始化时，会遍历设备类型继承链，把所有属性都存放到Object的属性链表中</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Can this device be instantiated with -device / device_add?</span></span><br><span class="line"><span class="comment">     * All devices should support instantiation with device_add, and</span></span><br><span class="line"><span class="comment">     * this flag should not exist.  But we're not there, yet.  Some</span></span><br><span class="line"><span class="comment">     * devices fail to instantiate with cryptic error messages.</span></span><br><span class="line"><span class="comment">     * Others instantiate, but don't work.  Exposing users to such</span></span><br><span class="line"><span class="comment">     * behavior would be cruel; clearing this flag will protect them.</span></span><br><span class="line"><span class="comment">     * It should never be cleared without a comment explaining why it</span></span><br><span class="line"><span class="comment">     * is cleared.</span></span><br><span class="line"><span class="comment">     * TODO remove once we're there</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">bool</span> user_creatable;<span class="comment">//设备是否是可以由用户创建的，QEMU中并不是所有模拟的设备都是可以由用户通过命令行创建的，有些设备是要QEMU自动创建的，比如sysbus总线设备</span></span><br><span class="line">    <span class="keyword">bool</span> hotpluggable;<span class="comment">//设备是否是可插拔的</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* callbacks */</span></span><br><span class="line">    DeviceReset reset;<span class="comment">//设备复位回调函数</span></span><br><span class="line">    DeviceRealize realize;<span class="comment">//设备实例化回调函数。qemu的设备初始化分为两步，一个是设备类型中定义的构造函数(instance_init)，创建设备(object_new)时调用，另外一个是这里的realize函数，在设备的realied属性被设置为true时调用，realize函数被调用设备才是真正的被初始化并变的可用</span></span><br><span class="line">    DeviceUnrealize unrealize;<span class="comment">//与realize回调函数对应，设备清理时调用</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* device state */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">VMStateDescription</span> *<span class="title">vmsd</span>;</span><span class="comment">//该结构体用来保存设备的状态，在虚拟机迁移或冻结时使用</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Private to qdev / bus.  */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *bus_type;<span class="comment">//总线类型，在qdev的设备模型中，每个设备都有其挂接的总线</span></span><br><span class="line">&#125; DeviceClass;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/hw/pci/pci.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">PCIDeviceClass</span> &#123;</span></span><br><span class="line">    DeviceClass parent_class;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> (*realize)(PCIDevice *dev, Error **errp);</span><br><span class="line">    PCIUnregisterFunc *<span class="built_in">exit</span>;</span><br><span class="line">    PCIConfigReadFunc *config_read;</span><br><span class="line">    PCIConfigWriteFunc *config_write;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint16_t</span> vendor_id;</span><br><span class="line">    <span class="keyword">uint16_t</span> device_id;</span><br><span class="line">    <span class="keyword">uint8_t</span> revision;</span><br><span class="line">    <span class="keyword">uint16_t</span> class_id;</span><br><span class="line">    <span class="keyword">uint16_t</span> subsystem_vendor_id;       <span class="comment">/* only for header type = 0 */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> subsystem_id;              <span class="comment">/* only for header type = 0 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * pci-to-pci bridge or normal device.</span></span><br><span class="line"><span class="comment">     * This doesn't mean pci host switch.</span></span><br><span class="line"><span class="comment">     * When card bus bridge is supported, this would be enhanced.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">int</span> is_bridge;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* rom bar */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *romfile;</span><br><span class="line">&#125; PCIDeviceClass;</span><br></pre></td></tr></table></figure>
+<p>接着上一大步，现在我们已经有了一个value为<code>TypeImpl</code>的哈希表。下一步就是初始化表中的每个<code>type</code>了，这一步可以看成是<code>Class</code>的初始化，可以理解成每一个<code>type</code>对应了一个<code>class</code>，接下来会初始化<code>Class</code>。</p>
+<h4 id="具体函数分析："><a href="#具体函数分析：" class="headerlink" title="具体函数分析："></a>具体函数分析：</h4><p>在初始化每个<code>type</code>时候，调用到的是<code>type_initialize</code>函数。<code>ObjectClass</code>的分配和初始化就在此函数中实现，此外<code>ObjectClass</code>和<code>Type</code>的关联操作也在此函数中实现。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* include/qom/object.h */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span> *<span class="title">Type</span>;</span></span><br><span class="line"><span class="comment">/* qom/object.c */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">    ObjectClass *<span class="class"><span class="keyword">class</span>;</span> <span class="comment">//TypeImpl与ObjectClass的关联,我们就是要初始化这个元素,默认为0</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">type_initialize</span><span class="params">(TypeImpl *ti)</span><span class="comment">//负责将type初始化为class</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    TypeImpl *parent;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ti-&gt;class) &#123; <span class="comment">//若type已经被初始化则直接退出</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ti-&gt;class_size = type_class_get_size(ti);<span class="comment">//获取class_size,为之后申请内存做准备,这个字段自己可以不填</span></span><br><span class="line">    ti-&gt;instance_size = type_object_get_size(ti);<span class="comment">//获取instance_size,这个字段自己必须要填</span></span><br><span class="line">    <span class="comment">/* Any type with zero instance_size is implicitly abstract.</span></span><br><span class="line"><span class="comment">     * This means interface types are all abstract.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (ti-&gt;instance_size == <span class="number">0</span>) &#123;</span><br><span class="line">        ti-&gt;abstract = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (type_is_ancestor(ti, type_interface)) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ti-&gt;<span class="class"><span class="keyword">class</span> = <span class="title">g_malloc0</span>(<span class="title">ti</span>-&gt;<span class="title">class_size</span>);</span><span class="comment">//为class申请内存</span></span><br><span class="line">    </span><br><span class="line">    parent = type_get_parent(ti);</span><br><span class="line">    <span class="keyword">if</span> (parent) &#123; <span class="comment">//递归初始化父类type的class</span></span><br><span class="line">        type_initialize(parent);</span><br><span class="line">        ...</span><br><span class="line">        <span class="built_in">memcpy</span>(ti-&gt;class, parent-&gt;class, parent-&gt;class_size);<span class="comment">//将父类的class拷贝到自己的最前面</span></span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ti-&gt;class-&gt;properties = g_hash_table_new_full(</span><br><span class="line">            g_str_hash, g_str_equal, g_free, object_property_free);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ti-&gt;<span class="class"><span class="keyword">class</span>-&gt;<span class="title">type</span> = <span class="title">ti</span>;</span><span class="comment">//将当前type初始化出的class的type指向自己</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (parent) &#123;</span><br><span class="line">        <span class="keyword">if</span> (parent-&gt;class_base_init) &#123;</span><br><span class="line">            parent-&gt;class_base_init(ti-&gt;class, ti-&gt;class_data);</span><br><span class="line">        &#125;</span><br><span class="line">        parent = type_get_parent(parent);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (ti-&gt;class_init) &#123;</span><br><span class="line">        ti-&gt;class_init(ti-&gt;class, ti-&gt;class_data);<span class="comment">//调用class_init函数,class指针作为第一个参数,初始化class</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> TypeImpl *<span class="title">type_get_parent</span><span class="params">(TypeImpl *type)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!type-&gt;parent_type &amp;&amp; type-&gt;parent) &#123;</span><br><span class="line">        type-&gt;parent_type = type_get_by_name(type-&gt;parent);</span><br><span class="line">        g_assert(type-&gt;parent_type != <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> type-&gt;parent_type;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">type_has_parent</span><span class="params">(TypeImpl *type)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (type-&gt;parent != <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> size_t <span class="title">type_class_get_size</span><span class="params">(TypeImpl *ti)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ti-&gt;class_size) &#123;<span class="comment">//填了直接返回</span></span><br><span class="line">        <span class="keyword">return</span> ti-&gt;class_size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (type_has_parent(ti)) &#123;</span><br><span class="line">        <span class="keyword">return</span> type_class_get_size(type_get_parent(ti));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">sizeof</span>(ObjectClass);<span class="comment">//默认返回sizeof(ObjectClass),或为父类的class_size</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> size_t <span class="title">type_object_get_size</span><span class="params">(TypeImpl *ti)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ti-&gt;instance_size) &#123;<span class="comment">//填了直接返回</span></span><br><span class="line">        <span class="keyword">return</span> ti-&gt;instance_size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (type_has_parent(ti)) &#123;</span><br><span class="line">        <span class="keyword">return</span> type_object_get_size(type_get_parent(ti));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;<span class="comment">//默认返回0,或为父类的instance_size,所以在自定义设备时这个位置一定要填</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>type_initialize</code>中，会递归地对<code>TypeImpl</code>中的<code>parent</code>成员(<code>TypeImpl</code>)递归调用<code>type_initialize</code>，然后将创建出来的相应 <code>ObjectClass</code>拷贝到自己<code>class</code>的最前面。</p>
+<p>类对象的第一个成员是<code>parent_class</code>，由于父类对象会拷到子类对象的最前面，因此可以认为其指向父类的对象，如此构成链状的继承链，最终指向基类对象<code>ObjectClass</code>。</p>
+<p>可以发现<code>Type</code>同样存在一条继承链，对于<code>pci</code>设备而言：</p>
+<p><code>TYPE_PCI_TEST_DEV(自定义)</code>=&gt;<code>TYPE_PCI_DEVICE</code>=&gt;<code>TYPE_DEVICE</code>=&gt;<code>TYPE_OBJECT</code></p>
+<p><code>class_init</code>为我们自己自定义的初始化<code>class</code>的函数，可以类比为<code>C++</code>中的构造函数，其参数为自身，在定义<code>TypeInfo</code>时填入：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hw/misc/pci-testdev.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">pci_testdev_class_init</span><span class="params">(ObjectClass *klass, <span class="keyword">void</span> *data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//父对象必须是该对象数据结构的第一个属性，以便实现父对象向子对象的cast</span></span><br><span class="line">    DeviceClass *dc = DEVICE_CLASS(klass);      <span class="comment">//子类转父类的宏</span></span><br><span class="line">    PCIDeviceClass *k = PCI_DEVICE_CLASS(klass);<span class="comment">//子类转父类的宏</span></span><br><span class="line"></span><br><span class="line">    k-&gt;realize = pci_testdev_realize;  <span class="comment">//回调函数,负责初始化Type的ObjectClass实例</span></span><br><span class="line">    k-&gt;<span class="built_in">exit</span> = pci_testdev_uninit;</span><br><span class="line">    k-&gt;vendor_id = PCI_VENDOR_ID_REDHAT;</span><br><span class="line">    k-&gt;device_id = PCI_DEVICE_ID_REDHAT_TEST;</span><br><span class="line">    k-&gt;revision = <span class="number">0x00</span>;</span><br><span class="line">    k-&gt;class_id = PCI_CLASS_OTHERS;</span><br><span class="line">    dc-&gt;desc = <span class="string">"PCI Test Device"</span>;</span><br><span class="line">    set_bit(DEVICE_CATEGORY_MISC, dc-&gt;categories);</span><br><span class="line">    dc-&gt;reset = qdev_pci_testdev_reset;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>DEVICE_CLASS</code>和<code>PCI_DEVICE_CLASS</code>两个宏由<code>OBJECT_CLASS_CHECK</code>封装：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* include/hw/qdev-core.h */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TYPE_DEVICE <span class="meta-string">"device"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_CLASS(klass) OBJECT_CLASS_CHECK(DeviceClass, (klass), TYPE_DEVICE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* include/hw/pci/pci.h */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TYPE_PCI_DEVICE <span class="meta-string">"pci-device"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PCI_DEVICE_CLASS(klass) \</span></span><br><span class="line">        OBJECT_CLASS_CHECK(PCIDeviceClass, klass, TYPE_PCI_DEVICE)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* include/qom/object.h */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * OBJECT_CLASS_CHECK:</span></span><br><span class="line"><span class="comment"> * @class_type: The C type to use for the return value.</span></span><br><span class="line"><span class="comment"> * @class: A derivative class of @class_type to cast.</span></span><br><span class="line"><span class="comment"> * @name: the QOM typename of @class_type.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * A type safe version of @object_class_dynamic_cast_assert.  This macro is</span></span><br><span class="line"><span class="comment"> * typically wrapped by each type to perform type safe casts of a class to a</span></span><br><span class="line"><span class="comment"> * specific class type.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJECT_CLASS_CHECK(class_type, class, name) \</span></span><br><span class="line">    ((class_type *)object_class_dynamic_cast_assert(OBJECT_CLASS(class), (name), \</span><br><span class="line">                                               __FILE__, __LINE__, __func__))</span><br></pre></td></tr></table></figure>
+<h4 id="流程概况："><a href="#流程概况：" class="headerlink" title="流程概况："></a>流程概况：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">type_initialize</span><br><span class="line">=&gt; 如果 TypeImpl 已创建(class成员有值)，返回</span><br><span class="line">=&gt; ti-&gt;class = g_malloc0(ti-&gt;class_size)                    <span class="comment">//根据class_size分配内存空间</span></span><br><span class="line">=&gt; type_get_parent(ti)                                      <span class="comment">//获取父类的TypeImpl</span></span><br><span class="line">=&gt; <span class="built_in">memcpy</span>(ti-&gt;class, parent-&gt;class, parent-&gt;class_size)     <span class="comment">//将parent的class拷贝到自己class的最前面</span></span><br><span class="line">=&gt; ti-&gt;class-&gt;properties = g_hash_table_new_full            <span class="comment">//创建存放property的hash table</span></span><br><span class="line">=&gt; type_initialize_interface                                <span class="comment">//初始化class的接口，包括父类和自己的</span></span><br><span class="line">=&gt; ti-&gt;class-&gt;type = ti                                     <span class="comment">//设置class的type为对应TypeImpl</span></span><br><span class="line">=&gt; parent-&gt;class_base_init                                  <span class="comment">//如果parent定义了class_base_init，调用之</span></span><br><span class="line">=&gt; ti-&gt;class_init(ti-&gt;class, ti-&gt;class_data)                <span class="comment">//调用class的class_init</span></span><br></pre></td></tr></table></figure>
+<h3 id="实例化Object"><a href="#实例化Object" class="headerlink" title="实例化Object"></a>实例化<code>Object</code></h3><p>用户定义的<code>PCI Type</code>的<code>ObjectClass</code>实例的构造函数调用在<code>type_register_static()</code>调用时即可完成，而<code>Type</code>的<code>Object</code>实例只有在<code>QEMU</code>命令行中添加<code>-device</code>选项时才会创建。<br>上面已经说到了<code>Type hash table</code>的构造以及<code>Class</code>的初始化，现在来说<code>Object</code>实例的创建。</p>
+<h4 id="继承链：-1"><a href="#继承链：-1" class="headerlink" title="继承链："></a>继承链：</h4><p>首先还是继承链，对于基础的<code>pci</code>设备来说有以下继承链：</p>
+<p><code>PCIDevice</code>=&gt;<code>DeviceState</code>=&gt;<code>Object</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/qom/object.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Object</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    ObjectClass *<span class="class"><span class="keyword">class</span>;</span> <span class="comment">//与ObjectClass联系在一起</span></span><br><span class="line">    ObjectFree *<span class="built_in">free</span>;</span><br><span class="line">    GHashTable *properties;</span><br><span class="line">    <span class="keyword">uint32_t</span> ref;</span><br><span class="line">    Object *parent;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/hw/xtensa/qdev-core.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DeviceState</span> &#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    Object parent_obj;</span><br><span class="line">    <span class="comment">/*&lt; public &gt;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *id;</span><br><span class="line">    <span class="keyword">char</span> *canonical_path;</span><br><span class="line">    <span class="keyword">bool</span> realized;</span><br><span class="line">    <span class="keyword">bool</span> pending_deleted_event;</span><br><span class="line">    QemuOpts *opts;</span><br><span class="line">    <span class="keyword">int</span> hotplugged;</span><br><span class="line">    BusState *parent_bus;</span><br><span class="line">    QLIST_HEAD(, NamedGPIOList) gpios;</span><br><span class="line">    QLIST_HEAD(, BusState) child_bus;</span><br><span class="line">    <span class="keyword">int</span> num_child_bus;</span><br><span class="line">    <span class="keyword">int</span> instance_id_alias;</span><br><span class="line">    <span class="keyword">int</span> alias_required_for_version;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//include/hw/pci/pci.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PCIDevice</span> &#123;</span></span><br><span class="line">    DeviceState qdev;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* PCI config space */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to enable config checks on load. Note that writable bits are</span></span><br><span class="line"><span class="comment">     * never checked even if set in cmask. */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *cmask;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to implement R/W bytes */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *wmask;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to implement RW1C(Write 1 to Clear) bytes */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *w1cmask;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to allocate config space for capabilities. */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *used;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* the following fields are read only */</span></span><br><span class="line">    <span class="keyword">int32_t</span> devfn;</span><br><span class="line">    <span class="comment">/* Cached device to fetch requester ID from, to avoid the PCI</span></span><br><span class="line"><span class="comment">     * tree walking every time we invoke PCI request (e.g.,</span></span><br><span class="line"><span class="comment">     * MSI). For conventional PCI root complex, this field is</span></span><br><span class="line"><span class="comment">     * meaningless. */</span></span><br><span class="line">    PCIReqIDCache requester_id_cache;</span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">64</span>];</span><br><span class="line">    PCIIORegion io_regions[PCI_NUM_REGIONS];</span><br><span class="line">    AddressSpace bus_master_as;</span><br><span class="line">    MemoryRegion bus_master_container_region;</span><br><span class="line">    MemoryRegion bus_master_enable_region;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* do not access the following fields */</span></span><br><span class="line">    PCIConfigReadFunc *config_read;</span><br><span class="line">    PCIConfigWriteFunc *config_write;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Legacy PCI VGA regions */</span></span><br><span class="line">    MemoryRegion *vga_regions[QEMU_PCI_VGA_NUM_REGIONS];</span><br><span class="line">    <span class="keyword">bool</span> has_vga;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Current IRQ levels.  Used internally by the generic PCI code.  */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> irq_state;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Capability bits */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> cap_present;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Offset of MSI-X capability in config space */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> msix_cap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* MSI-X entries */</span></span><br><span class="line">    <span class="keyword">int</span> msix_entries_nr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Space to store MSIX table &amp; pending bit array */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *msix_table;</span><br><span class="line">    <span class="keyword">uint8_t</span> *msix_pba;</span><br><span class="line">    <span class="comment">/* MemoryRegion container for msix exclusive BAR setup */</span></span><br><span class="line">    MemoryRegion msix_exclusive_bar;</span><br><span class="line">    <span class="comment">/* Memory Regions for MSIX table and pending bit entries. */</span></span><br><span class="line">    MemoryRegion msix_table_mmio;</span><br><span class="line">    MemoryRegion msix_pba_mmio;</span><br><span class="line">    <span class="comment">/* Reference-count for entries actually in use by driver. */</span></span><br><span class="line">    <span class="keyword">unsigned</span> *msix_entry_used;</span><br><span class="line">    <span class="comment">/* MSIX function mask set or MSIX disabled */</span></span><br><span class="line">    <span class="keyword">bool</span> msix_function_masked;</span><br><span class="line">    <span class="comment">/* Version id needed for VMState */</span></span><br><span class="line">    <span class="keyword">int32_t</span> version_id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Offset of MSI capability in config space */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> msi_cap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* PCI Express */</span></span><br><span class="line">    PCIExpressDevice <span class="built_in">exp</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* SHPC */</span></span><br><span class="line">    SHPCDevice *shpc;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Location of option rom */</span></span><br><span class="line">    <span class="keyword">char</span> *romfile;</span><br><span class="line">    <span class="keyword">bool</span> has_rom;</span><br><span class="line">    MemoryRegion rom;</span><br><span class="line">    <span class="keyword">uint32_t</span> rom_bar;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* INTx routing notifier */</span></span><br><span class="line">    PCIINTxRoutingNotifier intx_routing_notifier;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* MSI-X notifiers */</span></span><br><span class="line">    MSIVectorUseNotifier msix_vector_use_notifier;</span><br><span class="line">    MSIVectorReleaseNotifier msix_vector_release_notifier;</span><br><span class="line">    MSIVectorPollNotifier msix_vector_poll_notifier;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>Object</code>继承类之间的转换依然是靠宏来实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* include/hw/qdev-core.h */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TYPE_DEVICE <span class="meta-string">"device"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE(obj) OBJECT_CHECK(DeviceState, (obj), TYPE_DEVICE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* include/hw/pci/pci.h */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PCI_DEVICE(obj) \</span></span><br><span class="line">        OBJECT_CHECK(PCIDevice, obj, TYPE_PCI_DEVICE)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* include/qom/object.h */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * OBJECT_CHECK:</span></span><br><span class="line"><span class="comment"> * @type: The C type to use for the return value.</span></span><br><span class="line"><span class="comment"> * @obj: A derivative of @type to cast.</span></span><br><span class="line"><span class="comment"> * @name: The QOM typename of @type</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * A type safe version of @object_dynamic_cast_assert.  Typically each class</span></span><br><span class="line"><span class="comment"> * will define a macro based on this type to perform type safe dynamic_casts to</span></span><br><span class="line"><span class="comment"> * this object type.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * If an invalid object is passed to this function, a run time assert will be</span></span><br><span class="line"><span class="comment"> * generated.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJECT_CHECK(type, obj, name) \</span></span><br><span class="line">    ((type *)object_dynamic_cast_assert(OBJECT(obj), (name), \</span><br><span class="line">                                        __FILE__, __LINE__, __func__))</span><br></pre></td></tr></table></figure>
+<h4 id="具体函数分析：-1"><a href="#具体函数分析：-1" class="headerlink" title="具体函数分析："></a>具体函数分析：</h4><p><code>object_new(typename)</code>函数是实例化<code>instance</code>的入口：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// qom/object.c</span></span><br><span class="line"><span class="function">Object *<span class="title">object_new</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">typename</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    TypeImpl *ti = type_get_by_name(<span class="keyword">typename</span>); <span class="comment">//用typename去哈希表中获取对应的TypeImpl指针</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> object_new_with_type(ti); <span class="comment">//以指向TypeImpl的指针为参数去实例化对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续看<code>object_new_with_type</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* include/qom/object.h */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">TypeImpl</span> *<span class="title">Type</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// qom/object.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> Object *<span class="title">object_new_with_type</span><span class="params">(Type type)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Object *obj;</span><br><span class="line"></span><br><span class="line">    g_assert(type != <span class="literal">NULL</span>);</span><br><span class="line">    type_initialize(type); <span class="comment">//先初始化TypeImpl-&gt;class,流程参见上一部分</span></span><br><span class="line"></span><br><span class="line">    obj = g_malloc(type-&gt;instance_size);<span class="comment">//申请实例的内存</span></span><br><span class="line">    object_initialize_with_type(obj, type-&gt;instance_size, type);<span class="comment">//创建instance对象的核心函数,申请出的内存指针作为第一个参数,instance的size作为第二个参数,指向TypeImpl的指针type作为第三个参数</span></span><br><span class="line">    obj-&gt;<span class="built_in">free</span> = g_free;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续看<code>object_initialize_with_type</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// qom/object.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">object_initialize_with_type</span><span class="params">(<span class="keyword">void</span> *data, <span class="keyword">size_t</span> size, TypeImpl *type)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Object *obj = data;<span class="comment">//obj指向申请出来的用于存放instance的内存空间,size为TypeImpl-&gt;instance_size</span></span><br><span class="line"></span><br><span class="line">    g_assert(type != <span class="literal">NULL</span>);</span><br><span class="line">    type_initialize(type);<span class="comment">//再次初始化class,应该是个检测的步骤,已经初始化了这里会直接退出</span></span><br><span class="line"></span><br><span class="line">    g_assert(type-&gt;instance_size &gt;= <span class="keyword">sizeof</span>(Object));</span><br><span class="line">    g_assert(type-&gt;abstract == <span class="literal">false</span>);</span><br><span class="line">    g_assert(size &gt;= type-&gt;instance_size);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(obj, <span class="number">0</span>, type-&gt;instance_size);<span class="comment">//清空脏数据</span></span><br><span class="line">    obj-&gt;<span class="class"><span class="keyword">class</span> = <span class="title">type</span>-&gt;<span class="title">class</span>;</span> <span class="comment">//此字段为instance与其对应class的联系</span></span><br><span class="line">    object_ref(obj);</span><br><span class="line">    obj-&gt;properties = g_hash_table_new_full(g_str_hash, g_str_equal,</span><br><span class="line">                                            <span class="literal">NULL</span>, object_property_free);<span class="comment">//创建存放类实例对象property的hash table</span></span><br><span class="line">    object_init_with_type(obj, type); <span class="comment">//一个的迭代函数</span></span><br><span class="line">    object_post_init_with_type(obj, type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续看<code>object_init_with_type</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// qom/object.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">object_init_with_type</span><span class="params">(Object *obj, TypeImpl *ti)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (type_has_parent(ti)) &#123; <span class="comment">//若存在parent,则递归调用object_init_with_type初始化所有parent的instance</span></span><br><span class="line">        object_init_with_type(obj, type_get_parent(ti));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ti-&gt;instance_init) &#123;</span><br><span class="line">        ti-&gt;instance_init(obj); <span class="comment">//若定义了ti-&gt;instance_init函数,则调用其来为instance做初始化</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>instance</code>的初始化的核心过程到这就结束了，虽然<code>instance_init</code>是字面意义上的实例构造函数，但实际上，经过<code>instance_init</code>函数初始化设备对应<code>instance</code>后，这个<code>instance</code>是不能直接使用的。其真正初始化逻辑的大头都放在<code>realize(如：k-&gt;realize = pci_testdev_realize)</code>中做，比如创建对应的<code>memory region</code>，挂载到对应<code>bus</code>上等等。只有在<code>realize</code>后，设备才算真正构造完成，可以拿来使用，所以实例的创建主要由<code>realize</code>函数实现，且不同于<code>type</code>和<code>class</code>的构造，<code>instance</code>是根据实际需要创建的，只有在命令行指定了设备或者是热插一个设备之后才会有实例的创建。</p>
+<blockquote>
+<p><code>realize</code>函数是设备实例化<code>callback/回调</code>函数。<code>qemu</code>的设备初始化分为两步，一个是设备类型中定义的构造函数(<code>instance_init</code>)，创建设备(<code>object_new</code>)时调用，另外一个是这里的<code>realize</code>函数，在设备的<code>realied</code>属性被设置为<code>true</code>时调用，<code>realize</code>函数被调用设备才是真正的被初始化并变的可用。</p>
+</blockquote>
+<p>此外需要留意<strong><code>class</code>和<code>instance</code>之间是通过<code>instance</code>的<code>class</code>字段联系在一起的。</strong></p>
+<h4 id="流程概况：-1"><a href="#流程概况：-1" class="headerlink" title="流程概况："></a>流程概况：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">main =&gt; configure_accelerator =&gt; accel_init_machine(acc, ms)</span><br><span class="line">=&gt; ObjectClass *oc = OBJECT_CLASS(acc)                        <span class="comment">//将AccelClass指针转换成父类(ObjectClass)指针</span></span><br><span class="line">=&gt; object_class_get_name                                      <span class="comment">//获取ObjectClass-&gt;TypeImpl的类名，如kvm-accel</span></span><br><span class="line">=&gt; ACCEL(object_new(cname))                                   <span class="comment">//利用名称创建AccelState对象</span></span><br><span class="line">=&gt; acc-&gt;init_machine(ms)                                      <span class="comment">//初始化machine，实际上是调用kvm_init</span></span><br><span class="line"></span><br><span class="line">object_new</span><br><span class="line">=&gt; type_get_by_name(<span class="keyword">typename</span>)                              <span class="comment">//根据类名查type_table获取TypeImpl</span></span><br><span class="line">=&gt; object_new_with_type =&gt; type_initialize                 <span class="comment">//创建TypeImpl对应的类对象，设置到对应TypeImpl-&gt;class中</span></span><br><span class="line">                        =&gt; g_malloc(type-&gt;instance_size)   <span class="comment">//分配类实例对象的内存</span></span><br><span class="line">                        =&gt; object_initialize_with_type     <span class="comment">//创建类实例对象</span></span><br><span class="line">                            =&gt; type_initialize  		  <span class="comment">//会再次尝试实例化类对象</span></span><br><span class="line">                            =&gt; obj-&gt;class = type-&gt;class    <span class="comment">//设置类实例对象的类对象为TypeImpl-&gt;class</span></span><br><span class="line">                            =&gt; obj-&gt;properties = g_hash_table_new_full  <span class="comment">//创建存放类实例对象property的hash table</span></span><br><span class="line">                            =&gt; object_init_with_type =&gt; object_init_with_type   <span class="comment">//如果TypeImpl有父类，递归调用object_init_with_type</span></span><br><span class="line">                                                     =&gt; ti-&gt;instance_init(obj)  <span class="comment">//如果定义了类实例的构造函数，调用之</span></span><br></pre></td></tr></table></figure>
+<h3 id="添加Property"><a href="#添加Property" class="headerlink" title="添加Property"></a>添加<code>Property</code></h3><p>在<code>QEMU</code>中每个对象或设备都有一些属性，这些属性有可能是设备的某种状态，也有可能是某个标志等。设备的属性是通过其类型(<code>ObjectClass</code>的<code>properties</code>成员)来定义的，但是具体的属性的值是保存在对象<code>Object</code>的<code>properties</code>成员的。</p>
+<h2 id="关系整理"><a href="#关系整理" class="headerlink" title="关系整理"></a>关系整理</h2><p>主要来梳理一下<code>TypeInfo</code>，<code>TypeImpl</code>，<code>ObjectClass</code>，<code>Object</code>之间的关系，因为<code>TypeImpl</code>是中间工具变量，所以将其与<code>TypeInfo</code>看为一类：</p>
+<p>主要有三组：</p>
+<p>最基础组，是所有设备的起点：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> TypeInfo object_info = &#123;</span><br><span class="line">    .name = TYPE_OBJECT,</span><br><span class="line">    .instance_size = <span class="keyword">sizeof</span>(Object),</span><br><span class="line">    .instance_init = object_instance_init,</span><br><span class="line">    .abstract = <span class="literal">true</span>,</span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ObjectClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    Type type;</span><br><span class="line">    GSList *interfaces;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *object_cast_cache[OBJECT_CLASS_CAST_CACHE];</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *class_cast_cache[OBJECT_CLASS_CAST_CACHE];</span><br><span class="line">    ObjectUnparent *unparent;</span><br><span class="line">    GHashTable *properties;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Object</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    ObjectClass *<span class="class"><span class="keyword">class</span>;</span></span><br><span class="line">    ObjectFree *<span class="built_in">free</span>;</span><br><span class="line">    GHashTable *properties;</span><br><span class="line">    <span class="keyword">uint32_t</span> ref; </span><br><span class="line">    Object *parent;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>二组，基础设备组：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hw/core/qdev.c</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> TypeInfo device_type_info = &#123;</span><br><span class="line">    .name = TYPE_DEVICE,</span><br><span class="line">    .parent = TYPE_OBJECT,<span class="comment">//继承自一组的TypeInfo:object_info</span></span><br><span class="line">    .instance_size = <span class="keyword">sizeof</span>(DeviceState),<span class="comment">//与DeviceState的联系</span></span><br><span class="line">    .instance_init = device_initfn,</span><br><span class="line">    .instance_post_init = device_post_init,</span><br><span class="line">    .instance_finalize = device_finalize,</span><br><span class="line">    .class_base_init = device_class_base_init,</span><br><span class="line">    .class_init = device_class_init,</span><br><span class="line">    .abstract = <span class="literal">true</span>,</span><br><span class="line">    .class_size = <span class="keyword">sizeof</span>(DeviceClass),<span class="comment">//与DeviceClass的联系</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//include/hw/xtensa/qdev-core.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">DeviceClass</span> &#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    ObjectClass parent_class;<span class="comment">//存储父类型的内容</span></span><br><span class="line">    <span class="comment">/*&lt; public &gt;*/</span></span><br><span class="line"></span><br><span class="line">    DECLARE_BITMAP(categories, DEVICE_CATEGORY_MAX);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *fw_name;<span class="comment">//firware名称</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *desc;</span><br><span class="line">    Property *props;<span class="comment">//属性，在qemu中，每个设备都有各自的属性，以链表的形式保存在设备的根结构Object的properties字段中。但是每个设备有哪些属性，是在设备的类型中定义的，即这里的properties字段定义设备有哪些属性，设备类型的继承链上每个子类型都有可能定义一些属性，在设备初始化时，会遍历设备类型继承链，把所有属性都存放到Object的属性链表中</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Can this device be instantiated with -device / device_add?</span></span><br><span class="line"><span class="comment">     * All devices should support instantiation with device_add, and</span></span><br><span class="line"><span class="comment">     * this flag should not exist.  But we're not there, yet.  Some</span></span><br><span class="line"><span class="comment">     * devices fail to instantiate with cryptic error messages.</span></span><br><span class="line"><span class="comment">     * Others instantiate, but don't work.  Exposing users to such</span></span><br><span class="line"><span class="comment">     * behavior would be cruel; clearing this flag will protect them.</span></span><br><span class="line"><span class="comment">     * It should never be cleared without a comment explaining why it</span></span><br><span class="line"><span class="comment">     * is cleared.</span></span><br><span class="line"><span class="comment">     * TODO remove once we're there</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">bool</span> user_creatable;<span class="comment">//设备是否是可以由用户创建的，QEMU中并不是所有模拟的设备都是可以由用户通过命令行创建的，有些设备是要QEMU自动创建的，比如sysbus总线设备</span></span><br><span class="line">    <span class="keyword">bool</span> hotpluggable;<span class="comment">//设备是否是可插拔的</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* callbacks */</span></span><br><span class="line">    DeviceReset reset;<span class="comment">//设备复位回调函数</span></span><br><span class="line">    DeviceRealize realize;<span class="comment">//设备实例化回调函数。qemu的设备初始化分为两步，一个是设备类型中定义的构造函数(instance_init)，创建设备(object_new)时调用，另外一个是这里的realize函数，在设备的realied属性被设置为true时调用，realize函数被调用设备才是真正的被初始化并变的可用</span></span><br><span class="line">    DeviceUnrealize unrealize;<span class="comment">//与realize回调函数对应，设备清理时调用</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* device state */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">VMStateDescription</span> *<span class="title">vmsd</span>;</span><span class="comment">//该结构体用来保存设备的状态，在虚拟机迁移或冻结时使用</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Private to qdev / bus.  */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *bus_type;<span class="comment">//总线类型，在qdev的设备模型中，每个设备都有其挂接的总线</span></span><br><span class="line">&#125; DeviceClass;</span><br><span class="line"></span><br><span class="line"><span class="comment">//include/hw/xtensa/qdev-core.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DeviceState</span> &#123;</span></span><br><span class="line">    <span class="comment">/*&lt; private &gt;*/</span></span><br><span class="line">    Object parent_obj;</span><br><span class="line">    <span class="comment">/*&lt; public &gt;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *id;</span><br><span class="line">    <span class="keyword">char</span> *canonical_path;</span><br><span class="line">    <span class="keyword">bool</span> realized;</span><br><span class="line">    <span class="keyword">bool</span> pending_deleted_event;</span><br><span class="line">    QemuOpts *opts;</span><br><span class="line">    <span class="keyword">int</span> hotplugged;</span><br><span class="line">    BusState *parent_bus;</span><br><span class="line">    QLIST_HEAD(, NamedGPIOList) gpios;</span><br><span class="line">    QLIST_HEAD(, BusState) child_bus;</span><br><span class="line">    <span class="keyword">int</span> num_child_bus;</span><br><span class="line">    <span class="keyword">int</span> instance_id_alias;</span><br><span class="line">    <span class="keyword">int</span> alias_required_for_version;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>三组，<code>pci</code>基础设备组：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hw/pci/pci.c</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> TypeInfo pci_device_type_info = &#123;</span><br><span class="line">    .name = TYPE_PCI_DEVICE,</span><br><span class="line">    .parent = TYPE_DEVICE,  <span class="comment">//继承自二组的TypeInfo:device_type_info</span></span><br><span class="line">    .instance_size = <span class="keyword">sizeof</span>(PCIDevice),<span class="comment">//与PCIDevice的联系</span></span><br><span class="line">    .abstract = <span class="literal">true</span>,</span><br><span class="line">    .class_size = <span class="keyword">sizeof</span>(PCIDeviceClass),<span class="comment">//与PCIDeviceClass的联系</span></span><br><span class="line">    .class_init = pci_device_class_init,</span><br><span class="line">    .class_base_init = pci_device_class_base_init,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//include/hw/pci/pci.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">PCIDeviceClass</span> &#123;</span></span><br><span class="line">    DeviceClass parent_class;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> (*realize)(PCIDevice *dev, Error **errp);</span><br><span class="line">    PCIUnregisterFunc *<span class="built_in">exit</span>;</span><br><span class="line">    PCIConfigReadFunc *config_read;</span><br><span class="line">    PCIConfigWriteFunc *config_write;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint16_t</span> vendor_id;</span><br><span class="line">    <span class="keyword">uint16_t</span> device_id;</span><br><span class="line">    <span class="keyword">uint8_t</span> revision;</span><br><span class="line">    <span class="keyword">uint16_t</span> class_id;</span><br><span class="line">    <span class="keyword">uint16_t</span> subsystem_vendor_id;       <span class="comment">/* only for header type = 0 */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> subsystem_id;              <span class="comment">/* only for header type = 0 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * pci-to-pci bridge or normal device.</span></span><br><span class="line"><span class="comment">     * This doesn't mean pci host switch.</span></span><br><span class="line"><span class="comment">     * When card bus bridge is supported, this would be enhanced.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">int</span> is_bridge;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* rom bar */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *romfile;</span><br><span class="line">&#125; PCIDeviceClass;</span><br><span class="line"></span><br><span class="line"><span class="comment">//include/hw/pci/pci.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PCIDevice</span> &#123;</span></span><br><span class="line">    DeviceState qdev;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* PCI config space */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *config;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to enable config checks on load. Note that writable bits are</span></span><br><span class="line"><span class="comment">     * never checked even if set in cmask. */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *cmask;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to implement R/W bytes */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *wmask;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to implement RW1C(Write 1 to Clear) bytes */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *w1cmask;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Used to allocate config space for capabilities. */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *used;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* the following fields are read only */</span></span><br><span class="line">    <span class="keyword">int32_t</span> devfn;</span><br><span class="line">    <span class="comment">/* Cached device to fetch requester ID from, to avoid the PCI</span></span><br><span class="line"><span class="comment">     * tree walking every time we invoke PCI request (e.g.,</span></span><br><span class="line"><span class="comment">     * MSI). For conventional PCI root complex, this field is</span></span><br><span class="line"><span class="comment">     * meaningless. */</span></span><br><span class="line">    PCIReqIDCache requester_id_cache;</span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">64</span>];</span><br><span class="line">    PCIIORegion io_regions[PCI_NUM_REGIONS];</span><br><span class="line">    AddressSpace bus_master_as;</span><br><span class="line">    MemoryRegion bus_master_container_region;</span><br><span class="line">    MemoryRegion bus_master_enable_region;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* do not access the following fields */</span></span><br><span class="line">    PCIConfigReadFunc *config_read;</span><br><span class="line">    PCIConfigWriteFunc *config_write;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Legacy PCI VGA regions */</span></span><br><span class="line">    MemoryRegion *vga_regions[QEMU_PCI_VGA_NUM_REGIONS];</span><br><span class="line">    <span class="keyword">bool</span> has_vga;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Current IRQ levels.  Used internally by the generic PCI code.  */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> irq_state;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Capability bits */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> cap_present;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Offset of MSI-X capability in config space */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> msix_cap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* MSI-X entries */</span></span><br><span class="line">    <span class="keyword">int</span> msix_entries_nr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Space to store MSIX table &amp; pending bit array */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> *msix_table;</span><br><span class="line">    <span class="keyword">uint8_t</span> *msix_pba;</span><br><span class="line">    <span class="comment">/* MemoryRegion container for msix exclusive BAR setup */</span></span><br><span class="line">    MemoryRegion msix_exclusive_bar;</span><br><span class="line">    <span class="comment">/* Memory Regions for MSIX table and pending bit entries. */</span></span><br><span class="line">    MemoryRegion msix_table_mmio;</span><br><span class="line">    MemoryRegion msix_pba_mmio;</span><br><span class="line">    <span class="comment">/* Reference-count for entries actually in use by driver. */</span></span><br><span class="line">    <span class="keyword">unsigned</span> *msix_entry_used;</span><br><span class="line">    <span class="comment">/* MSIX function mask set or MSIX disabled */</span></span><br><span class="line">    <span class="keyword">bool</span> msix_function_masked;</span><br><span class="line">    <span class="comment">/* Version id needed for VMState */</span></span><br><span class="line">    <span class="keyword">int32_t</span> version_id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Offset of MSI capability in config space */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> msi_cap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* PCI Express */</span></span><br><span class="line">    PCIExpressDevice <span class="built_in">exp</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* SHPC */</span></span><br><span class="line">    SHPCDevice *shpc;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Location of option rom */</span></span><br><span class="line">    <span class="keyword">char</span> *romfile;</span><br><span class="line">    <span class="keyword">bool</span> has_rom;</span><br><span class="line">    MemoryRegion rom;</span><br><span class="line">    <span class="keyword">uint32_t</span> rom_bar;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* INTx routing notifier */</span></span><br><span class="line">    PCIINTxRoutingNotifier intx_routing_notifier;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* MSI-X notifiers */</span></span><br><span class="line">    MSIVectorUseNotifier msix_vector_use_notifier;</span><br><span class="line">    MSIVectorReleaseNotifier msix_vector_release_notifier;</span><br><span class="line">    MSIVectorPollNotifier msix_vector_poll_notifier;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>用一张我自己画的图片来整理一下在动态初始化时<code>TypeImpl</code>，<code>ObjectClass</code>和<code>Object</code>之间的关系：(PS：<code>Object</code>和<code>ObjectClass</code>里的指针是从其<code>class</code>元素发出的)</p>
+<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200808111831263.png" alt="image-20200808111831263"></p>
+<h2 id="感悟-amp-参考"><a href="#感悟-amp-参考" class="headerlink" title="感悟&amp;参考"></a>感悟&amp;参考</h2><p><code>QOM</code>是一个很庞大的工程，虽然只学习了一点皮毛，但是已经借鉴了很多前辈的文章，这里只是浅显地分析了一下<code>pcidevice</code>相关的一小部分，还有<code>bus</code>相关的部分有时间再填坑，但这也只是<code>qemu</code>这个庞大软件的一小部分而已。。。不禁感叹自己的弱小与无力orz。</p>
+<p>吾尝终日而思矣，不如须臾之所学也。</p>
+<p>感觉我们在学习<code>qemu</code>相关的知识时一定要利用好其开源的特性，这点十分重要，不懂的地方没有比读源码更快更正确的解决方式了。</p>
+<p>借鉴了些前辈的文章，十分感激：</p>
+<p><a href="https://www.binss.me/blog/qemu-note-of-qemu-object-model/" target="_blank" rel="noopener">https://www.binss.me/blog/qemu-note-of-qemu-object-model/</a></p>
+<p><a href="https://blog.csdn.net/sungeshilaoda/article/details/97890633" target="_blank" rel="noopener">https://blog.csdn.net/sungeshilaoda/article/details/97890633</a></p>
+<p><a href="https://blog.csdn.net/sungeshilaoda/article/details/97890633" target="_blank" rel="noopener">https://blog.csdn.net/sungeshilaoda/article/details/97890633</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏还是打残，这是个问题</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weichat.png" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://xiaoxiaorenwu.top/2020/08/12/Qemu学习—QOM模型/" title="Qemu学习-QOM模型">https://xiaoxiaorenwu.top/2020/08/12/Qemu学习—QOM模型/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+          
+            <a href="/tags/Qemu/" rel="tag"><i class="fa fa-tag"></i> Qemu</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/10/Qemu学习—内存虚拟化/" rel="next" title="Qemu学习-内存虚拟化">
+                <i class="fa fa-chevron-left"></i> Qemu学习-内存虚拟化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/10/10/KVM学习—利用KVM实现一个简易的Hypervisor/" rel="prev" title="KVM学习-如何利用kvm写一个自己的Hypervisor">
+                KVM学习-如何利用kvm写一个自己的Hypervisor <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaoxiaorenwu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renwuxiaoxiao@126.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大佬们的blog~~
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="p4nda" target="_blank">p4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="sunichi" target="_blank">sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://e3pem.github.io/" title="e3pem" target="_blank">e3pem</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hpasserby.me/" title="hpasserby" target="_blank">hpasserby</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="ama2in9" target="_blank">ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://t3ls.club/" title="T3LS" target="_blank">T3LS</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.pwn4fun.com/" title="Railgun" target="_blank">Railgun</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#QOM模型"><span class="nav-number">1.</span> <span class="nav-text">QOM模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#why"><span class="nav-number">1.1.</span> <span class="nav-text">why</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how"><span class="nav-number">1.2.</span> <span class="nav-text">how</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础结构体"><span class="nav-number">1.2.1.</span> <span class="nav-text">基础结构体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将TypeInfo注册为TypeImpl"><span class="nav-number">1.2.2.</span> <span class="nav-text">将TypeInfo注册为TypeImpl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化Class"><span class="nav-number">1.2.3.</span> <span class="nav-text">初始化Class</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#继承链："><span class="nav-number">1.2.3.1.</span> <span class="nav-text">继承链：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体函数分析："><span class="nav-number">1.2.3.2.</span> <span class="nav-text">具体函数分析：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流程概况："><span class="nav-number">1.2.3.3.</span> <span class="nav-text">流程概况：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例化Object"><span class="nav-number">1.2.4.</span> <span class="nav-text">实例化Object</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#继承链：-1"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">继承链：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体函数分析：-1"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">具体函数分析：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流程概况：-1"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">流程概况：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加Property"><span class="nav-number">1.2.5.</span> <span class="nav-text">添加Property</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关系整理"><span class="nav-number">1.3.</span> <span class="nav-text">关系整理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感悟-amp-参考"><span class="nav-number">1.4.</span> <span class="nav-text">感悟&amp;参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wQR3fxNYiFB3Sh2MdPvjK8ez-gzGzoHsz',
+        appKey: 'M81KRpr3NUHCSrwBJ9TY73HF',
+        placeholder: '欢乐时光就要开始了',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;"></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+

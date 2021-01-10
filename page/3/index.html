@@ -52,6 +52,44 @@
 
 
 
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=STZhongsong:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
 
 
 
@@ -84,16 +122,16 @@
 
 
 
-<meta name="description" content="《---这里记录我的学习和生活---》">
+<meta name="description" content="Babypwner@Dubhe@BUPT">
 <meta property="og:type" content="website">
 <meta property="og:title" content="xiaoxiaorenwu">
 <meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="xiaoxiaorenwu">
-<meta property="og:description" content="《---这里记录我的学习和生活---》">
+<meta property="og:description" content="Babypwner@Dubhe@BUPT">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="xiaoxiaorenwu">
-<meta name="twitter:description" content="《---这里记录我的学习和生活---》">
+<meta name="twitter:description" content="Babypwner@Dubhe@BUPT">
 
 
 
@@ -299,7 +337,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/hitcontraning-lab13-writeup/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/15/花式shellcode/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -318,7 +356,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/31/hitcontraning-lab13-writeup/" itemprop="url">hitcontraning_lab13_writeup</a></h1>
+                <a class="post-title-link" href="/2020/04/15/花式shellcode/" itemprop="url">花式shellcode</a></h1>
         
 
         <div class="post-meta">
@@ -330,8 +368,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T23:28:18+08:00">
-                2019-03-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-15T22:30:00+08:00">
+                2020-04-15
               </time>
             
 
@@ -371,8 +409,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/03/31/hitcontraning-lab13-writeup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/31/hitcontraning-lab13-writeup/" itemprop="commentCount"></span>
+                <a href="/2020/04/15/花式shellcode/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/15/花式shellcode/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -394,7 +432,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k
+                  4.7k
                 </span>
               
 
@@ -410,7 +448,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6 min
+                  22 min
                 </span>
               
             </div>
@@ -433,15 +471,13 @@
       
         
           
-          依然是wiki上的例题，先提供二进制源码：hitcontraning_lab13
-预览：
-文件是64位，partial relro则可以改写got表，感觉就像是堆题（名字也叫heapcreator）。。。没有pie调试起来会方便很多。。。然后放进ida64看一下大致功能。
-
-前言分析：首先有两个se
+          0x00.前言废话shellcode是最具有pwn特色的东西之一，shellcode也并非仅仅是一段拿到shell的代码。
+我对shellcode一直有一种恐惧感，因为我的基础不扎实，对汇编指令的opcode不够了解，所以心里很排斥做shellcode的题。
+但是，人想要进步，就必须要走出自己的舒适
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/03/31/hitcontraning-lab13-writeup/#more" rel="contents">
+            <a class="btn" href="/2020/04/15/花式shellcode/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -492,7 +528,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/2016-Asis-books-writeup/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/10/奇妙屋-时不时放一些好玩的题/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -511,7 +547,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/31/2016-Asis-books-writeup/" itemprop="url">2016-Asis-books_writeup</a></h1>
+                <a class="post-title-link" href="/2020/04/10/奇妙屋-时不时放一些好玩的题/" itemprop="url">奇妙屋-时不时放一些好玩的题</a></h1>
         
 
         <div class="post-meta">
@@ -523,8 +559,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T20:26:22+08:00">
-                2019-03-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-10T00:05:04+08:00">
+                2020-04-10
               </time>
             
 
@@ -564,8 +600,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/03/31/2016-Asis-books-writeup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/31/2016-Asis-books-writeup/" itemprop="commentCount"></span>
+                <a href="/2020/04/10/奇妙屋-时不时放一些好玩的题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/10/奇妙屋-时不时放一些好玩的题/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -587,7 +623,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2k
+                  7k
                 </span>
               
 
@@ -603,7 +639,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7 min
+                  40 min
                 </span>
               
             </div>
@@ -626,15 +662,14 @@
       
         
           
-          wiki上的一道经典例题，写wp的目的一方面是wiki上一些细节讲的有点不太清楚，一方面是自己巩固一下做过的题目，看是否是真的掌握。
-首先提供题目二级制文件链接：books
-预览：拿到题目先看基本信息：
+          web&amp;&amp;pwn思路比较有趣的一题，程序本身开了1337端口，可以用tcp包交互，也就是可以用浏览器交互，存在格式化字符串和栈溢出漏洞。溢出的漏洞点在base64_decode中，我没细看，直接打即可。
+几点需要留意的地方：
 
-可以看到题目是64位文件，所有保护全开，一般这种题目是堆题，且看到full relro则大概率
+调试子进程set follow-fork-mode ch
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/03/31/2016-Asis-books-writeup/#more" rel="contents">
+            <a class="btn" href="/2020/04/10/奇妙屋-时不时放一些好玩的题/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -685,7 +720,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/格式化字符串小心得/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/20/C++初识/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -704,7 +739,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/31/格式化字符串小心得/" itemprop="url">格式化字符串小心得</a></h1>
+                <a class="post-title-link" href="/2020/03/20/C++初识/" itemprop="url">C++初识</a></h1>
         
 
         <div class="post-meta">
@@ -716,8 +751,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T17:45:46+08:00">
-                2019-03-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-20T23:00:00+08:00">
+                2020-03-20
               </time>
             
 
@@ -739,8 +774,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
-                    <span itemprop="name">PWN基础</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -757,8 +792,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/03/31/格式化字符串小心得/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/31/格式化字符串小心得/" itemprop="commentCount"></span>
+                <a href="/2020/03/20/C++初识/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/03/20/C++初识/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -780,7 +815,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  595
+                  7.7k
                 </span>
               
 
@@ -796,7 +831,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  2 min
+                  37 min
                 </span>
               
             </div>
@@ -819,15 +854,12 @@
       
         
           
-          格式化字符串的一些总结和心得：
-虽然做的题目不多，但是还是有一点感悟，小总结一下。
-格式化字符串漏洞可以实现的事情：
-
-读（泄露函数地址），一般用于泄露出想要篡改的函数的got表的内容，也就是其真正的地址，需要ELF功能来获取got表地址，payload一般为‘%k$s’+p32(fun_got)，
+          0x00.前言C++是一门面向对象的语言，即使不是学习pwn的需要，学习也是很有必要的，虽然我大一下选修了C++，但是现在都基本忘了，现在等于又复习了一遍，最开始调的时候真的难受。。。堆太过于混乱了。。。
+C++的题我在比赛中还没正式遇到，如果不给源码的话，逆向首先是第一道大关卡。。。然后还要去找漏
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/03/31/格式化字符串小心得/#more" rel="contents">
+            <a class="btn" href="/2020/03/20/C++初识/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -878,7 +910,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/寒假小结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/10/pwnable.tw游记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -897,7 +929,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/31/寒假小结/" itemprop="url">寒假小结</a></h1>
+                <a class="post-title-link" href="/2020/03/10/pwnable.tw游记/" itemprop="url">pwnable.tw游记</a></h1>
         
 
         <div class="post-meta">
@@ -909,8 +941,198 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-31T17:45:21+08:00">
-                2019-03-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-10T23:00:00+08:00">
+                2020-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/03/10/pwnable.tw游记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/03/10/pwnable.tw游记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  40 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          0.前言pwnable.tw应该是个pwn手应该都知道的刷题网站，是台湾的大佬们开设的，台湾的信息安全技术一直在世界前列，217和hitcon出的题经常被列为经典。花了不少时间来做这里的题，也确实收获了不少东西。感谢大佬们乐于分享的精神，期间很多题也参考了别人的exp。
+后面分数较高的题目由于平台规
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/10/pwnable.tw游记/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/01/flag-H-ppy-N3w-Ye4r-QAQ/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/01/flag-H-ppy-N3w-Ye4r-QAQ/" itemprop="url">flag{H@ppy_N3w_Ye4r_QAQ}</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-01T11:35:25+08:00">
+                2020-01-01
               </time>
             
 
@@ -950,8 +1172,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/03/31/寒假小结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/31/寒假小结/" itemprop="commentCount"></span>
+                <a href="/2020/01/01/flag-H-ppy-N3w-Ye4r-QAQ/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/01/01/flag-H-ppy-N3w-Ye4r-QAQ/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1014,7 +1236,7 @@
           私人空间，谢绝访问
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/03/31/寒假小结/#more" rel="contents">
+            <a class="btn" href="/2020/01/01/flag-H-ppy-N3w-Ye4r-QAQ/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1065,7 +1287,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/19/知识点总结与学习资料整理/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/计网期中复习/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1084,7 +1306,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/19/知识点总结与学习资料整理/" itemprop="url">知识点总结与学习资料整理</a></h1>
+                <a class="post-title-link" href="/2019/11/21/计网期中复习/" itemprop="url">计网期中复习</a></h1>
         
 
         <div class="post-meta">
@@ -1096,8 +1318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-19T22:16:15+08:00">
-                2019-02-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-21T15:10:31+08:00">
+                2019-11-21
               </time>
             
 
@@ -1119,8 +1341,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
-                    <span itemprop="name">PWN基础</span>
+                  <a href="/categories/课内课程/" itemprop="url" rel="index">
+                    <span itemprop="name">课内课程</span>
                   </a>
                 </span>
 
@@ -1137,8 +1359,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/02/19/知识点总结与学习资料整理/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/19/知识点总结与学习资料整理/" itemprop="commentCount"></span>
+                <a href="/2019/11/21/计网期中复习/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/21/计网期中复习/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1160,7 +1382,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k
+                  1.6k
                 </span>
               
 
@@ -1199,14 +1421,11 @@
       
         
           
-          知识点总结：前提准备：工具准备：
-ubuntu虚拟机（建议装两个版本16.04和18.04，因为到后期堆的时候不同版本的ubuntu对应不同的glibc版本(我现在有5个版本)，而不同的glibc版本有不同的防御机制，思路会完全不一样。），当然有原装的更好了orz。
-IDA pro。
-gdb用于动态
+          前言：唉，失踪人口回归。。。好久没看/写博客了，已经荒草丛生了感觉orz，因为自从上了大二以来，课业压力剧增，无论是作业的复杂度还是数量都比大一时多了一倍，除了周末以外再也留不出整半天的时间了。。。想认真完成每一项作业还是很耗时间的，尤其是那些很恶心，又很费时间的大作业。。。再加上英语六级这个大麻烦
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/02/19/知识点总结与学习资料整理/#more" rel="contents">
+            <a class="btn" href="/2019/11/21/计网期中复习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1257,7 +1476,7 @@ gdb用于动态
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/堆的理论知识学习/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/17/两道有趣的题目/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1276,7 +1495,7 @@ gdb用于动态
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/13/堆的理论知识学习/" itemprop="url">堆的理论知识学习</a></h1>
+                <a class="post-title-link" href="/2019/09/17/两道有趣的题目/" itemprop="url">两道有趣的题目</a></h1>
         
 
         <div class="post-meta">
@@ -1288,394 +1507,8 @@ gdb用于动态
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T16:04:07+08:00">
-                2019-02-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
-                    <span itemprop="name">PWN基础</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/13/堆的理论知识学习/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/13/堆的理论知识学习/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  649
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2 min
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          最近花了两天时间上网查阅资料学习了堆的内存管理模式，找到了几篇还不错的文章，在此分享一下：
-Linux堆内存管理深入分析上
-Linux堆内存管理深入分析下
-PWN之堆内存管理
-申请内存块
-看雪的求助
-较详细的内存分配过程
-Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/02/13/堆的理论知识学习/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/28/二进制方面知识扩充/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/xxrw.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xiaoxiaorenwu">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/28/二进制方面知识扩充/" itemprop="url">二进制基础知识积累</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-28T10:30:41+08:00">
-                2019-01-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
-                    <span itemprop="name">PWN基础</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/28/二进制方面知识扩充/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/28/二进制方面知识扩充/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  8 min
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          PIE和ASLR：参考链接：对PIE和ASLR的理解
-首先，ASLR的是操作系统的功能选项，作用于executable（ELF）装入内存运行时，因而只能随机化stack、heap、libraries的基址；而PIE（Position Independent Executables）是编译器（gcc，
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/28/二进制方面知识扩充/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/pwnable-kr第一部分exp与思路/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/xxrw.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xiaoxiaorenwu">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/26/pwnable-kr第一部分exp与思路/" itemprop="url">pwnable.kr第一部分exp与思路</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T15:12:01+08:00">
-                2018-12-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-17T08:19:31+08:00">
+                2019-09-17
               </time>
             
 
@@ -1715,8 +1548,8 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/12/26/pwnable-kr第一部分exp与思路/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/26/pwnable-kr第一部分exp与思路/" itemprop="commentCount"></span>
+                <a href="/2019/09/17/两道有趣的题目/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/09/17/两道有趣的题目/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1738,7 +1571,7 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  6.7k
+                  643
                 </span>
               
 
@@ -1754,7 +1587,7 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  34 min
+                  3 min
                 </span>
               
             </div>
@@ -1777,11 +1610,14 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
       
         
           
-          写这些没用的东西也没啥目的，除了回忆一下知识之外也就是练一下exp的书写，因为很多题没必要用exp所以那时候做就没练过。。。。。pwnable.kr第一部分确实很适合初学者做，大多为知识题，主要是强迫你去学知识，而且后面几题建立出一个基本框架，此外搭配jarvis.oj和ctf-wiki有体系的学习
+          前言：两道题的漏洞都是第一次见，可以理解为栈中的UAF，比较有趣，在这里记录一下。
+pwn1:这题据广大的大佬说是2019Xman的最后一题，还是出的挺有新意的。
+漏洞点：整数溢出+堆溢出+栈中UAF(leak)
+exp如下：1234567891011121314151617181920212223
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/12/26/pwnable-kr第一部分exp与思路/#more" rel="contents">
+            <a class="btn" href="/2019/09/17/两道有趣的题目/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1832,7 +1668,7 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/20/小心得/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/14/2019ByteCTF_2019OGeek_2019SuCTF/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -1851,7 +1687,7 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/12/20/小心得/" itemprop="url">杂物1</a></h1>
+                <a class="post-title-link" href="/2019/09/14/2019ByteCTF_2019OGeek_2019SuCTF/" itemprop="url">2019ByteCTF / 2019OGeek / 2019SuCTF 大杂烩</a></h1>
         
 
         <div class="post-meta">
@@ -1863,8 +1699,8 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-20T20:20:32+08:00">
-                2018-12-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-14T00:05:04+08:00">
+                2019-09-14
               </time>
             
 
@@ -1886,8 +1722,8 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN基础/" itemprop="url" rel="index">
-                    <span itemprop="name">PWN基础</span>
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
                   </a>
                 </span>
 
@@ -1904,8 +1740,8 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/12/20/小心得/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/20/小心得/" itemprop="commentCount"></span>
+                <a href="/2019/09/14/2019ByteCTF_2019OGeek_2019SuCTF/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/09/14/2019ByteCTF_2019OGeek_2019SuCTF/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1927,7 +1763,7 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1k
+                  5.1k
                 </span>
               
 
@@ -1943,7 +1779,7 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4 min
+                  28 min
                 </span>
               
             </div>
@@ -1966,17 +1802,390 @@ Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强） (经典，
       
         
           
-          解决的题目：kr.unlink
-收获与问题：
-
-unlink收货：
-
-对chunk结构有了初步了解 （具体）
-对指针有了更加具体的概念，-&gt;代表的意义更加清晰，我个人比较喜欢用一层一层来理解指针，地址一层一层指向。以B-&gt;fd-&gt;bk=B-&gt;bk，B-&gt;bk-&gt;f
+          前言：唉，好久没写博客了。。。这次又来填坑。。。感觉现在写wp越来越懒得分析，基本能说一句话都不想说第二句。。。这里包含了最近的几场比赛的glibc的题目（没错，咸鱼除了glibc还能做什么呢？呵呵）。。需要的话自取。。。
+2019ByteCTF / 2019OGeek / 2019SuCTF
+要开
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/12/20/小心得/#more" rel="contents">
+            <a class="btn" href="/2019/09/14/2019ByteCTF_2019OGeek_2019SuCTF/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/2019”第五空间“网络安全大赛/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/2019”第五空间“网络安全大赛/" itemprop="url">2019”第五空间“网络安全大赛</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T23:10:42+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF-PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/28/2019”第五空间“网络安全大赛/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/28/2019”第五空间“网络安全大赛/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          唉。。这个比赛。。。一言难尽。。。只有pwn和web，15个pwn，5个web。。。开始时满心欢喜，觉得很刺激。。。但后来发现题目出现各种问题：原题，Libc发的版本和远程服务器的不一样，高分题比低分题简单。。。
+一共出了12个pwn。我看了四个，出了两个。。。也算有一点输出吧，有一题看了一下午。。
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/08/28/2019”第五空间“网络安全大赛/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/18/杂物2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xxrw.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaoxiaorenwu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/18/杂物2/" itemprop="url">杂物2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-18T16:23:49+08:00">
+                2019-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/私人空间/" itemprop="url" rel="index">
+                    <span itemprop="name">私人空间</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/18/杂物2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/18/杂物2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  9
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          私人空间，谢绝访问
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/08/18/杂物2/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2018,7 +2227,7 @@ unlink收货：
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2056,7 +2265,7 @@ unlink收货：
               <img class="site-author-image" itemprop="image" src="/images/xxrw.jpg" alt="">
             
               <p class="site-author-name" itemprop="name"></p>
-              <p class="site-description motion-element" itemprop="description">《---这里记录我的学习和生活---》</p>
+              <p class="site-description motion-element" itemprop="description">Babypwner@Dubhe@BUPT</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -2066,7 +2275,7 @@ unlink收货：
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2077,7 +2286,7 @@ unlink收货：
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2088,7 +2297,7 @@ unlink收货：
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
