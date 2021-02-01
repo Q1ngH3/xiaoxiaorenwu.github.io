@@ -130,7 +130,7 @@
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="Qemu我此次分析只局限于当前的5.2版本，主要目的为找到三大描述符的位置：kvmfd，vmfd，vcpufd，即： 1234int kvmfd = open(&quot;/dev/kvm&quot;, O_RDWR|O_LARGEFILE);ret = ioctl(kvmfd, KVM_GET_API_VERSION, 0);int vmfd = ioctl(kvmfd, KVM_CREATE_VM, 0);">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-10T14:55:14.573Z">
+<meta property="og:updated_time" content="2021-01-10T16:33:10.449Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Qemu学习-Qemu与KVM启动流程分析">
 <meta name="twitter:description" content="Qemu我此次分析只局限于当前的5.2版本，主要目的为找到三大描述符的位置：kvmfd，vmfd，vcpufd，即： 1234int kvmfd = open(&quot;/dev/kvm&quot;, O_RDWR|O_LARGEFILE);ret = ioctl(kvmfd, KVM_GET_API_VERSION, 0);int vmfd = ioctl(kvmfd, KVM_CREATE_VM, 0);">
@@ -452,7 +452,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  12 min
+                  11 min
                 </span>
               
             </div>
@@ -515,7 +515,6 @@
 <li>当<code>r&gt;0</code>时<code>KVM</code>会一直调用<code>vcpu_enter_guest()</code>，重复进入<code>Guest</code>模式。</li>
 <li>当<code>r&lt;=0</code>时则会跳出循环体，此时会一步一步退到当初的入口<code>kvm_vcpu_ioctl()</code>，乃至于退回到用户态空间<code>Qemu</code>进程中，承接<code>kvm_cpu_exec</code>中<code>switch (run-&gt;exit_reason) {...</code>位置。</li>
 </ul>
-<p><a href="https://luohao-brian.gitbooks.io/interrupt-virtualization/content/kvm-run-processzhi-kvm-he-xin-liu-cheng.html" target="_blank" rel="noopener">https://luohao-brian.gitbooks.io/interrupt-virtualization/content/kvm-run-processzhi-kvm-he-xin-liu-cheng.html</a></p>
 
       
     </div>
@@ -702,7 +701,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -713,7 +712,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
