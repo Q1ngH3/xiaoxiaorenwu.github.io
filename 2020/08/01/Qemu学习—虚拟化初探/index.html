@@ -132,7 +132,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://images0.cnblogs.com/blog2015/697113/201506/051254593325048.jpg">
 <meta property="og:image" content="https://i.loli.net/2021/01/08/eIuzl62VJQZcgGL.png">
-<meta property="og:updated_time" content="2021-01-09T16:11:47.151Z">
+<meta property="og:updated_time" content="2021-02-27T11:19:30.202Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Qemu学习-虚拟化初探">
 <meta name="twitter:description" content="Qemu与Kvm KVM全称是基于内核的虚拟机(Kernel-based Virtual Machine)，它是Linux 的一个内核模块，该内核模块使得Linux变成了一个 Hypervisor/VMM：  它由Quramnet开发，该公司于 2008年被Red Hat收购。 它支持x86(32 and 64 位), s390, Powerpc 等CPU。 它从Linux 2.6.20起就作为一">
@@ -476,7 +476,7 @@
       
 
       
-        <h1 id="Qemu与Kvm"><a href="#Qemu与Kvm" class="headerlink" title="Qemu与Kvm"></a>Qemu与Kvm</h1><p><img src="https://images0.cnblogs.com/blog2015/697113/201506/051254593325048.jpg" alt="img"></p>
+        <h1 id="Qemu与Kvm"><a href="#Qemu与Kvm" class="headerlink" title="Qemu与Kvm"></a>Qemu与Kvm</h1><p><img src="https://images0.cnblogs.com/blog2015/697113/201506/051254593325048.jpg" alt="img" style="zoom:80%;"></p>
 <p><code>KVM</code>全称是<strong>基于内核的虚拟机(Kernel-based Virtual Machine)</strong>，它是Linux 的一个内核模块，该内核模块使得Linux变成了一个 <code>Hypervisor/VMM</code>：</p>
 <ul>
 <li>它由Quramnet开发，该公司于 2008年被Red Hat收购。</li>
@@ -488,7 +488,7 @@
 <p><code>KVM</code>是基于虚拟化扩展(<code>Intel VT</code>或者<code>AMD-V</code>)的<code>X86</code>硬件的开源的Linux原生的全虚拟化解决方案。KVM中，虚拟机被实现为常规的 Linux进程，由标准Linux调度程序进行调度；虚机的每个虚拟<code>CPU</code>被实现为一个常规的Linux线程。这使得KMV能够使用Linux内核的已有功能。</p>
 <p>需要注意理解的是，<code>KVM</code>本身不执行任何硬件模拟，需要用户空间程序通过<code>/dev/kvm</code>接口设置一个客户机虚拟服务器的地址空间，向它提供模拟<code>I/O</code>，并将它的视频显示映射回宿主的显示屏。目前这个应用程序正是众所周知的<code>QEMU</code>。 </p>
 <p><code>Linux</code>上的用户空间、内核空间和虚拟机的简易架构图(我自己画的，只代表简易结构，没画细节部分)：</p>
-<p><img src="https://i.loli.net/2021/01/08/eIuzl62VJQZcgGL.png" alt="3AA4AAFAE6947C0BAEEE6154117A7990.png"></p>
+<p><img src="https://i.loli.net/2021/01/08/eIuzl62VJQZcgGL.png" alt="3AA4AAFAE6947C0BAEEE6154117A7990.png" style="zoom: 67%;"></p>
 <ul>
 <li><code>Guest</code>：客户机系统，包括CPU(<code>vCPU</code>)、内存、驱动(<code>Console</code>、<code>NIC</code>、<code>I/O</code>设备驱动等），被<code>KVM</code>置于一种受限制的<code>CPU</code>模式下运行。</li>
 <li><code>KVM</code>：运行在内核空间，提供<code>CPU</code>和内存的虚级化，以及客户机的<code>I/O</code>拦截。<code>Guest</code>的<code>I/O</code>被<code>KVM</code>拦截后，交给<code>QEMU</code>处理。</li>
@@ -685,7 +685,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -696,7 +696,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -707,7 +707,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -829,7 +829,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder"></span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu</span>
 
   
 </div>

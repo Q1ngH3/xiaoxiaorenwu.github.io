@@ -130,17 +130,17 @@
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="Qemu内存模拟词汇约定   缩写 意义     VA Virtual Address 虚拟地址   PA Physical Address 物理地址   PT Page Table 页表(一级页表)   PDT Page Directory Table 页目录表(二级页表)   PDPT Page Directory Pointers Table 页目录指针表(三级页表)   PML4T Pag">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/spt.jpg">
-<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ept.jpg">
-<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ram_list.jpg">
-<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/as-mr-ramblock.png">
-<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/memory-map.jpg">
-<meta property="og:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/flat-view.png">
-<meta property="og:updated_time" content="2021-01-09T16:13:13.629Z">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6pOK7n.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6pO1hV.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6pOJcF.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6pONnJ.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6pOUB9.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6pO0tx.png">
+<meta property="og:updated_time" content="2021-02-27T14:33:28.491Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Qemu学习-内存虚拟化">
 <meta name="twitter:description" content="Qemu内存模拟词汇约定   缩写 意义     VA Virtual Address 虚拟地址   PA Physical Address 物理地址   PT Page Table 页表(一级页表)   PDT Page Directory Table 页目录表(二级页表)   PDPT Page Directory Pointers Table 页目录指针表(三级页表)   PML4T Pag">
-<meta name="twitter:image" content="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/spt.jpg">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/02/27/6pOK7n.png">
 
 
 
@@ -573,7 +573,7 @@
 <h4 id="SPT-影子页表"><a href="#SPT-影子页表" class="headerlink" title="SPT(影子页表)"></a>SPT(影子页表)</h4><p><code>KVM</code>通过维护记录<code>GVA=&gt;HPA</code>的<strong>影子页表<code>SPT</code></strong>，减少了地址转换带来的开销，可以<strong>直接将<code>GVA</code>转换为<code>HPA</code></strong>。</p>
 <p>在软件虚拟化的内存转换中，<code>GVA</code>到<code>GPA</code>的转换通过查询<code>CR3</code>寄存器来完成，<code>CR3</code>中保存了<code>Guest</code>的页表基地址，然后载入<code>MMU</code>中进行地址转换。</p>
 <p>在加入了<code>SPT</code>技术后，当<code>Guest</code>访问<code>CR3</code>时，<code>KVM</code>会捕获到这个操作<code>EXIT_REASON_CR_ACCESS</code>，之后<code>KVM</code>会载入特殊的<code>CR3</code>和影子页表，欺骗<code>Guest</code>这就是真实的<code>CR3</code>。之后就和传统的访问内存方式一致，当需要访问物理内存的时候，只会经过一层影子页表的转换。</p>
-<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/spt.jpg" alt="img"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6pOK7n.png" alt="img"></p>
 <p><strong>影子页表由<code>KVM</code>维护，实际上就是一个<code>Guest</code>页表到<code>Host</code> 页表的映射</strong>。<code>KVM</code>会将<code>Guest</code>的页表设置为只读，当<code>Guest OS</code>对页表进行修改时就会触发<code>Page Fault</code>，<code>VM-EXIT</code>到<code>KVM</code>，之后<code>KVM</code>会对<code>GVA</code>对应的页表项进行访问权限检查，结合错误码进行判断：</p>
 <ul>
 <li>如果是<code>Guest OS</code>引起的，则将该异常注入回去，<code>Guest OS</code>将调用自己的缺页处理函数，申请一个<code>Page</code>，并将<code>Page</code>的<code>GPA</code>填充到上级页表项中。</li>
@@ -584,7 +584,7 @@
 <p>优点：影子页表的引入，减少了<code>GVA=&gt;HPA</code>的转换开销。</p>
 <p>缺点：需要为<code>Guest</code>的每个进程都维护一个影子页表，这将带来很大的内存开销。同时影子页表的建立是很耗时的，如果<code>Guest</code>的进程过多，将导致影子页表频繁切换。因此<code>Intel</code>和<code>AMD</code>在此基础上提供了基于硬件的虚拟化技术。</p>
 <h4 id="EPT-NPT"><a href="#EPT-NPT" class="headerlink" title="EPT/NPT"></a>EPT/NPT</h4><p><code>Intel</code>的<code>EPT(Extent Page Table)</code>技术和<code>AMD</code>的<code>NPT(Nest Page Table)</code>技术都对内存虚拟化提供了硬件支持。<br>这两种技术原理类似，都是在硬件层面上实现<code>GVA</code>到<code>HPA</code>之间的转换。<br>下面就以<code>EPT</code>为例分析一下<code>KVM</code>基于硬件辅助的内存虚拟化实现。</p>
-<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ept.jpg" alt="img"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6pO1hV.png" alt="img"></p>
 <p><strong><code>Intel EPT</code>技术引入了<code>EPT(Extended Page Table)</code>和<code>EPTP(EPT base pointer EPT页表基址寄存器)</code>的概念。<code>EPT</code>中维护着<code>GPA</code>到 <code>HPA</code>的映射，而<code>EPTP</code>负责指向<code>EPT</code>基址，类似于<code>CR3</code>指向<code>Guest OS</code>页表基址</strong>。</p>
 <p>在<code>Guest OS</code>运行时，<code>Guest</code>对应的<code>EPT</code>地址被加载到<code>EPTP</code>，而<code>Guest OS</code>当前运行的进程页表基址被加载到<code>CR3</code>。于是在进行地址转换时，首先通过<code>CR3</code>指向的页表实现<code>GVA</code>到<code>GPA</code>的转换，再通过<code>EPTP</code>指向的<code>EPT</code>完成<code>GPA</code>到<code>HPA</code>的转换。当发生<code>EPT Page Fault</code>时，需要<code>VM-EXIT</code>到<code>KVM</code>，更新<code>EPT</code>。</p>
 <ul>
@@ -624,11 +624,11 @@
 <p>全局变量<code>ramlist</code>以单链表的形式管理所有的<code>RAMBlock</code>：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/ramlist.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">RAMList</span> &#123;</span></span><br><span class="line">    QemuMutex mutex;</span><br><span class="line">    RAMBlock *mru_block;</span><br><span class="line">    <span class="comment">/* RCU-enabled, writes protected by the ramlist lock. */</span></span><br><span class="line">    QLIST_HEAD(, RAMBlock) blocks;</span><br><span class="line">    DirtyMemoryBlocks *dirty_memory[DIRTY_MEMORY_NUM];</span><br><span class="line">    <span class="keyword">uint32_t</span> version;</span><br><span class="line">    QLIST_HEAD(, RAMBlockNotifier) ramblock_notifiers;</span><br><span class="line">&#125; RAMList;</span><br><span class="line"><span class="keyword">extern</span> RAMList ram_list;</span><br></pre></td></tr></table></figure>
 <p>每一个新分配的<code>RAMBlock</code>都会被插入到<code>ram_list</code>的头部。如需查找地址所对应的<code>RAMBlock</code>，则需要遍历<code>ram_list</code>，当目标地址落在当前<code>RAMBlock</code>的地址区间时，该<code>RAMBlock</code>即为查找目标。</p>
-<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/ram_list.jpg" alt="img"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6pOJcF.png" alt="img" style="zoom:80%;"></p>
 <h4 id="关系小结"><a href="#关系小结" class="headerlink" title="关系小结"></a>关系小结</h4><p><code>AddressSpace</code>、<code>MemoryRegion</code>、<code>RAMBlock</code>之间的关系如下所示：</p>
-<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/as-mr-ramblock.png" alt="img"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6pONnJ.png" alt="img"></p>
 <p>可以看到<code>AddressSpace</code>的<code>root</code>域指向根级<code>MemoryRegion</code>，<code>AddressSpace</code>是由<code>root</code>域指向的<code>MemoryRegion</code>及其子树共同表示的。<strong>MemoryRegion作为一个逻辑层面的内存区域，还需借助分布在其中的RAMBlock来存储真实的地址映射关系</strong>。</p>
-<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/memory-map.jpg" alt="img"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6pOUB9.png" alt="img" style="zoom: 67%;"></p>
 <h4 id="FlatView"><a href="#FlatView" class="headerlink" title="FlatView"></a>FlatView</h4><p><strong>AddressSpace 的<code>root</code>域及其子树共同构成了 Guest 的物理地址空间</strong>，但这些都是在<code>QEMU</code>侧定义的。要传入<code>KVM</code>进行设置时，复杂的树状结构是不利于内核进行处理的，因此需要将其转换为一个<code>平坦</code>的地址模型，也就是一个从零开始、只包含地址信息的数据结构，这在<code>QEMU</code>中通过<code>FlatView</code>来表示。每个<code>AddressSpace</code>都有一个与之对应的<code>FlatView</code>指针<code>current_map</code>，表示其对应的平面展开视图。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/memory.h</span></span><br><span class="line"><span class="comment">/* Flattened global view of current active memory hierarchy.  Kept in sorted</span></span><br><span class="line"><span class="comment"> * order.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FlatView</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> <span class="title">rcu</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> ref;</span><br><span class="line">    FlatRange *ranges;     <span class="comment">//对应的FlatRange数组</span></span><br><span class="line">    <span class="keyword">unsigned</span> nr;           <span class="comment">//FlatRange的数目</span></span><br><span class="line">    <span class="keyword">unsigned</span> nr_allocated; <span class="comment">//当前数组的项数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">AddressSpaceDispatch</span> *<span class="title">dispatch</span>;</span></span><br><span class="line">    MemoryRegion *root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>在<code>FlatView</code>中，<code>FlatRange</code>表示在<code>FlatView</code>中的一段内存范围：</p>
@@ -638,7 +638,7 @@
 <h4 id="MemoryRegionSection"><a href="#MemoryRegionSection" class="headerlink" title="MemoryRegionSection"></a>MemoryRegionSection</h4><p>在<code>QEMU</code>中，还有几个起到中介作用的结构体，<code>MemoryRegionSection</code>就是其中之一。</p>
 <p>之前介绍的<code>FlatRange</code>代表一个物理地址空间的片段，偏向于描述在<code>Host</code>侧即<code>AddressSpace</code>中的分布，而<code>MemoryRegionSection</code>则代表在<code>Guest</code>侧即<code>MemoryRegion</code>中的片段。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/exec/memory.h</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * MemoryRegionSection: describes a fragment of a #MemoryRegion</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @mr: the region, or %NULL if empty</span></span><br><span class="line"><span class="comment"> * @fv: the flat view of the address space the region is mapped in</span></span><br><span class="line"><span class="comment"> * @offset_within_region: the beginning of the section, relative to @mr's start</span></span><br><span class="line"><span class="comment"> * @size: the size of the section; will not exceed @mr's boundaries</span></span><br><span class="line"><span class="comment"> * @offset_within_address_space: the address of the first byte of the section</span></span><br><span class="line"><span class="comment"> *     relative to the region's address space</span></span><br><span class="line"><span class="comment"> * @readonly: writes to this section are ignored</span></span><br><span class="line"><span class="comment"> * @nonvolatile: this section is non-volatile</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MemoryRegionSection</span> &#123;</span></span><br><span class="line">    MemoryRegion *mr;   <span class="comment">//所属的MemoryRegion</span></span><br><span class="line">    FlatView *fv;</span><br><span class="line">    hwaddr offset_within_region; <span class="comment">//在MemoryRegion内部的offset</span></span><br><span class="line">    Int128 size;</span><br><span class="line">    hwaddr offset_within_address_space; <span class="comment">//在AddressSpace内部的offset</span></span><br><span class="line">    <span class="keyword">bool</span> readonly;</span><br><span class="line">    <span class="keyword">bool</span> nonvolatile;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="https://abelsu7.top/2019/07/07/kvm-memory-virtualization/flat-view.png" alt="img"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6pO0tx.png" alt="img" style="zoom:80%;"></p>
 <ul>
 <li><code>AddressSpace</code>的<code>root</code>指向对应的根级<code>MemoryRegion</code>，<code>current_map</code>指向<code>root</code>通过<code>generate_memory_topology()</code>生成的<code>FlatView</code>。</li>
 <li><code>FlatView</code>中的<code>ranges</code>数组表示该<code>MemoryRegion</code>所表示的<code>Guest</code>地址区间，并按照地址的顺序进行排列。</li>
@@ -821,7 +821,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -832,7 +832,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -843,7 +843,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -965,7 +965,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder"></span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu</span>
 
   
 </div>

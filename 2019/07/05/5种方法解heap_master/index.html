@@ -134,7 +134,7 @@
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d244ff48a9e065394.png">
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d244bd73984d48652.png">
 <meta property="og:image" content="https://i.loli.net/2019/07/09/5d2473507231241917.png">
-<meta property="og:updated_time" content="2021-01-09T15:58:46.750Z">
+<meta property="og:updated_time" content="2021-02-27T14:13:46.513Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5种方法解2019*CTF_heap_master来加深对深层次堆利用手段的理解">
 <meta name="twitter:description" content="作为2019*CTF的倒数第二题pwn题，这道题的程序逻辑却意外的简单，这也就意味着利用起来会有不小的困难（一般程序复杂的题洞难找但利用起来不会太过刁难，程序简单的题利用起来反而困难）。 这道heap_master从名字看就知道需要对ptmalloc2的机制和堆的各种利用方法都非常熟悉才能成为heap_master而不是heap_baby。。QAQ。。。这篇文章也算是集百家之长了。。。借鉴了天枢的">
@@ -491,10 +491,10 @@
 <p><code>size</code>的计算方式为：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fastbin_ptr = main_arena_addr + <span class="number">8</span></span><br><span class="line">idx = (target_addr - fastbin_ptr) / <span class="number">8</span>   <span class="comment">#target_addr为我们想要写入的地址。</span></span><br><span class="line">size = idx*<span class="number">0x10</span> + <span class="number">0x20</span>     <span class="comment">#size为我们应该free的chunk的大小。</span></span><br></pre></td></tr></table></figure>
 <h2 id="dl-open-hook"><a href="#dl-open-hook" class="headerlink" title="dl_open_hook:"></a>dl_open_hook:</h2><p>这种控制程序执行的方式是官方wp里面提到的，通过<code>largebin attack/unsortedbina attack</code>可以将<code>_dl_open_hook</code>覆盖为<code>mmap</code>出来的内存的地址，然后通过<code>malloc</code>或<code>free</code>报错的方式（也就是<code>malloc_printerr</code>），程序将会调用<code>__libc_dlopen_mode</code>函数，在其中会把<code>dl_open_hook</code>的值加载到某个寄存器，然后会<code>call</code>该寄存器，也就是我们获得一次劫持程序ip的机会，但是寄存器们却没法控制，需要和下面我们要讲的<code>setcontext</code>结合来使用才能发挥最大威力。图片来源<a href="https://e3pem.github.io/2019/05/11/starctf2019/starctf-heap_master%E9%A2%98%E8%A7%A3/#more" target="_blank" rel="noopener">e3pem</a></p>
-<p><img src="https://i.loli.net/2019/07/09/5d24502911bff58682.png" alt=""></p>
-<p><img src="https://i.loli.net/2019/07/09/5d244ff48a9e065394.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24502911bff58682.png" style="zoom:80%;"></p>
+<p><img src="https://i.loli.net/2019/07/09/5d244ff48a9e065394.png" style="zoom: 80%;"></p>
 <h2 id="setcontext"><a href="#setcontext" class="headerlink" title="setcontext:"></a>setcontext:</h2><p>在<code>pwndbg</code>的<code>magic</code>功能中，我们看到有<code>setcontext+0x35</code>这个变量，现在终于用到了。</p>
-<p><img src="https://i.loli.net/2019/07/09/5d244bd73984d48652.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d244bd73984d48652.png" style="zoom:80%;"></p>
 <p>看一下这个玩意到底是啥：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">0x7ffff7a7a565 &lt;setcontext+53&gt;:      mov    rsp,QWORD PTR [rdi+0xa0]</span><br><span class="line">0x7ffff7a7a56c &lt;setcontext+60&gt;:      mov    rbx,QWORD PTR [rdi+0x80]</span><br><span class="line">0x7ffff7a7a573 &lt;setcontext+67&gt;:      mov    rbp,QWORD PTR [rdi+0x78]</span><br><span class="line">0x7ffff7a7a577 &lt;setcontext+71&gt;:      mov    r12,QWORD PTR [rdi+0x48]</span><br><span class="line">0x7ffff7a7a57b &lt;setcontext+75&gt;:      mov    r13,QWORD PTR [rdi+0x50]</span><br><span class="line">0x7ffff7a7a57f &lt;setcontext+79&gt;:      mov    r14,QWORD PTR [rdi+0x58]</span><br><span class="line">0x7ffff7a7a583 &lt;setcontext+83&gt;:      mov    r15,QWORD PTR [rdi+0x60]</span><br><span class="line">0x7ffff7a7a587 &lt;setcontext+87&gt;:      mov    rcx,QWORD PTR [rdi+0xa8]</span><br><span class="line">0x7ffff7a7a58e &lt;setcontext+94&gt;:      push   rcx</span><br><span class="line">0x7ffff7a7a58f &lt;setcontext+95&gt;:      mov    rsi,QWORD PTR [rdi+0x70]</span><br><span class="line">0x7ffff7a7a593 &lt;setcontext+99&gt;:      mov    rdx,QWORD PTR [rdi+0x88]</span><br><span class="line">0x7ffff7a7a59a &lt;setcontext+106&gt;:     mov    rcx,QWORD PTR [rdi+0x98]</span><br><span class="line">0x7ffff7a7a5a1 &lt;setcontext+113&gt;:     mov    r8,QWORD PTR [rdi+0x28]</span><br><span class="line">0x7ffff7a7a5a5 &lt;setcontext+117&gt;:     mov    r9,QWORD PTR [rdi+0x30]</span><br><span class="line">0x7ffff7a7a5a9 &lt;setcontext+121&gt;:     mov    rdi,QWORD PTR [rdi+0x68]</span><br><span class="line">0x7ffff7a7a5ad &lt;setcontext+125&gt;:     xor    eax,eax</span><br><span class="line">0x7ffff7a7a5af &lt;setcontext+127&gt;:     ret</span><br></pre></td></tr></table></figure>
 <p>我们可以看到这一段巨型<code>gadget</code>，几乎控制了我们所有的寄存器，只要我们可以控制<code>rdi所指向的地址</code>及其后0xa8的内容，就可以劫持程序执行流了。其中这几个位置比较重要：</p>
@@ -574,7 +574,7 @@
 <li><p>关于<code>f-&gt;flag &amp; 0xa00 and f-&gt;flag &amp; 0x1000 == 1</code>，这个<code>flag</code>的构造方法其实很简单，分成两部分来看，第一部分：<code>f-&gt;flag &amp; 0xa00!=NULL</code>，和<code>1010 0000 0000</code>按位与不为<code>NULL</code>的话，很简单只要保证是<code>0x8xx或者0x2xx或者0xaxx</code>就行了，这也是为什么我们看到的很多构造是<code>flag = 0xfbad1800</code>或者<code>0xfbad2877</code>啥的，其后三位都是<code>0x8xx</code>，第二部分：<code>f-&gt;flag &amp; 0x1000 == 1</code>，这个更简单了，和<code>0001 0000 0000 0000</code>按位与不为0即可，这个利用<code>mmap</code>地址的随机性随便都能成立吧。</p>
 </li>
 <li><p>我们选择进行<code>largebin_attack</code>的两块chunk的大小不能随意选择或差距过大，因为一条链的chunk大小是有范围的，（看表格你会发现好像我这道题用的<code>chunk</code>的<code>size（0x4f0和0x510）</code>明明是分在两个链上的。。但实际上那个<code>size=0x4f0</code>的<code>chunk</code>之前的<code>size</code>是等于0x510的，我是先把他放进去再改的大小。。。正常情况是不能这么做的。）图片来源:<a href="https://veritas501.space/2018/04/11/Largebin%20%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">veritas501</a></p>
-<p><img src="https://i.loli.net/2019/07/09/5d2473507231241917.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d2473507231241917.png" style="zoom:80%;"></p>
 </li>
 <li><p>一次<code>largebin_attack</code>可以向任意两个地址同时写<code>victim_addr</code>一次，一次<code>unsortedbin_attack</code>可以向一个任意地址写<code>main_arena+88</code>一次，但是写完之后<code>这条largebin</code>和<code>unsortedbin</code>都会损坏，如需继续使用我们需要注意修补。（<code>largebin</code>可以直接换一条链。。）</p>
 </li>
@@ -805,7 +805,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -816,7 +816,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -827,7 +827,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -949,7 +949,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder"></span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu</span>
 
   
 </div>

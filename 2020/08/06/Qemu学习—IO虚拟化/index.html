@@ -130,16 +130,16 @@
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="I/O虚拟化在Qemu/kvm中，Guest OS可以使用的设备大致可分为三类：  模拟设备：完全由Qemu纯软件模拟的设备，也就是全虚拟化I/O设备。  Virtio设备：实现Virtio API的半虚拟化设备，也就是半虚拟化I/O设备。  PCI设备直接分配(PCI device assignment)。   全虚拟化I/Okvm在虚拟机中只负责有vCPU和内存管理，I/O设备则默认全部交由Q">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://images0.cnblogs.com/blog2015/697113/201506/011755339109600.jpg">
-<meta property="og:image" content="https://images2015.cnblogs.com/blog/697113/201509/697113-20150913103334731-1698421672.jpg">
-<meta property="og:image" content="https://images0.cnblogs.com/blog2015/697113/201506/011805499882916.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/ObSAG2wt7EWu3pf.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/GErFUwzVShjk4x1.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/wPXH8KTsVxJAfEp.png">
 <meta property="og:image" content="https://i.loli.net/2021/01/08/1L4diBsIrn3aYp2.png">
-<meta property="og:image" content="https://juniorprincewang.github.io/2018/03/01/virtio%E5%AD%A6%E4%B9%A0/virtio.jpg">
-<meta property="og:updated_time" content="2021-01-09T16:24:15.484Z">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/27/6SQ84x.png">
+<meta property="og:updated_time" content="2021-02-26T16:16:14.681Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Qemu学习-I&#x2F;O虚拟化">
 <meta name="twitter:description" content="I/O虚拟化在Qemu/kvm中，Guest OS可以使用的设备大致可分为三类：  模拟设备：完全由Qemu纯软件模拟的设备，也就是全虚拟化I/O设备。  Virtio设备：实现Virtio API的半虚拟化设备，也就是半虚拟化I/O设备。  PCI设备直接分配(PCI device assignment)。   全虚拟化I/Okvm在虚拟机中只负责有vCPU和内存管理，I/O设备则默认全部交由Q">
-<meta name="twitter:image" content="https://images0.cnblogs.com/blog2015/697113/201506/011755339109600.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/27/ObSAG2wt7EWu3pf.png">
 
 
 
@@ -490,7 +490,7 @@
 </ol>
 <h2 id="全虚拟化I-O"><a href="#全虚拟化I-O" class="headerlink" title="全虚拟化I/O"></a>全虚拟化I/O</h2><p><code>kvm</code>在虚拟机中只负责有<code>vCPU</code>和内存管理，<code>I/O</code>设备则默认全部交由<code>Qemu</code>用纯软件的方式模拟完成，包括鼠标，键盘，显卡，硬盘，网卡等。</p>
 <p>具体原理如下：</p>
-<p><img src="https://images0.cnblogs.com/blog2015/697113/201506/011755339109600.jpg" alt="img"></p>
+<p><img src="https://i.loli.net/2021/02/27/ObSAG2wt7EWu3pf.png" alt="image.png"></p>
 <ol>
 <li><code>Guest OS</code>的<code>device drivers programe</code>发起<code>I/O</code>请求操作请求。</li>
 <li><code>KVM</code>模块中的<code>I/O</code>操作捕获代码拦截这次<code>I/O</code>请求。</li>
@@ -500,14 +500,14 @@
 <li><code>KVM</code>模块的捕获代码读取<code>I/O</code>共享页中的操作结果，并把结果放回客户机。</li>
 </ol>
 <h2 id="半虚拟化I-O-Virtio框架"><a href="#半虚拟化I-O-Virtio框架" class="headerlink" title="半虚拟化I/O(Virtio框架)"></a>半虚拟化I/O(Virtio框架)</h2><h3 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h3><p>先说结论，通过之前的学习，我们知道<code>kvm</code>作为<code>User mode</code>和<code>Guest mode</code>之前的桥梁，关系如下图：</p>
-<p><img src="https://images2015.cnblogs.com/blog/697113/201509/697113-20150913103334731-1698421672.jpg" alt="img"></p>
+<p><img src="https://i.loli.net/2021/02/27/GErFUwzVShjk4x1.png" alt="image.png"></p>
 <p>这就导致<code>I/O</code>操作比较繁琐，而<code>Virtio</code>框架使<code>Guest OS</code>可以直接与<code>Host/User mode(Qemu)</code>的<code>I/O</code>模块通信，无须<code>kvm</code>中转，从而提高<code>I/O</code>性能，使<code>virtio</code>设备性能趋近于<code>native</code>设备。</p>
 <p>其需要在<code>Guest OS</code>中提前安装<code>Front-end</code>，<code>Qemu</code>中实现<code>Back-end</code>，<code>Front-end</code>作为一个内核模块/设备驱动位于<code>Guest OS</code>中，其负责接收客户机用户态程序的<code>I/O</code>请求，并将<code>I/O</code>请求传输给<code>Back-end</code>，<code>Back-end</code>作为一个模拟设备位于<code>Qemu</code>中，其负责接收<code>Front-end</code>的<code>I/O</code>请求，并通过真实的物理设备执行<code>I/O</code>操作。</p>
-<p><img src="https://images0.cnblogs.com/blog2015/697113/201506/011805499882916.jpg" alt="img"></p>
+<p><img src="https://i.loli.net/2021/02/27/wPXH8KTsVxJAfEp.png" alt="image.png"></p>
 <p><img src="https://i.loli.net/2021/01/08/1L4diBsIrn3aYp2.png" alt="image.png"></p>
 <h3 id="virtio-ring"><a href="#virtio-ring" class="headerlink" title="virtio_ring"></a>virtio_ring</h3><p><code>Front-end</code>和<code>Back-end</code>是通过<code>vring</code>进行通信的，<code>Guest OS</code>前端驱动程序通过<code>virtqueue</code>与<code>hypervisor</code>交互，实现数据的共享。对于<code>I/O</code>，<code>Guest OS</code>提供一个或多个表示请求的缓冲池。</p>
 <p><code>vring</code>是<code>virtqueue</code> 的具体实现方式，在<code>host</code>和<code>guest</code>操作系统之间作内存映射，针对<code>vring</code>会有相应的描述符表格进行描述。<br><code>virtio_ring(实现虚拟队列的环形缓冲区)</code>是<code>virtio</code>传输机制的实现，<code>vring</code> 引入<code>ring buffers(环形缓冲区)</code>来作为数据传输的载体。</p>
-<p><img src="https://juniorprincewang.github.io/2018/03/01/virtio%E5%AD%A6%E4%B9%A0/virtio.jpg" alt="virtqueue实现"></p>
+<p><img src="https://s3.ax1x.com/2021/02/27/6SQ84x.png" alt="6SQ84x.png"></p>
 <p>从结构上看，<code>virtio_ring</code>包含3部分：</p>
 <ul>
 <li><code>Descriptor Table</code></li>
@@ -726,7 +726,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -737,7 +737,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -748,7 +748,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -870,7 +870,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder"></span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu</span>
 
   
 </div>

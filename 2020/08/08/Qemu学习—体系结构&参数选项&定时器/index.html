@@ -130,18 +130,18 @@
 <meta property="og:site_name" content="xiaoxiaorenwu">
 <meta property="og:description" content="Qemu的体系架构概述QEMU是一个主机上的VMM(virtual machine monitor)，通过动态二进制转换来模拟CPU，并提供一系列的硬件模型。KVM(Kernel-Based Virtual Machine)是基于内核的虚拟机，实现对CPU和内存的虚拟化。KVM需要处理器硬件本身支持虚拟化扩展，如intel VT和AMD AMD-V技术。同时它是Linux内核的一个可加载模块，KV">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811115719848.png">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122300653.png">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122312739.png">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122324627.png">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122334537.png">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811122246132.png">
-<meta property="og:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811123158082.png">
-<meta property="og:updated_time" content="2021-01-09T16:13:08.688Z">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/tDTiV65PUgJsOwY.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/AdksyjPVBineCYv.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/jSkLGYT8NRnFts2.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/EB7cx26KjtSAl4z.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/kJh9OAuwsnQCoLD.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/kULSJVb8Q7m5iA1.png">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/rvfTPJ97tkiwMcl.png">
+<meta property="og:updated_time" content="2021-02-27T11:19:14.154Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Qemu学习-体系结构&amp;参数选项&amp;定时器">
 <meta name="twitter:description" content="Qemu的体系架构概述QEMU是一个主机上的VMM(virtual machine monitor)，通过动态二进制转换来模拟CPU，并提供一系列的硬件模型。KVM(Kernel-Based Virtual Machine)是基于内核的虚拟机，实现对CPU和内存的虚拟化。KVM需要处理器硬件本身支持虚拟化扩展，如intel VT和AMD AMD-V技术。同时它是Linux内核的一个可加载模块，KV">
-<meta name="twitter:image" content="c:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20200811115719848.png">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/27/tDTiV65PUgJsOwY.png">
 
 
 
@@ -489,7 +489,7 @@
 <p>为了使用<code>KVM</code>执行虚拟机代码，<code>QEMU</code>进程打开<code>/dev/kvm</code>并发出<code>ioctl(KVM_RUN)</code>。 <code>KVM</code>内核模块使用现代<code>Intel</code>和<code>AMD CPU</code>上的硬件虚拟化扩展来直接执行虚拟机代码。 当<code>guest</code>虚拟机访问硬件设备寄存器，或是暂停虚拟机CPU或是执行其他特殊操作时，<code>KVM</code>将退出并将控制权转给<code>QEMU</code>。 此时，<code>QEMU</code>可以模拟操作的预期输出，或者只是客户CPU在暂停的情况下等待下一个客户机中断。</p>
 <p>具体分工为：<code>KVM</code>负责对CPU和内存模拟，<code>QEMU</code>负责对IO设备模拟并对各种虚拟设备的创建和调度进行管理。</p>
 <h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><p><code>QEMU</code>是一个模拟器，它能够动态模拟特定架构的CPU指令，如<code>X86</code>，<code>PPC</code>，<code>ARM</code>等等。<code>QEMU</code>模拟的架构叫目标架构，运行<code>QEMU</code>的系统架构叫主机架构，<code>QEMU</code>中有一个模块叫做微型代码生成器(<code>TCG</code>)，它用来将目标代码翻译成主机代码。</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811115719848.png" alt="image-20200811115719848"></p>
+<p><img src="https://i.loli.net/2021/02/27/tDTiV65PUgJsOwY.png" alt="image-20200811115719848.png" style="zoom:80%;"></p>
 <p>我们也可以将运行在虚拟CPU上的代码叫做客户机代码，<code>QEMU</code>的主要功能就是不断提取客户机代码并且转化成主机指定架构的代码。整个翻译任务分为两个部分：第一个部分是将做<strong>目标代码(TB)</strong>转化成<strong>TCG中间代码</strong>，然后再将<strong>TCG中间代码</strong>转化成<strong>主机代码</strong>。</p>
 <h3 id="核心代码位置"><a href="#核心代码位置" class="headerlink" title="核心代码位置"></a>核心代码位置</h3><p>主要比较重要的c文件有：<code>/vl.c</code>，<code>/cpus.c</code>，<code>/exec-all.c</code>，<code>/exec.c</code>，<code>/cpu-exec.c</code></p>
 <p><code>QEMU</code>的<code>main</code>函数定义在<code>/vl.c</code>中，它也是执行的起点，这个函数的功能主要是建立一个虚拟的硬件环境，它通过参数的解析，将初始化内存，需要的模拟的设备初始化，CPU参数，初始化<code>KVM</code>等等。接着程序就跳转到其他的执行分支文件如：<code>/cpus.c</code>，<code>/exec-all.c</code>，<code>/exec.c</code>，<code>/cpu-exec.c</code>。</p>
@@ -499,21 +499,21 @@
 <p>使用<code>TCG</code>代码生成宿主机的代码位于<code>/tcg/</code>里，在这个目录里面也对应了不同的架构，分别在不同的子目录里面，如<code>i386</code>就在<code>/tcg/i386</code>中，整个生成宿主机代码的过程也可以当做<code>TCG</code>的后半部分。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/vl.c:                      <span class="comment">//最主要的模拟循环，虚拟机机器环境初始化，和CPU的执行。</span></span><br><span class="line">/target-arch/translate.c    <span class="comment">//将客户机代码转化成不同架构的TCG操作码。</span></span><br><span class="line">/tcg/tcg.c                  <span class="comment">//主要的TCG代码。</span></span><br><span class="line">/tcg/arch/tcg-target.c      <span class="comment">//将TCG代码转化生成宿主机代码</span></span><br><span class="line">/cpu-exec.c     <span class="comment">//其中的cpu-exec()函数主要寻找下一个TB（翻译代码块），如果没找到就请求得到下一个TB，并且操作生成的代码块。</span></span><br></pre></td></tr></table></figure>
 <h3 id="TCG"><a href="#TCG" class="headerlink" title="TCG"></a>TCG</h3><p><code>TCG</code>说白了就是一个解释器，或者说是编译器，将客服机的代码翻译为<code>TCG</code>中间代码(前端)，再将<code>TCG</code>中间代码翻译为宿主机代码(后端)：</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122300653.png" alt="image-20200811122300653"></p>
+<p><img src="https://i.loli.net/2021/02/27/AdksyjPVBineCYv.png" alt="image-20200811122300653.png" style="zoom:80%;"></p>
 <p>客户机代码部分：</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122312739.png" alt="image-20200811122312739"></p>
+<p><img src="https://i.loli.net/2021/02/27/jSkLGYT8NRnFts2.png" alt="image-20200811122312739.png" style="zoom:80%;"></p>
 <p><code>TCG</code>中间代码部分：</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122324627.png" alt="image-20200811122324627"></p>
+<p><img src="https://i.loli.net/2021/02/27/EB7cx26KjtSAl4z.png" alt="image-20200811122324627.png" style="zoom:80%;"></p>
 <p>宿主机代码部分：</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122334537.png" alt="image-20200811122334537"></p>
+<p><img src="https://i.loli.net/2021/02/27/kJh9OAuwsnQCoLD.png" alt="image-20200811122334537.png" style="zoom:80%;"></p>
 <p>当在我们需要的时候<code>TCG</code>才会动态的转变代码，这个想法的目的是用更多的时间去执行我们生成的代码。当新的代码从<code>TB</code>中生成以后， 将会被保存到一个<code>code cache</code>中，因为很多相同的<code>TB</code>会被反复的进行操作，所以这样类似于内存的<code>cache</code>，能够提高使用效率，而<code>code cache</code>的刷新使用<code>LRU</code>算法。</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811122246132.png" alt="image-20200811122246132"></p>
+<p><img src="https://i.loli.net/2021/02/27/kULSJVb8Q7m5iA1.png" alt="image-20200811122246132.png" style="zoom:80%;"></p>
 <p><code>Chaining of TBs</code>：</p>
 <blockquote>
 <p>Returning from the code cache to the static code (QEMU code) and jumping back into the code cache is generally slow. To solve this QEMU chains every TB to the next TB. So after the execution of one TB the execution directly jumps to the next TB without returning to the static code. The chaining of block happens when the Tb returns to the static code. Thus when TB1 returns (as there was no chaining) to static code the next TB, TB2, is found, generated and executed. When TB2 returns it is immediately chained to TB1. This makes sure that next time when TB1 is executed TB2 follows it without returning to the static code. Figure 7.8 (a-c) in the following page illustrates chaining of TBs.</p>
 </blockquote>
 <p>从<code>code cache</code>返回到<code>static code(Qemu的代码)</code>中和从<code>static code</code>代码进入<code>code cache</code>中是很费时间的，为了解决这个问题，<code>Qemu</code>将<code>TB</code>连接成了一条<code>chain</code>，所以执行完一块<code>TB</code>之后会直接跳到下一个<code>TB</code>继续执行而不会返回到<code>static code</code>中。</p>
-<p><img src="C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20200811123158082.png" alt="image-20200811123158082"></p>
+<p><img src="https://i.loli.net/2021/02/27/rvfTPJ97tkiwMcl.png" alt="image-20200811123158082.png" style="zoom:80%;"></p>
 <p>具体代码分析，这里代码全部选自<code>Qemu Detailed Study Chapter-7</code>，版本应该比较久远了，我和现在的代码对比了下，有部分差别但是核心应该是没变的：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">main_loop(...)&#123;/vl.c&#125;:</span><br><span class="line"><span class="comment">//函数main_loop初始化qemu_main_loop_start(),然后进入无限循环cpu_exec_all(),这个是QEMU的一个主要循环,在里面会不断的判断一些条件,如虚拟机的关机断电之类,在下文的Main loop部分详解</span></span><br><span class="line"></span><br><span class="line">qemu_main_loop_start(...)&#123;/cpus.c&#125;:</span><br><span class="line"><span class="comment">//函数设置系统变量qemu_system_ready = 1并且重启所有的线程并且等待一个条件变量.</span></span><br><span class="line"></span><br><span class="line">cpu_exec_all(...)&#123;/cpus.c&#125;:</span><br><span class="line"><span class="comment">//它是cpu循环，QEMU能够启动256个cpu核，但是这些核将会分时运行，然后执行qemu_cpu_exec().</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">CPUState</span>&#123;</span>/target-xyz/cpu.h&#125;:</span><br><span class="line"><span class="comment">//它是CPU状态结构体，关于cpu的各种状态，不同架构下面还有不同。</span></span><br><span class="line"></span><br><span class="line">cpu_exec(...)&#123;/cpu-exec.c&#125;:</span><br><span class="line"><span class="comment">//这个函数是主要的执行循环,这里第一次翻译之前说道德TB,TB被初始化为(TranslationBlock *tb),然后不停的执行异常处理。其中嵌套了两个无限循环find tb_find_fast()和tcg_qemu_tb_exec().</span></span><br><span class="line"></span><br><span class="line">cantb_find_fast()  <span class="comment">//为客户机初始化查询下一个TB，并且生成主机代码。</span></span><br><span class="line"></span><br><span class="line">tcg_qemu_tb_exec() <span class="comment">//执行生成的主机代码 </span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TranslationBlock</span> &#123;</span>/exec-all.h&#125;:</span><br><span class="line"><span class="comment">//结构体TranslationBlock包含下面的成员：PC, CS_BASE, Flags(表明TB), tc_ptr(指向这个TB翻译代码的指针), tb_next_offset[2], tb_jmp_offset[2](接下去的Tb), *jmp_next[2], *jmp_first (之前的TB).</span></span><br><span class="line"></span><br><span class="line">tb_find_fast(...)&#123;/cpu-exec.c&#125;:</span><br><span class="line"><span class="comment">//函数通过调用获得程序指针计数器,然后传到一个哈希函数从tb_jmp_cache[](一个哈希表)得到TB的所以,所以使用tb_jmp_cache可以找到下一个TB。如果没有找到下一个TB,则使用tb_find_slow。</span></span><br><span class="line"></span><br><span class="line">tb_find_slow(...)&#123;/cpu-exec.c&#125;:</span><br><span class="line"><span class="comment">//这个是在快速查找失败以后试图去访问物理内存，寻找TB。</span></span><br><span class="line"></span><br><span class="line">tb_gen_code(...)&#123;/exec.c&#125;:</span><br><span class="line"><span class="comment">//开始分配一个新的TB，TB的PC是刚刚从CPUstate里面通过using get_page_addr_code()找到的</span></span><br><span class="line"></span><br><span class="line">phys_pc = get_page_addr_code(env, pc);</span><br><span class="line"></span><br><span class="line">tb = tb_alloc(pc);</span><br><span class="line"><span class="comment">//ph当调用cpu_gen_code()以后,接着会调用tb_link_page(),它将增加一个新的TB,并且指向它的物理页表。</span></span><br><span class="line"></span><br><span class="line">cpu_gen_code(...)&#123;translate-all.c&#125;:</span><br><span class="line"><span class="comment">//函数初始化真正的代码生成，在这个函数里面有下面的函数调用：</span></span><br><span class="line"></span><br><span class="line">gen_intermediate_code()&#123;/target-arch/translate.c&#125;-&gt;gen_intermediate_code_internal()&#123;/target-arch/translate.c &#125;-&gt;disas_insn()&#123;/target-arch/translate.c&#125;</span><br><span class="line"></span><br><span class="line">disas_insn()&#123;/target-arch/translate.c&#125;</span><br><span class="line"><span class="comment">//函数disas_insn()真正的实现将客户机代码翻译成TCG代码,它通过一长串的switch case，将不同的指令做不同的翻译,最后调用tcg_gen_code。</span></span><br><span class="line"></span><br><span class="line">tcg_gen_code(...)&#123;/tcg/tcg.c&#125;:</span><br><span class="line"><span class="comment">//这个函数将TCG的代码转化成主机代码,这个就不细细说明了,和前面类似。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> tcg_qemu_tb_exec(...)&#123;/tcg/tcg.g&#125;:</span></span><br><span class="line"><span class="comment">//通过上面的步骤,当TB生成以后就通过这个函数进行执行.</span></span><br><span class="line"></span><br><span class="line">next_tb = tcg_qemu_tb_exec(tc_ptr) :</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">uint8_t</span> code_gen_prologue[];</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> tcg_qemu_tb_exec(tb_ptr) ((long REGPARM(*)(void *)) code_gen_prologue)(tb_ptr)</span></span><br></pre></td></tr></table></figure>
 <h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>从一个软件的功能的角度来看，<code>qemu</code>主要分为两大部分：</p>
@@ -758,7 +758,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -769,7 +769,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -780,7 +780,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -902,7 +902,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder"></span>
+  <span class="author" itemprop="copyrightHolder">xiaoxiaorenwu</span>
 
   
 </div>
